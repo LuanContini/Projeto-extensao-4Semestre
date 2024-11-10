@@ -23,7 +23,7 @@
 *.zip
 node_modules/
 EstoqueSQL/
-Key/
+key/
 
 # Logs and databases #
 ######################
