@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Itens</title>
+  </head>
+  <body>
+    <%- include('nav') %>
+    <h1>Itens</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Código de Barras</th>
+          <th>Categoria</th>
+          <th>Descrição</th>
+          <th>Nome</th>
+          <th>Preço</th>
+          <th>Data de Adição</th>
+          <th>Grupo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% itens.forEach(function(item) { %>
+        <tr>
+          <td><%= item.idItem %></td>
+          <td><%= item.cod_barras %></td>
+          <td><%= item.categoria %></td>
+          <td><%= item.descricao %></td>
+          <td><%= item.nome %></td>
+          <td><%= item.preco_loca %></td>
+          <td><%= item.data_adicao %></td>
+          <td><%= item.idGrupo %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>

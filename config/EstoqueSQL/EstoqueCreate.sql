@@ -1,0 +1,117 @@
+DROP DATABASE IF EXISTS controle_locacao;
+CREATE DATABASE IF NOT EXISTS controle_locacao;
+USE controle_locacao;
+
+CREATE TABLE IF NOT EXISTS usuario(
+	idUsuario INT AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    cpf VARCHAR(15),
+    email VARCHAR(50),
+    senha VARCHAR(50),
+    nasc DATE,
+    telefone VARCHAR(15),
+    data_Cad DATE,
+    tipo VARCHAR(40),
+    primary key(idUsuario)
+);
+
+CREATE TABLE IF NOT EXISTS contratante(
+	idContratante INT AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(50),
+    cpf VARCHAR(15),
+    telefone VARCHAR(15),
+    email VARCHAR(50),
+    PRIMARY KEY(idContratante)
+);
+
+CREATE TABLE IF NOT EXISTS contrato(
+	idContrato INT AUTO_INCREMENT NOT NULL,
+    tipo VARCHAR(30),
+    localEven VARCHAR(40),
+    cep CHAR(9),
+    apelido VARCHAR(30),
+    idUsuario INT NOT NULL,
+    idContratante INT NOT NULL,
+    PRIMARY KEY(idContrato),
+    FOREIGN KEY (idContratante) REFERENCES contratante(idContratante)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+    FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS contrato_audit (
+    audit_id INT AUTO_INCREMENT NOT NULL,
+    idContrato INT,
+    old_tipo VARCHAR(30),
+    new_tipo VARCHAR(30),
+    old_localEven VARCHAR(40),
+    new_localEven VARCHAR(40),
+    old_cep CHAR(9),
+    new_cep CHAR(9),
+    old_apelido VARCHAR(30),
+    new_apelido VARCHAR(30),
+    data_modificacao DATETIME,
+    usuario_responsavel VARCHAR(50),
+    PRIMARY KEY(audit_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS grupo(
+	idGrupo INT AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(50),
+    PRIMARY KEY(idGrupo)
+);
+
+CREATE TABLE IF NOT EXISTS item(
+	idItem INT AUTO_INCREMENT NOT NULL,
+    cod_barras varchar(30),
+    categoria VARCHAR(40),
+    descricao VARCHAR(100),
+    nome VARCHAR(50),
+    preco_loca DECIMAL(15, 2),
+    data_adicao DATE,
+    idGrupo INT NOT NULL,
+    PRIMARY KEY(idItem),
+	FOREIGN KEY (idGrupo) REFERENCES grupo(idGrupo)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS evento(
+	idContrato INT NOT NULL,
+    hora_ini TIME,
+    hora_term TIME,
+    PRIMARY KEY(idContrato),
+    FOREIGN KEY (idContrato) REFERENCES contrato(idContrato)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS locacao(
+	idContrato INT NOT NULL,
+    data_locacao DATE,
+    data_reserva DATE,
+    valor_total DECIMAL(15, 2),
+    PRIMARY KEY(idContrato),
+    FOREIGN KEY (idContrato) REFERENCES contrato(idContrato)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS reserva(
+	idReserva INT AUTO_INCREMENT NOT NULL,
+    data_reserva DATETIME,
+    data_devol DATE,
+    idContrato INT NOT NULL,
+    idGrupo INT NOT NULL,
+    PRIMARY KEY(idReserva),
+    FOREIGN KEY (idContrato) REFERENCES contrato(idContrato)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+    FOREIGN KEY (idGrupo) REFERENCES grupo(idGrupo)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+

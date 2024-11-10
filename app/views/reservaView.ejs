@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reservas</title>
+  </head>
+  <body>
+    <h1>Reservas</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID Reserva</th>
+          <th>Data de Reserva</th>
+          <th>Data de Devolução</th>
+          <th>ID Contrato</th>
+          <th>ID Grupo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reservas.forEach(function(reserva) { %>
+        <tr>
+          <td><%= reserva.idReserva %></td>
+          <td><%= reserva.data_reserva %></td>
+          <td><%= reserva.data_devol %></td>
+          <td><%= reserva.idContrato %></td>
+          <td><%= reserva.idGrupo %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>
