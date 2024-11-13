@@ -1,0 +1,55 @@
+-- Inserção de dados na tabela usuario
+INSERT INTO usuario (nome, cpf, email, senha, nasc, telefone, data_Cad, tipo) VALUES
+('João Silva', '123.456.789-00', 'joao@example.com', 'senha123', '1985-01-01', '11999999999', '2024-01-01', 'Gerente'),
+('Maria Oliveira', '234.567.890-11', 'maria@example.com', 'senha123', '1990-02-02', '11999999998', '2024-02-01', 'Técnico'),
+('Carlos Lima', '345.678.901-22', 'carlos@example.com', 'senha123', '1992-03-03', '11999999997', '2024-03-01', 'Freelancer'),
+('Ana Souza', '456.789.012-33', 'ana@example.com', 'senha123', '1988-04-04', '11999999996', '2024-04-01', 'Montador'),
+('Pedro Santos', '567.890.123-44', 'pedro@example.com', 'senha123', '1987-05-05', '11999999995', '2024-05-01', 'Montador'),
+('Lucas Rocha', '678.901.234-55', 'lucas@example.com', 'senha123', '1986-06-06', '11999999994', '2024-06-01', 'Montador'),
+('Beatriz Azevedo', '789.012.345-66', 'beatriz@example.com', 'senha123', '1991-07-07', '11999999993', '2024-07-01', 'Montador'),
+('Rafael Almeida', '890.123.456-77', 'rafael@example.com', 'senha123', '1989-08-08', '11999999992', '2024-08-01', 'Montador'),
+('Fernanda Costa', '901.234.567-88', 'fernanda@example.com', 'senha123', '1993-09-09', '11999999991', '2024-09-01', 'Montador'),
+('Gabriel Gomes', '012.345.678-99', 'gabriel@example.com', 'senha123', '1994-10-10', '11999999990', '2024-10-01', 'Montador');
+
+-- Inserção de dados na tabela contratante
+INSERT INTO contratante (nome, cpf, telefone, email) VALUES
+('Empresa A', '111.111.111-11', '1122223333', 'contato@empresaa.com'),
+('Empresa B', '222.222.222-22', '1122224444', 'contato@empresab.com'),
+('Empresa C', '333.333.333-33', '1122225555', 'contato@empresac.com'),
+('Empresa D', '444.444.444-44', '1122226666', 'contato@empresad.com'),
+('Empresa E', '555.555.555-55', '1122227777', 'contato@empresa.com'),
+('Empresa F', '666.666.666-66', '1122228888', 'contato@empresaf.com'),
+('Empresa G', '777.777.777-77', '1122229999', 'contato@empresag.com'),
+('Empresa H', '888.888.888-88', '1122220000', 'contato@empresah.com'),
+('Empresa I', '999.999.999-99', '1122221111', 'contato@empresai.com'),
+('Empresa J', '000.000.000-00', '1122222222', 'contato@empresaj.com');
+
+-- Inserção de dados na tabela contrato
+INSERT INTO contrato (tipo, localEven, cep, apelido, idUsuario, idContratante) VALUES
+('Festa de Aniversário', 'Salão Nobre', '11111-111', 'Aniversário João', 1, 1),
+('Casamento', 'Praça Central', '22222-222', 'Casamento Maria e José', 2, 2),
+('Show', 'Estádio Municipal', '33333-333', 'Show de Rock', 3, 3),
+('Conferência', 'Centro de Convenções', '44444-444', 'Conferência de Negócios', 4, 4),
+('Feira', 'Pavilhão de Exposições', '55555-555', 'Feira de Tecnologia', 5, 5),
+('Festival', 'Parque da Cidade', '66666-666', 'Festival de Música', 6, 6),
+('Lançamento de Produto', 'Hotel Luxo', '77777-777', 'Lançamento de Smartphone', 7, 7),
+('Desfile de Moda', 'Avenida Principal', '88888-888', 'Desfile Primavera/Verão', 8, 8),
+('Show de Talentos', 'Teatro Municipal', '99999-999', 'Show de Talentos Infantil', 9, 9),
+('Encontro Empresarial', 'Auditório da Sede', '00000-000', 'Encontro Anual de Executivos', 10, 10);
+
+-- Inserção de dados na tabela grupo e item
+INSERT INTO grupo (nome, categoria, preco_loca) VALUES
+('Microfone SLX55', 'Áudio', 50.00),
+('Projetor HD7000', 'Vídeo', 100.00),
+('Caixa de Som JBL Pro', 'Áudio', 80.00),
+('Mesa de Som Yamaha MG10', 'Áudio', 150.00),
+('Iluminação LED RGB', 'Iluminação', 200.00),
+('Microfone de Mão MX500', 'Áudio', 45.00);
+
+INSERT INTO item (cod_barras, idGrupo, data_adicao) VALUES
+('1234567890001', 1, '2024-01-01'),
+('1234567890002', 2, '2024-01-02'),
+('1234567890003', 3, '2024-01-03'),
+('1234567890004', 4, '2024-01-04'),
+('1234567890005', 5, '2024-01-05'),
+('1234567890006', 6, '2024-01-06');
