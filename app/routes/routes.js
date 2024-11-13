@@ -7,6 +7,10 @@ const {
   adicionarContrato,
 } = require("../controllers/contratosController");
 
+//RESERVA
+const { reserva } = require("../controllers/reservaController");
+
+
 //CLIENTES
 const {
   clientes,
@@ -21,9 +25,6 @@ const {
 
 //MANUTENCAO
 const { manutencao } = require("../controllers/manutencaoController");
-
-//RESERVA
-const { reserva } = require("../controllers/reservaController");
 
 module.exports = {
   //ITENS
