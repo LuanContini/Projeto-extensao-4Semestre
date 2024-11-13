@@ -1,37 +1,31 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Itens</title>
+    <title>Itens e Grupos</title>
   </head>
   <body>
     <%- include('nav') %> <%- include('estilo') %>
-    <h1>Itens</h1>
-    <table border="1">
+    <h1>Itens e Grupos</h1>
+    <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Código de Barras</th>
-          <th>Categoria</th>
-          <th>Descrição</th>
+          <th>ID do Item</th>
           <th>Nome</th>
-          <th>Preço</th>
+          <th>Categoria</th>
+          <th>Preço de Locação</th>
           <th>Data de Adição</th>
-          <th>Grupo</th>
         </tr>
       </thead>
       <tbody>
-        <% itens.forEach(function(item) { %>
+        <% itensGrupo.forEach(item => { %>
         <tr>
           <td><%= item.idItem %></td>
-          <td><%= item.cod_barras %></td>
-          <td><%= item.categoria %></td>
-          <td><%= item.descricao %></td>
           <td><%= item.nome %></td>
-          <td><%= item.preco_loca %></td>
+          <td><%= item.categoria %></td>
+          <td>R$ <%= item.preco_loca %></td>
           <td><%= item.data_adicao %></td>
-          <td><%= item.idGrupo %></td>
         </tr>
         <% }) %>
       </tbody>

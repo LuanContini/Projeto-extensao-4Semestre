@@ -1,0 +1,24 @@
+CREATE VIEW item_grupo AS 
+SELECT idItem, nome, categoria, preco_loca, data_adicao FROM grupo INNER JOIN item ON item.idGrupo = grupo.idGrupo;
+
+
+
+ITEM
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| idItem      | int         | NO   | PRI | NULL    | auto_increment |
+| cod_barras  | varchar(30) | YES  | UNI | NULL    |                |
+| idGrupo     | int         | NO   | MUL | NULL    |                |
+| data_adicao | date        | YES  |     | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+
+GRUPO
++------------+---------------+------+-----+---------+----------------+
+| Field      | Type          | Null | Key | Default | Extra          |
++------------+---------------+------+-----+---------+----------------+
+| idGrupo    | int           | NO   | PRI | NULL    | auto_increment |
+| nome       | varchar(50)   | YES  |     | NULL    |                |
+| categoria  | varchar(40)   | YES  |     | NULL    |                |
+| preco_loca | decimal(15,2) | YES  |     | NULL    |                |
++------------+---------------+------+-----+---------+----------------+

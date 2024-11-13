@@ -10,7 +10,7 @@ module.exports.itens = (app, req, res) => {
       console.log("erro ", error.message);
     }
     console.log(itens);
-    res.render("itensView.ejs", { itens: itens });
+    res.render("itensView.ejs", { itensGrupo: itens });
   });
 };
 //TODO
