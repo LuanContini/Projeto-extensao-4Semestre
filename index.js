@@ -8,6 +8,8 @@ routes.itens(app);
 routes.contratos(app);
 routes.adicionarContrato(app);
 
+//RESERVA
+routes.reserva(app);
 //CLIENTES
 routes.clientes(app);
 routes.adicionarCliente(app);

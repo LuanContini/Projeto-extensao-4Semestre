@@ -1,5 +1,3 @@
-const dbConnection = require("../../config/dbConnection");
-
 module.exports = {
   getContratos: (dbConnection, callback) => {
     console.log("[Model contrato]");

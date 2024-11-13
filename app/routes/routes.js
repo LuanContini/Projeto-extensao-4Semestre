@@ -22,6 +22,9 @@ const {
 //MANUTENCAO
 const { manutencao } = require("../controllers/manutencaoController");
 
+//RESERVA
+const { reserva } = require("../controllers/reservaController");
+
 module.exports = {
   //ITENS
   itens: (app) => {
@@ -45,6 +48,13 @@ module.exports = {
       console.log("[Route Adicionar Contrato]");
 
       adicionarContrato(app, req, res);
+    });
+  },
+  reserva: (app) => {
+    app.get("/reserva", function (req, res) {
+      console.log("[Route Reservas]");
+
+      reserva(app, req, res);
     });
   },
 

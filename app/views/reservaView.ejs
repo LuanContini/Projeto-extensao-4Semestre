@@ -1,32 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservas</title>
   </head>
   <body>
+    <%- include('nav') %> <%- include('estilo') %>
     <h1>Reservas</h1>
-    <table border="1">
+    <table>
       <thead>
         <tr>
           <th>ID Reserva</th>
-          <th>Data de Reserva</th>
+          <th>Data da Reserva</th>
           <th>Data de Devolução</th>
-          <th>ID Contrato</th>
-          <th>ID Grupo</th>
+          <th>Tipo</th>
+          <th>Local do Evento</th>
+          <th>CEP</th>
+          <th>Apelido</th>
         </tr>
       </thead>
       <tbody>
-        <% reservas.forEach(function(reserva) { %>
+        <% reservas.forEach(reserva => { %>
         <tr>
           <td><%= reserva.idReserva %></td>
           <td><%= reserva.data_reserva %></td>
           <td><%= reserva.data_devol %></td>
-          <td><%= reserva.idContrato %></td>
-          <td><%= reserva.idGrupo %></td>
+          <td><%= reserva.tipo %></td>
+          <td><%= reserva.localEven %></td>
+          <td><%= reserva.cep %></td>
+          <td><%= reserva.apelido %></td>
         </tr>
-        <% }); %>
+        <% }) %>
       </tbody>
     </table>
   </body>
