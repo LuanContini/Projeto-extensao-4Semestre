@@ -19,6 +19,17 @@ WHERE idContrato IN (
     WHERE data_locacao >= CURDATE() AND (data_reserva <= CURDATE() OR data_reserva IS NULL)
 );
 
+--View para listar os itens e seus grupos
+CREATE VIEW item_grupo AS 
+SELECT idItem, nome, categoria, preco_loca, data_adicao FROM grupo INNER JOIN item ON item.idGrupo = grupo.idGrupo;
+
+--View para listar os itens em manutenção
+CREATE VIEW item_manutencao_view AS 
+SELECT idManutencao, cod_barras, grupo.nome, motivo, data_inicio, data_fim, responsavel FROM item_manutencao
+INNER JOIN item ON item.idItem = item_manutencao.idItem
+INNER JOIN grupo ON grupo.idGrupo = item.idGrupo;
+
+
 -- View para listar todos os contratos com detalhes do usuário e contratante
 DROP VIEW IF EXISTS view_contratos_usuarios_contratantes;
 CREATE VIEW view_contratos_usuarios_contratantes AS

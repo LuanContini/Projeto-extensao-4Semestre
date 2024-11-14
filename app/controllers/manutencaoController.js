@@ -10,6 +10,6 @@ module.exports.manutencao = (app, req, res) => {
       console.log("erro ", error.message);
     }
     console.log(itens);
-    res.render("manutencaoView.ejs", { manutencao: itens });
+    res.render("manutencaoView.ejs", { itensManutencao: itens });
   });
 };

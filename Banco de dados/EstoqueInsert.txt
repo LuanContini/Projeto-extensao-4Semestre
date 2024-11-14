@@ -46,6 +46,15 @@ INSERT INTO grupo (nome, categoria, preco_loca) VALUES
 ('Iluminação LED RGB', 'Iluminação', 200.00),
 ('Microfone de Mão MX500', 'Áudio', 45.00);
 
+INSERT INTO grupo (nome, categoria, preco_loca) VALUES
+('Câmera DSLR', 'Fotografia', 150.00),
+('Projetor', 'Audiovisual', 200.00),
+('Microfone', 'Áudio', 50.00),
+('Luz LED', 'Iluminação', 75.00),
+('Caixa de Som', 'Áudio', 120.00),
+('Tripé', 'Acessório', 30.00);
+
+
 INSERT INTO item (cod_barras, idGrupo, data_adicao) VALUES
 ('1234567890001', 1, '2024-01-01'),
 ('1234567890002', 2, '2024-01-02'),
@@ -53,3 +62,45 @@ INSERT INTO item (cod_barras, idGrupo, data_adicao) VALUES
 ('1234567890004', 4, '2024-01-04'),
 ('1234567890005', 5, '2024-01-05'),
 ('1234567890006', 6, '2024-01-06');
+
+INSERT INTO item (cod_barras, idGrupo, data_adicao) VALUES
+('1234567890123', 1, '2024-11-01'),  -- Câmera DSLR
+('2345678901234', 2, '2024-11-02'),  -- Projetor
+('3456789012345', 3, '2024-11-03'),  -- Microfone
+('4567890123456', 4, '2024-11-04'),  -- Luz LED
+('5678901234567', 5, '2024-11-05'),  -- Caixa de Som
+('6789012345678', 6, '2024-11-06');  -- Tripé
+
+
+INSERT INTO evento (idContrato, hora_ini, hora_term) VALUES
+(1, '18:00:00', '23:00:00'),
+(2, '15:00:00', '21:00:00'),
+(3, '20:00:00', '02:00:00'),
+(4, '09:00:00', '17:00:00'),
+(5, '10:00:00', '18:00:00'),
+(6, '14:00:00', '22:00:00');
+
+INSERT INTO locacao (idContrato, data_locacao, data_reserva, valor_total) VALUES
+(1, '2024-08-20', '2024-08-10', 500.00),
+(2, '2024-08-22', '2024-08-12', 700.00),
+(3, '2024-08-25', '2024-08-15', 1500.00),
+(4, '2024-08-28', '2024-08-18', 1200.00),
+(5, '2024-09-01', '2024-08-20', 900.00),
+(6, '2024-09-05', '2024-08-22', 800.00);
+
+INSERT INTO reserva (data_reserva, data_devol, idContrato, idGrupo) VALUES
+('2024-08-10 10:00:00', '2024-08-20', 1, 1),
+('2024-08-12 11:00:00', '2024-08-22', 2, 2),
+('2024-08-15 09:00:00', '2024-08-25', 3, 3),
+('2024-08-18 14:00:00', '2024-08-28', 4, 4),
+('2024-08-20 15:00:00', '2024-09-01', 5, 5),
+('2024-08-22 10:30:00', '2024-09-05', 6, 6);
+
+
+INSERT INTO item_manutencao (idItem, motivo, data_inicio, data_fim, responsavel) VALUES
+(1, 'Limpeza de lente', '2024-11-07', '2024-11-08', 'Carlos Souza'),
+(2, 'Troca de lâmpada', '2024-11-09', NULL, 'Ana Lima'),
+(3, 'Verificação de som', '2024-11-10', '2024-11-11', 'João Pedro'),
+(4, 'Substituição de bateria', '2024-11-12', NULL, 'Mariana Costa'),
+(5, 'Reparo de conexões', '2024-11-13', NULL, 'Luiz Silva'),
+(6, 'Verificação de estrutura', '2024-11-14', '2024-11-15', 'Fernanda Almeida');

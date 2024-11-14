@@ -76,6 +76,23 @@ CREATE TABLE IF NOT EXISTS item (
         ON DELETE CASCADE
 );
 
+
+-- Criação da tabela 'item_manutencao' para controlar o estado de manutenção dos itens
+
+CREATE TABLE IF NOT EXISTS item_manutencao (
+    idManutencao INT AUTO_INCREMENT NOT NULL,
+    idItem INT NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE,
+    responsavel VARCHAR(50),
+    PRIMARY KEY (idManutencao),
+    FOREIGN KEY (idItem) REFERENCES item(idItem)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+
 CREATE TABLE IF NOT EXISTS evento(
     idContrato INT NOT NULL,
     hora_ini TIME,
@@ -108,6 +125,21 @@ CREATE TABLE IF NOT EXISTS reserva(
     ON UPDATE CASCADE
     ON DELETE CASCADE,
     FOREIGN KEY (idGrupo) REFERENCES grupo(idGrupo)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+-- Criação da tabela 'item_manutencao' para controlar o estado de manutenção dos itens
+
+CREATE TABLE IF NOT EXISTS item_manutencao (
+    idManutencao INT AUTO_INCREMENT NOT NULL,
+    idItem INT NOT NULL,
+    motivo VARCHAR(100) NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE,
+    responsavel VARCHAR(50),
+    PRIMARY KEY (idManutencao),
+    FOREIGN KEY (idItem) REFERENCES item(idItem)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );

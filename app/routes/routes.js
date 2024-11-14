@@ -76,8 +76,8 @@ module.exports = {
 
   //MANUTENCAO
   manutencao: (app) => {
-    app.get("/itens", function (req, res) {
-      console.log("[Route itens]");
+    app.get("/manutencao", function (req, res) {
+      console.log("[Route Manutenção]");
 
       manutencao(app, req, res);
     });

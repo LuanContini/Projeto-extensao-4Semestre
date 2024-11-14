@@ -1,7 +1,7 @@
 module.exports = {
   getItens: (dbConnection, callback) => {
     console.log("[Model itens]");
-    const sql = "SELECT * FROM item_grupo;";
+    const sql = "SELECT * FROM item_grupo ORDER BY categoria ASC;";
     dbConnection.query(sql, callback);
   },
   //TODO
