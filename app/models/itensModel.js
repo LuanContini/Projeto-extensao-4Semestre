@@ -1,9 +1,7 @@
-const dbConnection = require("../../config/dbConnection");
-
 module.exports = {
   getItens: (dbConnection, callback) => {
     console.log("[Model itens]");
-    const sql = "SELECT * FROM item;";
+    const sql = "SELECT * FROM item_grupo;";
     dbConnection.query(sql, callback);
   },
   //TODO
