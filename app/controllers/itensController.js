@@ -1,18 +1,30 @@
 const dbConnection = require("../../config/dbConnection");
 
-const { getItens } = require("../models/itensModel");
+const { getItens, getItensByGroup } = require("../models/itensModel");
 
-module.exports.itens = (app, req, res) => {
+module.exports.getItens = (req, res) => {
   const dbConn = dbConnection();
 
-  getItens(dbConn, (error, itens) => {
-    if (error) {
-      console.log("erro ", error.message);
+  getItens(dbConn, (err, itens) => {
+    if (err) {
+      res.status(403).send({'erro' : err.message});
     }
-    console.log(itens);
-    res.render("itensView.ejs", { itensGrupo: itens });
+    res.status(400).send({ 'itens': itens});
   });
 };
+module.exports.itensGrupo = (app, req, res) => {
+  const dbConn = dbConnection();
+
+  getItensByGroup(dbConn, idGrupo, (error, itens) => {
+    if(error){
+      console.log(error.message);
+      return;
+    }
+    console.log(itens);
+    res.render("itensView.ejs", {itensGrupo: itens});
+  });
+}
+
 //TODO
 // module.exports.adicionarItem = (app, req, res) => {
 //   const categoria = req.body.categoria;
