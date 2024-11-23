@@ -1,5 +1,7 @@
+const express = require("express");
+
 //ITENS
-const { itens } = require("../controllers/itensController");
+const itens = require("../controllers/itensController");
 
 //CONTRATOS
 const {
@@ -25,15 +27,19 @@ const { manutencao } = require("../controllers/manutencaoController");
 //RESERVA
 const { reserva } = require("../controllers/reservaController");
 
+const router = express.Router();
+
+router.get("/itens", itens.getItens);
+
 module.exports = {
   //ITENS
-  itens: (app) => {
-    app.get("/itens", function (req, res) {
-      console.log("[Route itens]");
+  // itens: (app) => {
+  //   app.get("/itens", function (req, res) {
+  //     console.log("[Route itens]");
 
-      itens(app, req, res);
-    });
-  },
+  //     itens(app, req, res);
+  //   });
+  // },
 
   //CONTRATOS
   contratos: (app) => {
@@ -99,3 +105,5 @@ module.exports = {
     });
   },
 };
+
+module.exports = router;

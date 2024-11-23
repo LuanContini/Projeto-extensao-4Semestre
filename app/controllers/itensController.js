@@ -2,16 +2,18 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getItens } = require("../models/itensModel");
 
-module.exports.itens = (app, req, res) => {
-  const dbConn = dbConnection();
+module.exports = {
+  getItens: (req, res) => {
+    const dbConn = dbConnection();
 
-  getItens(dbConn, (error, itens) => {
-    if (error) {
-      console.log("erro ", error.message);
-    }
-    console.log(itens);
-    res.render("itensView.ejs", { itensGrupo: itens });
-  });
+    getItens(dbConn, (error, itens) => {
+      if (error) {
+        console.log("erro ", error.message);
+      }
+      console.log(itens);
+      res.render("itensView.ejs", { itensGrupo: itens });
+    });
+  },
 };
 //TODO
 // module.exports.adicionarItem = (app, req, res) => {
