@@ -9,19 +9,19 @@ module.exports.getItens = (req, res) => {
     if (err) {
       res.status(403).send({'erro' : err.message});
     }
-    res.status(400).send({ 'itens': itens});
+    res.status(200).send({ 'itens': itens});
   });
 };
-module.exports.itensGrupo = (app, req, res) => {
+module.exports.getItensByGroup = (req, res) => {
   const dbConn = dbConnection();
 
-  getItensByGroup(dbConn, idGrupo, (error, itens) => {
-    if(error){
-      console.log(error.message);
-      return;
+  const idGrupo = parseInt(req.params.id);
+  console.log(idGrupo);
+  getItensByGroup(dbConn, idGrupo, (err, itens) => {
+    if(err){
+      res.status(403).send({'erro' : err.message});
     }
-    console.log(itens);
-    res.render("itensView.ejs", {itensGrupo: itens});
+    res.status(200).send({'itens':itens});
   });
 }
 
