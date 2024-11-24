@@ -6,7 +6,7 @@ const { getUsuarios } = require("../models/usuariosModel");
 
 require("dotenv").config({ path: ".env" });
 
-module.exports.usuarios = (app, req, res) => {
+module.exports.getUsuarios = (app, req, res) => {
   const dbConn = dbConnection();
 
   getUsuarios(dbConn, (error, usuarios) => {
@@ -18,7 +18,7 @@ module.exports.usuarios = (app, req, res) => {
   });
 };
 
-module.exports.adicionarUsuario = (app, req, res) => {
+module.exports.adicionarUsuario = (req, res) => {
   const { nome, cpf, telefone, email, senha, nasc, tipo } = req.body;
 
   const checaCampos =

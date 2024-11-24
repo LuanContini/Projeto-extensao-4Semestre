@@ -2,7 +2,7 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getManutencao } = require("../models/manutencaoModel");
 
-module.exports.manutencao = (app, req, res) => {
+module.exports.getManutencao = (req, res) => {
   const dbConn = dbConnection();
 
   getManutencao(dbConn, (error, itens) => {

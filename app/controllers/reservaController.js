@@ -2,7 +2,7 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getReservas } = require("../models/reservaModel");
 
-module.exports.reserva = (app, req, res) => {
+module.exports.getReserva = (app, req, res) => {
   const dbConn = dbConnection();
 
   getReservas(dbConn, (error, reservas) => {
