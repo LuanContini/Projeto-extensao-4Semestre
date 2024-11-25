@@ -2,7 +2,7 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getClientes, adicionarCliente } = require("../models/clientesModel");
 
-module.exports.clientes = (app, req, res) => {
+module.exports.getClientes = (req, res) => {
   const dbConn = dbConnection();
 
   getClientes(dbConn, (error, clientes) => {

@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 
-require("dotenv").config({ path: ".env" });
+require("dotenv").config({ path: "../.env" });
 
 const host = process.env.HOST;
 const database = process.env.DB;

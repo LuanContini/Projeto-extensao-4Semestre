@@ -76,9 +76,6 @@ CREATE TABLE IF NOT EXISTS item (
         ON DELETE CASCADE
 );
 
-
--- Criação da tabela 'item_manutencao' para controlar o estado de manutenção dos itens
-
 CREATE TABLE IF NOT EXISTS item_manutencao (
     idManutencao INT AUTO_INCREMENT NOT NULL,
     idItem INT NOT NULL,
@@ -103,6 +100,7 @@ CREATE TABLE IF NOT EXISTS evento(
     ON DELETE CASCADE
 );
 
+
 CREATE TABLE IF NOT EXISTS locacao(
     idContrato INT NOT NULL,
     data_locacao DATE,
@@ -113,6 +111,7 @@ CREATE TABLE IF NOT EXISTS locacao(
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS reserva(
     idReserva INT AUTO_INCREMENT NOT NULL,
@@ -128,8 +127,6 @@ CREATE TABLE IF NOT EXISTS reserva(
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
-
--- Criação da tabela 'item_manutencao' para controlar o estado de manutenção dos itens
 
 CREATE TABLE IF NOT EXISTS item_manutencao (
     idManutencao INT AUTO_INCREMENT NOT NULL,
