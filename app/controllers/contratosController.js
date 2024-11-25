@@ -2,7 +2,7 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getContratos, adicionarContrato } = require("../models/contratosModel");
 
-module.exports.contratos = (app, req, res) => {
+module.exports.getContratos = (req, res) => {
   const dbConn = dbConnection();
 
   getContratos(dbConn, (error, contratos) => {
