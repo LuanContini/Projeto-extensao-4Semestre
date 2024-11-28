@@ -9,27 +9,30 @@ const {
 } = require("../models/itensModel");
 
 //GET
-module.exports.getItens = (req, res) => {
-  const dbConn = dbConnection();
+module.exports.getItens = async (req, res) => {
+  try {
+    const dbConn = dbConnection();  
 
-  getItens(dbConn, (err, itens) => {
-    if (err) {
-      res.status(403).send({ "erro": err.message });
-    }
+    const itens = await getItens(dbConn);
+
     res.status(200).send({ "itens": itens });
-  });
+  } catch (err) {
+    res.status(403).send({ "erro": err.message });
+  }
 };
-module.exports.getItensById = (req, res) => {
+
+module.exports.getItensById = async (req, res) => {
   const dbConn = dbConnection();
 
   const idItem = req.params.id;
   console.log(idItem);
-  getItensById(dbConn, idItem, (err, item) => {
-    if (err) {
-      res.status(403).send({ "erro": err.message });
-    }
-    res.status(200).send({ "item": item });
-  });
+  try{
+    const item = await getItensById(dbConn, idItem);
+
+    res.status(200).send({'item': item});
+  }catch (err) {
+    res.status(403).send({'err': err});
+  }
 };
 
 //POST
@@ -38,11 +41,14 @@ module.exports.postItem = (req, res) => {
 
   const dbConn = dbConnection();
 
-  adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca, (err, result) => {
-    if (err) res.status(400).send({ "err": err });
+  try{
+    const post = adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca);
 
-    res.status(200).send({ "result": result });
-  });
+    res.status(200).send({'result': post});
+
+  }catch (err) {
+    res.status(400).send({'err': err});
+  }
 };
 
 //UPDATE

@@ -13,3 +13,18 @@ module.exports.getManutencao = (req, res) => {
     res.render("manutencaoView.ejs", { itensManutencao: itens });
   });
 };
+
+module.exports.getManutencaoById = (req, res) => {
+  //TODO GET MANUTENÇÃO POR ID ESPECIFICO
+};
+
+module.exports.postManutencao = (req, res) => {
+  //TODO ADICIONAR MANUTENÇÃO
+}
+module.exports.putManutencao = (req, res) => {
+  //TODO EDITAR MANUTENÇÃO
+};
+
+module.exports.deleteManutencao = (req, res) => {
+  //TODO EXCLUIR MANUTENÇÃO
+};

@@ -6,6 +6,9 @@ module.exports = {
     const sql = "SELECT * FROM usuario;";
     dbConnection.query(sql, callback);
   },
+  getUsuarioById: (dbConnection, idUsuario, callback) => {
+    //TODO GET USUARIO POR ID ESPECIFICO
+  },
   adicionarUsuario: (
     dbConnection,
     nome,

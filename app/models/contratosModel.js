@@ -1,3 +1,5 @@
+const dbConnection = require("../../config/dbConnection");
+
 module.exports = {
   getContratos: (dbConnection, callback) => {
     console.log("[Model contrato]");
@@ -22,4 +24,16 @@ module.exports = {
       callback
     );
   },
+  getContratoById: (dbConnection, idContrato, callback) => {
+    //TODO GET CONTRATO POR ID ESPECIFICO MODEL
+  },
+  putContrato: (dbConnection, /*outros campos*/ callback) => {
+    //TODO EDITAR CONTRATOS MODEL
+  },
+  
+  deleteContrato: (dbConnection, idContrato, callback) => {
+    //TODO EXCLUIR CONTRATOS MODEL
+  }
 };
+
+
