@@ -14,13 +14,13 @@ module.exports.getContratos = (req, res) => {
   });
 };
 
-module.exports.adicionarContrato = (app, req, res) => {
+module.exports.getContratoById = (req, res) => {
+  //TODO GET CONTRATOS POR ID ESPECIFICO
+};
+
+module.exports.postContrato = (req, res) => {
   const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
 
-  const checaCampos =
-    !tipo || !localEven || !cep || !apelido || !idUsuario || !idContratante;
-
-  if (!checaCampos) {
     const dbConn = dbConnection();
 
     adicionarContrato(
@@ -40,5 +40,13 @@ module.exports.adicionarContrato = (app, req, res) => {
         res.redirect("/contratos");
       }
     );
-  }
 };
+
+module.exports.putContrato = (req, res) => {
+  //TODO EDITAR CONTRATOS
+};
+
+module.exports.deleteContrato = (req, res) => {
+  //TODO EXCLUIR CONTRATOS
+}
+

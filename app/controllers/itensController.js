@@ -8,71 +8,73 @@ const {
   deleteItem,
 } = require("../models/itensModel");
 
-//GET
-module.exports.getItens = (req, res) => {
-  const dbConn = dbConnection();
-
-  getItens(dbConn, (err, itens) => {
-    if (err) {
-      res.status(403).send({ "erro": err.message });
-    }
-    res.status(200).send({ "itens": itens });
-  });
-};
-module.exports.getItensById = (req, res) => {
-  const dbConn = dbConnection();
-
-  const idItem = req.params.id;
-  console.log(idItem);
-  getItensById(dbConn, idItem, (err, item) => {
-    if (err) {
-      res.status(403).send({ "erro": err.message });
-    }
-    res.status(200).send({ "item": item });
-  });
+// GET all items
+module.exports.getItens = async (req, res) => {
+  try {
+    const dbConn = dbConnection();
+    const itens = await getItens(dbConn);
+    res.status(200).send({ itens });
+  } catch (err) {
+    res.status(403).send({ erro: err.message });
+  }
 };
 
-//POST
-module.exports.postItem = (req, res) => {
-  const {cod_barras, nome, categoria, preco_loca } = req.params;
-
+// GET item by ID
+module.exports.getItensById = async (req, res) => {
   const dbConn = dbConnection();
-
-  adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca, (err, result) => {
-    if (err) res.status(400).send({ "err": err });
-
-    res.status(200).send({ "result": result });
-  });
-};
-
-//UPDATE
-
-module.exports.putItem = (req, res) => {
-  const {nome, categoria, preco_loca, idGrupo} = req.params;
-
-  const dbConn = dbConnection();
-
-  updateItem(dbConn, nome, categoria, preco_loca, idGrupo, (err, result) => {
-    if(err) res.status(400).send({'err': err});
-
-    res.status(200).send({'result': result});
-
-  });
-}
-
-//DELETE
-module.exports.deleteItem = (req, res) => {
   const idItem = req.params.id;
 
+  try {
+    const item = await getItensById(dbConn, idItem);
+    res.status(200).send({ item });
+  } catch (err) {
+    res.status(403).send({ erro: err.message });
+  }
+};
+
+// POST new item
+module.exports.postItem = async (req, res) => {
+  const { cod_barras, nome, categoria, preco_loca } = req.body; // body ao invés de params para POST
+
   const dbConn = dbConnection();
 
-  deleteItem(dbConn, idItem, (err, result) => {
-    if(err) res.status(400).send({'err': err});
+  try {
+    const post = await adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca);
+    res.status(200).send({ result: post });
+  } catch (err) {
+    res.status(400).send({ erro: err.message });
+  }
+};
 
-    if(result.affectedRows > 0){
-    res.status(200).send({'result': result});
+// UPDATE item
+module.exports.putItem = async (req, res) => {
+  const { nome, categoria, preco_loca, idGrupo } = req.params; 
 
+  const dbConn = dbConnection();
+
+  try {
+    const result = await updateItem(dbConn, nome, categoria, preco_loca, idGrupo);
+    res.status(200).send({ result });
+  } catch (err) {
+    res.status(400).send({ erro: err.message });
+  }
+};
+
+// DELETE item
+module.exports.deleteItem = async (req, res) => {
+  const idItem = req.params.id;
+
+  const dbConn = dbConnection();
+
+  try {
+    const result = await deleteItem(dbConn, idItem);
+
+    if (result.affectedRows > 0) {
+      res.status(200).send({ result });
+    } else {
+      res.status(400).send({ erro: "O item não foi apagado" });
     }
-    else res.status(400).send({'err': "O item não foi apagado"});
-  });
-}
+  } catch (err) {
+    res.status(400).send({ erro: err.message });
+  }
+};
