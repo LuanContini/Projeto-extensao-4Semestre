@@ -9,9 +9,9 @@ const { validarCliente } = require('../middleware/validacao.cliente');
 router.get('/', clientesController.getClientes);
 router.get('/:id', clientesController.getClienteById);
 
-router.post('/:nome/:cpf/telefone/:email', validarCliente, clientesController.postCliente);
+router.post('/:nome/:cpf/:telefone/:email', validarCliente, clientesController.postCliente);
 
-router.put('/:id'/*campos especificos para adicionar cliente*/, clientesController.putCliente);
+router.put('/:id/:nome/:cpf/:telefone/:email', clientesController.putCliente);
 
 router.delete('/:id', clientesController.deleteCliente);
 
