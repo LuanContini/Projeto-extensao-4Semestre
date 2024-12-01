@@ -2,21 +2,24 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getReservas, getReservaById, postReserva, putReserva, deleteReserva } = require("../models/reservaModel");
 
-module.exports.getReserva = (app, req, res) => {
-  const dbConn = dbConnection();
-
-  getReservas(dbConn, (error, reservas) => {
-    if (error) {
-      console.log("erro ", error.message);
-      return;
-    }
-    console.log(reservas);
-    res.render("reservaView.ejs", { reservas: reservas });
-  });
+module.exports.getReserva = async (req, res) => {
+  try {
+    const dbConn = dbConnection();
+    const reservas = await getReservas(dbConn);
+    res.status(200).send({ 'reservas': reservas });
+  } catch (err) {
+    res.status(403).send({ 'erro:': err.message });
+  }
 };
 
 module.exports.getReservaById = (req, res) => {
-  //TODO GET RESERVA POR ID ESPECIFICO
+
+  try{
+
+    res.status(200).send({ 'reserva': reserva});
+  }catch (err){
+    res.status(400).send({'err': err});
+  }
 };
 
 module.exports.postReserva = (req, res) => {

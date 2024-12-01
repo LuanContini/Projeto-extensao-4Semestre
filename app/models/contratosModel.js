@@ -1,10 +1,36 @@
-const dbConnection = require("../../config/dbConnection");
-
 module.exports = {
-  getContratos: (dbConnection, callback) => {
+  getContratos: (dbConnection) => {
     console.log("[Model contrato]");
-    const sql = "SELECT * FROM contrato;";
-    dbConnection.query(sql, callback);
+    const sql = "SELECT * FROM vw_dados_contratos;";
+
+    return new Promise((resolve, reject) => {
+      
+      dbConnection.query(sql, (err, result) => {
+        if(err) {
+          reject(err);
+        }else{
+          resolve(result);
+        }
+      });
+    });
+  },
+
+  getContratoById: (dbConnection, idContrato) => {
+
+    console.log('[Model getContratoById]');
+
+    const sql = 'SELECT * FROM vw_dados_contratos WHERE contrato_id = ?';
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [idContrato], (err, result) => {
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve(result);
+        }
+      });
+    });
   },
   adicionarContrato: (
     dbConnection,
@@ -24,9 +50,7 @@ module.exports = {
       callback
     );
   },
-  getContratoById: (dbConnection, idContrato, callback) => {
-    //TODO GET CONTRATO POR ID ESPECIFICO MODEL
-  },
+  
   putContrato: (dbConnection, /*outros campos*/ callback) => {
     //TODO EDITAR CONTRATOS MODEL
   },
