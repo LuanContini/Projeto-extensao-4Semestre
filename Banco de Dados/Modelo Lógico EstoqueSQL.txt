@@ -1,0 +1,25 @@
+Usuário(#IdUsuario, Nome, CPF, Email, Senha, DataNasc, Telefone, DataCad, Tipo)
+
+Contratante(#IdContratante, Nome, Email, Telefone, Foto, Observacao)
+	PessoaJuridica(#IdContratante, CNPJ)
+		IdContratante referência Contratante
+	PessoaFisica(#IdContratante, CPF)
+		IdContratante referência Contratante
+	
+Contrato(#IdContrato, Tipo, ValorTotal, CEP, Apelido, LocalEvent, LocalRetirada, DataHora_ini, DataHora_Term, DescEmpregados, IdUsuario, IdContratante)
+	IdUsuario referência Usuario
+	IdContratante referência Contratante
+
+Reserva(#idReserva, dataHora_loca, idGrupo, idContratos)
+
+Grupo(#IdGrupo, Nome, Categoria, PrecoGrupo)
+
+Item(#IdItem, CodBarras, DataLocacao, Precoitem, IdGrupo)
+	IdGrupo referência Grupo
+
+HistoricoManutencao(#IdHistorico, IdManutencao, Data_Inic, Data_Term, IdItem, IdManutencao)
+	IdItem referência Item
+	IdManutencao referência Manutencao
+
+Manutencao(#IdManutencao, Motivo, Data_Inic, Data_Retorno, Responsavel)
+	
