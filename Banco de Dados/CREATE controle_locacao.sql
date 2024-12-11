@@ -1,5 +1,6 @@
 -- DATABASE IF EXISTS controle_locacao_teste;
-CREATE DATABASE  IF NOT EXISTS controle_locacao_teste;
+/*DROP DATABASE controle_locacao_teste;*/
+CREATE DATABASE IF NOT EXISTS controle_locacao_teste;
 USE controle_locacao_teste;
 
 CREATE TABLE IF NOT EXISTS usuario (
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS pessoaFisica (
 CREATE TABLE IF NOT EXISTS contrato (
     idContrato INT AUTO_INCREMENT,
     tipo ENUM('Locacao', 'Evento') NOT NULL DEFAULT 'Locacao', -- Tipo so pode ser armazenado com 1 desses valores
-    valor_total DECIMAL(5,2) NOT NULL DEFAULT 0,
+    valor_total DECIMAL(10,2) NOT NULL DEFAULT 0,
     cep VARCHAR(8) NOT NULL, -- Validador para se o cep tem exatamente 8 digitos
     localEvento VARCHAR(150) NOT NULL,
     localRetirada VARCHAR(150) NOT NULL,
