@@ -6,6 +6,8 @@ const {
   adicionarItem,
   updateItem,
   deleteItem,
+  getGrupos,
+  getGrupoById,
 } = require("../models/itensModel");
 
 // GET all items
@@ -13,36 +15,50 @@ module.exports.getItens = async (req, res) => {
   try {
     const dbConn = dbConnection();
     const itens = await getItens(dbConn);
-    res.status(200).send({ itens });
+    const grupos = await getGrupos(dbConn);
+
+    const itensComGrupos = grupos.map(grupo => ({
+      ...grupo,
+      itens: itens.filter(item => item.idGrupo === grupo.idGrupo)
+    }));
+    res.status(200).send({ 'itensComGrupos': itensComGrupos });
   } catch (err) {
-    res.status(403).send({ erro: err.message });
+    res.status(403).send({ 'erro:': err.message });
   }
 };
 
 // GET item by ID
-module.exports.getItensById = async (req, res) => {
+module.exports.getGrupoById = async (req, res) => {
   const dbConn = dbConnection();
-  const idItem = req.params.id;
+  const idGrupo = req.params.id;
 
   try {
-    const item = await getItensById(dbConn, idItem);
-    res.status(200).send({ item });
+    const itens = await getItensById(dbConn, idGrupo);
+    const grupo = await getGrupoById(dbConn, idGrupo);
+
+    
+    const grupoComItens = grupo.map(grupo => ({
+      ...grupo,
+      itens: itens.filter(item => item.idGrupo === grupo.idGrupo)
+    }));
+
+    res.status(200).send({ 'grupoComItens': grupoComItens[0] });
   } catch (err) {
-    res.status(403).send({ erro: err.message });
+    res.status(403).send({ 'erro': err.message });
   }
 };
 
 // POST new item
 module.exports.postItem = async (req, res) => {
-  const { cod_barras, nome, categoria, preco_loca } = req.body; // body ao invés de params para POST
+  const { cod_barras, nome, categoria, preco_loca } = req.params; 
 
   const dbConn = dbConnection();
 
   try {
     const post = await adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca);
-    res.status(200).send({ result: post });
+    res.status(200).send({ 'result': post });
   } catch (err) {
-    res.status(400).send({ erro: err.message });
+    res.status(400).send({ 'erro': err.message });
   }
 };
 
@@ -54,9 +70,9 @@ module.exports.putItem = async (req, res) => {
 
   try {
     const result = await updateItem(dbConn, nome, categoria, preco_loca, idGrupo);
-    res.status(200).send({ result });
+    res.status(200).send({ 'result': result });
   } catch (err) {
-    res.status(400).send({ erro: err.message });
+    res.status(400).send({ 'erro': err.message });
   }
 };
 
@@ -70,11 +86,11 @@ module.exports.deleteItem = async (req, res) => {
     const result = await deleteItem(dbConn, idItem);
 
     if (result.affectedRows > 0) {
-      res.status(200).send({ result });
+      res.status(200).send({ 'result': result });
     } else {
-      res.status(400).send({ erro: "O item não foi apagado" });
+      res.status(400).send({ 'erro': "O item não foi apagado" });
     }
   } catch (err) {
-    res.status(400).send({ erro: err.message });
+    res.status(400).send({ 'erro': err.message });
   }
 };

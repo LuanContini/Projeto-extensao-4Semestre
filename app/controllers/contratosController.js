@@ -1,21 +1,33 @@
 const dbConnection = require("../../config/dbConnection");
 
-const { getContratos, adicionarContrato } = require("../models/contratosModel");
+const { getContratos, getContratoById, adicionarContrato } = require("../models/contratosModel");
 
-module.exports.getContratos = (req, res) => {
-  const dbConn = dbConnection();
+module.exports.getContratos = async (req, res) => {
+  
+  try{
+    const dbConn = dbConnection();
 
-  getContratos(dbConn, (error, contratos) => {
-    if (error) {
-      console.log("erro ", error.message);
-    }
-    console.log(contratos);
-    res.render("contratosView.ejs", { contratos: contratos });
-  });
+    const contratos = await getContratos(dbConn);
+
+    res.status(200).send({ 'Contratos': contratos});
+  }catch(err){
+    res.status(400).send({ 'err': err});
+  }
 };
 
-module.exports.getContratoById = (req, res) => {
-  //TODO GET CONTRATOS POR ID ESPECIFICO
+module.exports.getContratoById = async (req, res) => {
+  
+  const idContrato = req.params.id;
+
+  try{
+    const dbConn = dbConnection();
+
+    const contrato = await getContratoById(dbConn, idContrato);
+
+    res.status(200).send({ 'contrato': contrato});
+  }catch (err) {
+    res.status(400).send({ 'err': err});
+  }
 };
 
 module.exports.postContrato = (req, res) => {

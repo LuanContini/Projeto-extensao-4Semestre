@@ -4,7 +4,7 @@
   "description": "Projeto de extensao da faculdade IFSP, para o cliente GregEventos.",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+  "test": "jest --transformIgnorePatterns"
   },
   "author": "Luan Contini",
   "license": "ISC",
@@ -13,11 +13,14 @@
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
-    "jest": "^29.7.0",
     "joi": "^17.13.3",
     "mysql2": "^3.11.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
     "supertest": "^7.0.0"
   }
 }

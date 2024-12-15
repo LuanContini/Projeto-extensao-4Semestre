@@ -16,7 +16,20 @@ module.exports = {
     });
   },
   getClienteById: (dbConnection, idCliente) => {
-    //TODO GET CLIENTE POR ID ESPECIFICO
+    console.log('[Model getClienteById]');
+
+    const sql = 'SELECT * FROM contratante WHERE idContratante = ?';
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [idCliente], (err, result) => {
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve(result);
+        }
+      });
+    });
   },
   adicionarCliente: async (dbConnection, nome, cpf, telefone, email) => {
     console.log("[Model adicionar cliente]");
@@ -34,12 +47,37 @@ module.exports = {
     });
     
   },
-  putCliente: (dbConnection, /* campos especificos para atualizar cliente*/ callback) => {
-    //TODO EDITAR CLIENTE MODEL
-  },
-  deleteCliente: async (dbConnection, idCliente, callback) => {
-    console.log('[Model deletar Cliente]');
+  putCliente: (dbConnection, idCliente, nome, cpf, telefone, email) => {
+    console.log('[Model update Cliente]');
 
+    const sql = `UPDATE contratante SET nome = ?, cpf = ?, telefone = ?, email = ? where idContratante = ?;`;
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [nome, cpf, telefone, email, idCliente], (err, result) => {
+        if(err){
+          reject(err);
+        }
+        else{
+          resolve(result);
+        }
+      });
+    });
+  },
+  deleteCliente: async (dbConnection, idCliente) => {
+    console.log('[Model deletar Cliente]');
+    
+    const sql = `DELETE FROM contratante WHERE idContratante = ?;`;
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [idCliente], (err, result) => {
+        if(err) {
+          reject(err);
+        }
+        else{
+          resolve(result);
+        }
+      });
+    });
     
   }
 };
