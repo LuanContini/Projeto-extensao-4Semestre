@@ -1,5 +1,5 @@
 module.exports = {
-  getContratos: (dbConnection, callback) => {
+  getContratos: (dbConnection) => {
     console.log("[Model contrato]");
     const sql = "SELECT * FROM vw_contratos;";
     dbConnection.query(sql, callback);
@@ -22,9 +22,7 @@ module.exports = {
       callback
     );
   },
-  getContratoById: (dbConnection, idContrato, callback) => {
-    //TODO GET CONTRATO POR ID ESPECIFICO MODEL
-  },
+  
   putContrato: (dbConnection, /*outros campos*/ callback) => {
     //TODO EDITAR CONTRATOS MODEL
   },
