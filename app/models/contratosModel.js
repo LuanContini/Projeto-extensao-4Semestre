@@ -1,9 +1,7 @@
-const dbConnection = require("../../config/dbConnection");
-
 module.exports = {
   getContratos: (dbConnection, callback) => {
     console.log("[Model contrato]");
-    const sql = "SELECT * FROM contrato;";
+    const sql = "SELECT * FROM vw_contratos;";
     dbConnection.query(sql, callback);
   },
   adicionarContrato: (

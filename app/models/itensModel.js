@@ -4,7 +4,7 @@ module.exports = {
   // Função para buscar itens
   getItens:  (dbConnection) => {
     console.log("[Model itens]");
-    const sql = "SELECT * FROM item_grupo ORDER BY categoria ASC;";
+    const sql = "SELECT * FROM itens;";
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, (err, results) => {
         if (err) {
@@ -15,19 +15,46 @@ module.exports = {
       });
     });
   },
+  getGrupos: (dbConnection) => {
+    const sql = "SELECT * FROM grupo;";
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, (err, result) => {
+        if(err) {
+          reject(err);
+        }
+        else {
+          resolve(result);
+        }
+      });
+    });
+  },
 
   // Função para buscar itens por ID
-  getItensById:  (dbConnection, idItem) => {
+  getItensById:  (dbConnection, idGrupo) => {
     console.log("[Model itens por ID]");
-    const sql = `SELECT * FROM item WHERE idGrupo = ?;`;
+    const sql = `SELECT * FROM itens WHERE idGrupo = ?;`;
     return new Promise((resolve, reject) => {
-      dbConnection.query(sql, [idItem], (err, results) => {
+      dbConnection.query(sql, [idGrupo], (err, results) => {
         if (err) {
           reject(err);
         } else {
           resolve(results);
         }
       });
+    });
+  },
+  getGrupoById: (dbConnection, idGrupo) => {
+    const sql = 'SELECT * FROM grupo WHERE idGrupo = ?;';
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [idGrupo], (err, result) => {
+        if(err) {
+          reject(err);
+        } else  {
+          resolve(result);
+        } 
+       });
     });
   },
 
@@ -37,7 +64,7 @@ module.exports = {
 
     const verificarGrupoSql = `SELECT idGrupo FROM grupo WHERE nome = ? AND categoria = ?`;
     const criarGrupoSql = `INSERT INTO grupo (nome, categoria, preco_loca) VALUES (?, ?, ?)`;
-    const adicionarItemSql = `INSERT INTO item (cod_barras, data_adicao, idGrupo) VALUES (?, CURRENT_TIMESTAMP(), ?)`;
+    const adicionarItemSql = `INSERT INTO itens (cod_barras, data_adicao, idGrupo) VALUES (?, CURRENT_TIMESTAMP(), ?)`;
 
     return new Promise((resolve, reject) => {
       dbConnection.query(verificarGrupoSql, [nome, categoria], (err, groupResults) => {
@@ -97,7 +124,7 @@ module.exports = {
 
   // Função para deletar um item
   deleteItem: (dbConnection, idItem) => {
-    const sql = `DELETE FROM item WHERE idItem = ?;`;
+    const sql = `DELETE FROM itens WHERE idItem = ?;`;
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, [idItem], (err, results) => {
         if (err) {
