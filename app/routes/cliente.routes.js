@@ -6,13 +6,17 @@ const clientesController = require('../controllers/clientesControllers');
 const { validarCliente } = require('../middleware/validacao.cliente');
 
 
+//GET
 router.get('/', clientesController.getClientes);
 router.get('/:id', clientesController.getClienteById);
 
-router.post('/:nome/:cpf/:telefone/:email', validarCliente, clientesController.postCliente);
+//INSERT
+router.post('/:nome/:telefone/:email/:observacao/:tipo/:cpf/:cnpj', clientesController.postCliente);
 
-router.put('/:id/:nome/:cpf/:telefone/:email', clientesController.putCliente);
+//UPDATE
+router.put('/:idCliente/:nome/:telefone/:imagem/:email/:observacao/:tipo/:cpf/:cnpj', clientesController.putCliente);
 
+//DELETE
 router.delete('/:id', clientesController.deleteCliente);
 
 

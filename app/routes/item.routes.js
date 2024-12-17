@@ -8,9 +8,9 @@ router.get("/", itemController.getItens);
 router.get("/:id", itemController.getGrupoById);
 
 //cod_barras, idGrupo, nome, categoria, preco_loca,
-router.post("/:cod_barras/:nome/:categoria/:preco_loca", validacaoItens, itemController.postItem);
+router.post("/:codBarras/:nome/:categoria/:precoGrupo", validacaoItens, itemController.postItem);
 
-router.put('/:nome/:categoria/:preco_loca/:idGrupo', itemController.putItem);
+router.put('/:nome/:categoria/:precoGrupo/:idGrupo', itemController.putItem);
 
 router.delete('/:id', itemController.deleteItem);
 
