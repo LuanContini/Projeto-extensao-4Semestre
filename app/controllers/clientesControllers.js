@@ -4,10 +4,15 @@ const {
   getClientes,
   getClienteById, 
   adicionarCliente,
+  adicionarPessoaFisica,
+  adicionarPessoaJuridica,
   deleteCliente,
   putCliente,
+  atualizarPessoaFisica,
+  atualizarPessoaJuridica,
 } = require("../models/clientesModel");
 
+//GET CLIENTE
 module.exports.getClientes = async (req, res) => {
   try {
     const dbConn = dbConnection();
@@ -20,6 +25,7 @@ module.exports.getClientes = async (req, res) => {
   }
 };
 
+//GET CLIENTE BY ID
 module.exports.getClienteById = async (req, res) => {
   const idCliente = req.params.id;
 
@@ -34,41 +40,61 @@ module.exports.getClienteById = async (req, res) => {
   }
 };
 
+//INSERT CLIENTE
 module.exports.postCliente = async (req, res) => {
-  const { nome, cpf, telefone, email } = req.params;
+  const { nome, telefone, email, observacao, tipo, cpf, cnpj } = req.params;
 
   try {
     const dbConn = dbConnection();
 
-    const post = adicionarCliente(dbConn, nome, cpf, telefone, email);
+    const idCliente = await adicionarCliente(dbConn, nome, telefone, email, observacao);
 
-    res.status(200).send({ "post": post });
+    if (tipo === 'fisica' && cpf) {
+      await adicionarPessoaFisica(dbConn, idCliente, cpf);
+    } else if (tipo === 'juridica' && cnpj) {
+      await adicionarPessoaJuridica(dbConn, idCliente, cnpj);
+    } else {
+      return res.status(400).send({ error: 'Tipo inválido ou dados incompletos' });
+    }
+
+    res.status(201).send({ message: 'Cliente adicionado com sucesso!', idCliente });
   } catch (err) {
-    res.status(400).send({ "err": err });
+    res.status(500).send({ error: 'Erro ao adicionar cliente', details: err.message });
   }
 };
 
+//UPDATE CLIENTE
 module.exports.putCliente = async (req, res) => {
-  const { id, nome, cpf, telefone, email } = req.params;
+  const idCliente = req.params.idCliente;
+  const { nome, email, telefone, imagem, observacao, tipo, cpf, cnpj } = req.params;
 
   try {
     const dbConn = dbConnection();
 
-    const update = await putCliente(dbConn, id, nome, cpf, telefone, email);
+    await putCliente(dbConn, idCliente, nome, telefone, imagem, email, observacao);
 
-    res.status(200).send({ "update": update });
+    if (tipo === 'fisica' && cpf) {
+      await atualizarPessoaFisica(dbConn, idCliente, cpf);
+    } else if (tipo === 'juridica' && cnpj) {
+      await atualizarPessoaJuridica(dbConn, idCliente, cnpj);
+    } else {
+      return res.status(400).send({ error: 'Tipo inválido ou dados incompletos' });
+    }
+
+    res.status(200).send({ message: 'Cliente atualizado com sucesso!' });
   } catch (err) {
-    res.status(400).send({ "err": err });
+    res.status(500).send({ error: 'Erro ao atualizar cliente', details: err.message });
   }
 };
 
+//DELETE CLIENTE
 module.exports.deleteCliente = async (req, res) => {
   const idCliente = req.params.id;
 
   try {
     const dbConn = dbConnection();
 
-    const deletar = await deleteCliente(dbConn, idCliente);
+    const deletar = await deleteCliente(dbConn, idCliente,);
 
     res.status(200).send({ "delete": deletar });
   } catch (err) {

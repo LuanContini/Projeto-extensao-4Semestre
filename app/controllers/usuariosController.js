@@ -2,58 +2,81 @@ const bcrypt = require("bcrypt");
 
 const dbConnection = require("../../config/dbConnection");
 
-const { getUsuarios } = require("../models/usuariosModel");
+const { getUsuarios, adicionarUsuario, updateUsuario, deleteUsuario } = require("../models/usuariosModel");
 
 require("dotenv").config({ path: ".env" });
 
-module.exports.getUsuarios = (app, req, res) => {
+module.exports.getUsuarios = async (req, res) => {
   const dbConn = dbConnection();
 
-  getUsuarios(dbConn, (error, usuarios) => {
-    if (error) {
-      console.log("erro ", error.message);
-    }
-    console.log(usuarios);
-    res.render("usuariosView.ejs", { usuarios: usuarios });
-  });
+ try{
+  const usuarios = await getUsuarios(dbConn);
+
+  res.status(200).send({"usuarios": usuarios});
+ } catch (err){
+  res.status(400).send({"err": err});
+ }
 };
 
-module.exports.adicionarUsuario = (req, res) => {
-  const { nome, cpf, telefone, email, senha, nasc, tipo } = req.body;
+module.exports.postUsuario = async (req, res) => {
+  const { nome, cpf, telefone, email, senha, nasc, tipo } = req.params;
 
-  const checaCampos =
-    !nome || !cpf || !telefone || !email || !senha || !nasc || !tipo;
+  try {
+    const dbConn = dbConnection();
 
-  if (!checaCampos) {
-    const hashSenha = async (senha) => {
-      try {
-        const saltRounds = process.env.SALT_ROUNDS;
+    const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
 
-        // Gerar o hash da senha
-        const hashedPassword = await bcrypt.hash(senha, saltRounds);
-        return hashedPassword;
-      } catch (err) {
-        console.error("Erro ao criptografar a senha", err);
-      }
-    };
+    const senhaEncriptada = await bcrypt.hash(senha, salt);
 
-    adicionarUsuario(
+    const usuario = await adicionarUsuario(
       dbConn,
       nome,
       cpf,
       telefone,
       email,
-      hashSenha,
+      senhaEncriptada,
       nasc,
-      tipo,
-      (error, result) => {
-        if (error) {
-          console.log("Error, ", error.message);
-        } else {
-          console.log(result);
-        }
-        res.redirect("/usuarios");
-      }
+      tipo
     );
+
+    res.status(200).send({ message: "Usuário adicionado com sucesso!", usuario });
+
+  } catch (err) {
+    res.status(400).send({ err: err.message });
   }
 };
+
+module.exports.putUsuario = async (req, res) => {
+  const { idUsuario, nome, cpf, telefone, email, senha, nasc, tipo } = req.params;
+  
+  try{
+    const dbConn = dbConnection();
+
+    const result = await updateUsuario(dbConn, idUsuario,
+      nome,
+      cpf,
+      telefone,
+      email,
+      senha,
+      nasc,
+      tipo);
+
+      res.status(200).send({"Sucesso": result});
+  } catch (err) {
+    res.status.send({"err": err});
+  }
+};
+
+module.exports.deleteUsuario = async (req, res) => {
+  const { idUsuario } = req.params;
+
+  try{
+    const dbConn = dbConnection();
+
+    const result = await deleteUsuario(dbConn, idUsuario);
+
+    res.status(200).send({"result": result});
+  } catch (err) {
+    res.status(400).send({"err": err});
+  }
+}

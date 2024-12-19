@@ -121,3 +121,42 @@ LEFT JOIN
     grupo g ON i.idGrupo = g.idGrupo;
 
 
+
+CREATE VIEW itens_em_manutencao AS
+SELECT 
+    i.idItens,
+    i.codBarras,
+    i.dataLocacao,
+    m.motivo,
+    m.dataInic,
+    m.dataRetorno,
+    m.responsavel
+FROM 
+    itens i
+JOIN 
+    historicoManutencao hm ON i.idItens = hm.idItens
+JOIN 
+    manutencao m ON hm.idManutencao = m.idManutencao;
+    
+    CREATE OR REPLACE VIEW itens_em_manutencao_com_grupo AS
+SELECT 
+    hm.idManutencao,
+    i.idItens,
+    i.codBarras,
+    i.dataLocacao,
+    m.motivo,
+    m.dataInic,
+    m.dataRetorno,
+    m.responsavel,
+    g.idGrupo,
+    g.nome AS nomeGrupo,
+    g.categoria,
+    g.precoGrupo
+FROM 
+    itens i
+JOIN 
+    grupo g ON i.idGrupo = g.idGrupo
+JOIN 
+    historicoManutencao hm ON i.idItens = hm.idItens
+JOIN 
+    manutencao m ON hm.idManutencao = m.idManutencao;
