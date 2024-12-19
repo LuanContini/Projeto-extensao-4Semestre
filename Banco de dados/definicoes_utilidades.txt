@@ -1,0 +1,42 @@
+    view_itens_disponiveis
+        Questão: Crie uma view que liste os itens que estão disponíveis para locação, com informações sobre o nome do item, categoria, preço de locação e grupo. A view deve excluir itens que estão reservados.
+
+    view_contratos_ativos
+        Questão: Crie uma view para listar todos os contratos ativos, incluindo apenas aqueles em que a locação está em andamento ou foi confirmada, com os detalhes do contrato, incluindo tipo, local, apelido, usuário e contratante.
+
+    item_grupo
+        Questão: Crie uma view que combine informações sobre os itens e seus respectivos grupos, mostrando o ID do item, nome, categoria, preço e a data de adição.
+
+    item_manutencao_view
+        Questão: Crie uma view que forneça informações sobre itens que estão em manutenção, incluindo código de barras, nome do grupo, motivo da manutenção, data de início e fim, e o responsável pela manutenção.
+
+    view_contratos_usuarios_contratantes
+        Questão: Crie uma view que mostre todos os contratos, com os detalhes do usuário responsável e do contratante, incluindo nome, email, telefone e detalhes do contrato.
+
+    view_itens_grupos
+        Questão: Crie uma view que forneça uma lista de todos os itens e seus respectivos grupos, mostrando o ID do item, nome, categoria e nome do grupo.
+
+    function_calcular_valor_total_locacoes
+        Questão: Crie uma função que calcule o valor total das locações de um mês e ano específicos. A função deve somar o valor total de todas as locações feitas no período informado.
+
+    procedure_listar_contratos_usuario
+        Questão: Crie uma procedure que liste todos os contratos de um usuário específico, fornecendo informações sobre o tipo de contrato, local e apelido.
+
+    procedure_add_usuario
+        Questão: Crie uma procedure que adicione um novo usuário ao sistema, recebendo os parâmetros como nome, CPF, email, senha, data de nascimento, telefone e tipo (Administrador/Operador).
+
+    procedure_atualizar_data_devolucao
+
+    Questão: Crie uma procedure que atualize a data de devolução de um item de reserva específica, dado o ID da reserva e a data de devolução.
+
+    antes_update_contrato (Trigger)
+
+    Questão: Crie uma trigger que registre automaticamente as alterações feitas nos contratos, salvando os dados anteriores e atuais em uma tabela de auditoria sempre que um contrato for atualizado.
+
+    procedure_listar_contratos
+
+    Questão: Crie uma procedure que utilize um cursor para listar todos os contratos e seus respectivos contratantes. A procedure deve iterar sobre todos os contratos e exibir os resultados.
+
+    usuario_locacao (Usuário no MySQL)
+
+    Questão: Crie um usuário no MySQL com o nome usuario_locacao, com privilégios para realizar operações de SELECT, INSERT, UPDATE e DELETE na base de dados controle_locacao.

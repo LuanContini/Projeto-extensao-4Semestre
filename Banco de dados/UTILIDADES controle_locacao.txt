@@ -1,0 +1,69 @@
+-- view_itens_disponiveis
+DROP VIEW IF EXISTS view_itens_disponiveis;
+
+-- Requisitar campos do grupo e reserva 
+-- em que existam itens no grupo que nao existam em reserva.
+
+CREATE VIEW view_itens_disponiveis AS
+SELECT it.idItens, it.codBarras, 
+	gp.idGrupo, gp.nome, gp.categoria, gp.precoGrupo,
+	res.idReserva
+FROM grupo gp JOIN itens it 
+ON gp.idGrupo = it.idGrupo
+LEFT JOIN reserva res 
+ON gp.idGrupo = res.idGrupo
+WHERE res.idReserva IS NULL;
+
+-- view_contratos_ativos
+
+CREATE VIEW view_contratos_ativos AS
+SELECT cr.idContrato, cr.tipo, cr.apelido, cr.statusAtual, 
+	cr.dataHoraIni, cr.dataHoraTerm, cr.localEvento, cr.apelido,
+	us.idUsuario, us.nome, us.email,
+    ct.idContratante, ct.nome
+FROM contrato cr JOIN usuario us
+ON cr.idUsuario = us.idUsuario
+JOIN contratante ct
+ON cr.idContratante = ct.idContratante
+WHERE cr.dataHoraIni > CURRENT_TIMESTAMP()
+AND CURRENT_TIMESTAMP() > cr.dataHoraTerm
+OR cr.statusAtual = 'Em andamento';
+
+-- item_grupo
+CREATE VIEW view_item_grupo AS
+SELECT it.idItens, it.dataLocacao,
+	gp.idGrupo, gp.nome, gp.categoria, gp.precoGrupo
+FROM itens it JOIN grupo gp
+ON it.idGrupo = gp.idGrupo;
+
+-- item_manutencao_view
+CREATE VIEW item_manutencao_view AS
+SELECT gp.idGrupo, gp.nome, gp.categoria,
+	mt.idManutencao, mt.motivo, mt.dataInic, mt.dataRetorno, 
+    mt.responsavel, it.idItens, it.codBarras
+FROM manutencao mt JOIN historicomanutencao hm
+ON hm.idManutencao = mt.idManutencao
+JOIN itens it
+ON hm.idItens = it.idItens
+JOIN grupo gp
+ON it.idGrupo = gp.idGrupo;
+
+-- view_contratos_usuarios_contratantes
+CREATE VIEW view_contratos_usuarios_contratantes AS
+SELECT us.idUsuario, us.nome, us.cpf, us.email, us.telefone, us.imagem,
+	ct.idContratante, ct.nome, ct.email, ct.telefone, ct.imagem,
+	cr.idContrato, cr.tipo, cr.apelido, cr.cep, cr.localEvento, cr.localRetirada,
+    cr.statusAtual, cr.dataHoraIni, cr.dataHoraTerm, cr.descEmpregados
+FROM contrato cr JOIN usuario us
+ON cr.idUsuario = us.idUsuario
+JOIN contratante ct
+ON cr.idContratante = ct.idContratante;
+
+-- views_itens_grupos
+CREATE VIEW views_itens_grupos AS
+SELECT it.idItens, gp.idGrupo, gp.nome, gp.categoria, gp.precoGrupo,
+	it.codBarras, it.dataLocacao, it.imagem
+FROM grupo gp JOIN itens it
+ON gp.idGrupo = it.idGrupo;
+
+-- function_calcular_valor_total_locacao
