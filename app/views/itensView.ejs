@@ -23,11 +23,11 @@
       <tbody>
         <% itensGrupo.forEach(item => { %>
         <tr>
-          <td><%= item.idItem %></td>
+          <td><%= item.idItens %></td>
           <td><%= item.nome %></td>
           <td><%= item.categoria %></td>
-          <td>R$ <%= item.preco_loca %></td>
-          <td><%= item.data_adicao %></td>
+          <td>R$ <%= item.precoGrupo %></td>
+          <td><%= item.dataLocacao %></td>
         </tr>
         <% }) %>
       </tbody>

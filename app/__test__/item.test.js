@@ -40,12 +40,12 @@ describe('Testando rotas de Itens', () => {
     const updatedItem = {
       nome: "Item Teste",
       categoria: "Categoria Teste",
-      preco_loca: 100.0,
+      precoGrupo: 100.0,
       idGrupo: 2,
     };
 
     const response = await request(app)
-      .put(`/itens/${updatedItem.nome}/${updatedItem.categoria}/${updatedItem.preco_loca}/${updatedItem.idGrupo}`);
+      .put(`/itens/${updatedItem.nome}/${updatedItem.categoria}/${updatedItem.precoGrupo}/${updatedItem.idGrupo}`);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("result"); // Verifica se o resultado foi retornado
   });

@@ -50,12 +50,12 @@ module.exports.getGrupoById = async (req, res) => {
 
 // POST new item
 module.exports.postItem = async (req, res) => {
-  const { cod_barras, nome, categoria, preco_loca } = req.params; 
+  const { codBarras, nome, categoria, precoGrupo } = req.params; 
 
   const dbConn = dbConnection();
 
   try {
-    const post = await adicionarItem(dbConn, cod_barras, nome, categoria, preco_loca);
+    const post = await adicionarItem(dbConn, codBarras, nome, categoria, precoGrupo);
     res.status(200).send({ 'result': post });
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
@@ -64,12 +64,12 @@ module.exports.postItem = async (req, res) => {
 
 // UPDATE item
 module.exports.putItem = async (req, res) => {
-  const { nome, categoria, preco_loca, idGrupo } = req.params; 
+  const { nome, categoria, precoGrupo, idGrupo } = req.params; 
 
   const dbConn = dbConnection();
 
   try {
-    const result = await updateItem(dbConn, nome, categoria, preco_loca, idGrupo);
+    const result = await updateItem(dbConn, nome, categoria, precoGrupo, idGrupo);
     res.status(200).send({ 'result': result });
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
@@ -78,12 +78,12 @@ module.exports.putItem = async (req, res) => {
 
 // DELETE item
 module.exports.deleteItem = async (req, res) => {
-  const idItem = req.params.id;
+  const idItens = req.params.id;
 
   const dbConn = dbConnection();
 
   try {
-    const result = await deleteItem(dbConn, idItem);
+    const result = await deleteItem(dbConn, idItens);
 
     if (result.affectedRows > 0) {
       res.status(200).send({ 'result': result });
