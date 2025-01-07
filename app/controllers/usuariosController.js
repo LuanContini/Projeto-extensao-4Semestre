@@ -85,7 +85,7 @@ module.exports.login = async (req, res) => {
     res.status(200).send({"token": token});
 
   }catch(err) {
-    res.status(400).send({"err": err.message});
+    res.status(400).send({"err": err});
   }
 };
 
