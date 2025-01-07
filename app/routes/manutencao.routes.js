@@ -2,16 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const manutencaoController = require("../controllers/manutencaoController");
+const validacaoManutencao = require("../middleware/validacao.manutencao");
 
+//GET
 router.get("/", manutencaoController.getManutencao);
 router.get("/:id", manutencaoController.getManutencaoById);
 
-//idItens, motivo, dataInic, data_etorno, responsavel 
+//POST
+router.post('/:idItens/:motivo/:dataInic/:dataRetorno/:responsavel', validacaoManutencao.validarManutencao, manutencaoController.postManutencao);
 
-router.post('/:idItens/:motivo/:dataInic/:dataRetorno/:responsavel', manutencaoController.postManutencao);
-
+//PUT
 router.put('/:idManutencao/:motivo/:dataInic/:dataRetorno/:responsavel', manutencaoController.putManutencao);
 
+//DELETE
 router.delete('/:id', manutencaoController.deleteManutencao);
 
 

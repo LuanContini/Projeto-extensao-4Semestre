@@ -6,6 +6,7 @@ const {
   adicionarItem,
   updateItem,
   deleteItem,
+  deleteGrupo,
   getGrupos,
   getGrupoById,
 } = require("../models/itensModel");
@@ -33,16 +34,20 @@ module.exports.getGrupoById = async (req, res) => {
   const idGrupo = req.params.id;
 
   try {
-    const itens = await getItensById(dbConn, idGrupo);
-    const grupo = await getGrupoById(dbConn, idGrupo);
+    const itens = await getItens(dbConn, idGrupo);
+    const grupo = await getGrupos(dbConn, idGrupo);
 
-    
-    const grupoComItens = grupo.map(grupo => ({
-      ...grupo,
-      itens: itens.filter(item => item.idGrupo === grupo.idGrupo)
-    }));
+    const grupoById = grupo.find((grupo) => grupo.idGrupo == idGrupo);
 
-    res.status(200).send({ 'grupoComItens': grupoComItens[0] });
+    console.log(grupoById);
+    const grupoComItens = {
+      ...grupoById,
+      itens: itens.filter(item => item.idGrupo === grupoById.idGrupo)
+    };
+
+
+
+    res.status(200).send({ 'grupoComItens': grupoComItens});
   } catch (err) {
     res.status(403).send({ 'erro': err.message });
   }
@@ -90,6 +95,22 @@ module.exports.deleteItem = async (req, res) => {
     } else {
       res.status(400).send({ 'erro': "O item não foi apagado" });
     }
+  } catch (err) {
+    res.status(400).send({ 'erro': err.message });
+  }
+};
+
+module.exports.deleteGrupo = async (req, res) => {
+  const idGrupo = req.params.id;
+
+  const dbConn = dbConnection();
+
+  try {
+    const result = await deleteGrupo(dbConn, idGrupo);
+
+    if (result.affectedRows > 0) {
+      res.status(200).send({ 'result': result });
+    } 
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
   }

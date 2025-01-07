@@ -99,11 +99,10 @@ CREATE TABLE IF NOT EXISTS reserva(
 
 CREATE TABLE IF NOT EXISTS itens (
 	idItens INT AUTO_INCREMENT,
-    codBarras VARCHAR(13) NOT NULL, -- Validar se o codigo de barras é maior que 12 BACK-END
+    codBarras VARCHAR(13) NOT NULL, 
     dataLocacao DATETIME NOT NULL,
 	imagem LONGBLOB,
     idGrupo INT NOT NULL,
-    CHECK(LENGTH(codBarras) >= 12), -- Validar se o codigo de barras é maior que 12
     PRIMARY KEY (idItens),
     FOREIGN KEY (idGrupo) REFERENCES grupo(idGrupo)
     ON UPDATE CASCADE

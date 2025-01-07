@@ -2,16 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const usuarioController = require("../controllers/usuariosController");
-
-router.get("/", usuarioController.getUsuarios);
-//router.get("/:id", usuarioController.getUsuariosById);
-
-router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', usuarioController.postUsuario);
-
-router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', usuarioController.putUsuario);
+const validacaoUsuario = require("../middleware/validacao.usuarios");
+const auth = require("../middleware/auth.usuario");
 
 
-router.delete('/:idUsuario', usuarioController.deleteUsuario);
+router.get("/", auth.checarAuth, usuarioController.getUsuarios);
+
+router.post("/login/:nome/:senha", usuarioController.login);
+router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuth, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
+
+router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuth, usuarioController.putUsuario);
+
+
+router.delete('/:idUsuario', auth.checarAuth, usuarioController.deleteUsuario);
 
 // nome,
 // cpf,

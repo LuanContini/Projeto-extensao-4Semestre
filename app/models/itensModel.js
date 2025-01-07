@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 module.exports = {
   // Função para buscar itens
   getItens:  (dbConnection) => {
@@ -62,8 +64,8 @@ module.exports = {
 
     const verificarGrupoSql = `SELECT idGrupo FROM grupo WHERE nome = ? AND categoria = ?`;
     const criarGrupoSql = `INSERT INTO grupo (nome, categoria, precoGrupo) VALUES (?, ?, ?)`;
-    const adicionarItemSql = `INSERT INTO itens (codBarras, dataLocacao, idGrupo) VALUES (?, CURRENT_TIMESTAMP(), ?)`;
-
+    const adicionarItemSql = `INSERT INTO itens (dataLocacao, idGrupo) VALUES (CURRENT_TIMESTAMP(), ?)`;
+    const adicionarCodigoBarras = 'UPDATE itens SET codBarras = ? WHERE idItens = ?';
     return new Promise((resolve, reject) => {
       dbConnection.query(verificarGrupoSql, [nome, categoria], (err, groupResults) => {
         if (err) {
@@ -80,22 +82,38 @@ module.exports = {
             idGrupo = createGroupResult.insertId;
             console.log("Grupo criado com sucesso! ID:", idGrupo);
 
-            dbConnection.query(adicionarItemSql, [codBarras, idGrupo], (err, result) => {
+            dbConnection.query(adicionarItemSql, [idGrupo], (err, result) => {
               if (err) {
                 return reject(new Error("Erro ao adicionar item: " + err.message));
               }
-              resolve(result);
+              idItem = result.insertId;
+
+              dbConnection.query(adicionarCodigoBarras, [GerarCodigoDeBarras(idItem), idItem], (err, result) => {
+                if(err){
+                  reject(err);
+                }
+
+                resolve(result);
+              });
             });
           });
         } else {
           idGrupo = groupResults[0].idGrupo;
           console.log("Grupo já existe, usando ID:", idGrupo);
 
-          dbConnection.query(adicionarItemSql, [codBarras, idGrupo], (err, result) => {
+          dbConnection.query(adicionarItemSql, [idGrupo], (err, result) => {
             if (err) {
               return reject(new Error("Erro ao adicionar item: " + err.message));
             }
-            resolve(result);
+            idItem = result.insertId;
+
+              dbConnection.query(adicionarCodigoBarras, [GerarCodigoDeBarras(idItem), idItem], (err, result) => {
+                if(err){
+                  reject(err);
+                }
+
+                resolve(result);
+              });
           });
         }
       });
@@ -133,4 +151,29 @@ module.exports = {
       });
     });
   },
+  deleteGrupo: (dbConnection, idGrupo) => {
+    const sql = `DELETE FROM grupo WHERE idGrupo = ?;`;
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, [idGrupo], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
 };
+
+function GerarCodigoDeBarras(data) {
+  // Converter o dado para string
+  const dataStr = String(data);
+
+  // Gerar um hash SHA-256
+  const hash = crypto.createHash('sha256').update(dataStr).digest('base64');
+
+  // Garantir que o resultado tenha exatamente 13 caracteres
+  const encryptedCode = hash.replace(/[^a-zA-Z0-9]/g, '').slice(0, 13);
+
+  return encryptedCode;
+}

@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const dbConnection = require("../../config/dbConnection");
 
-const { getUsuarios, adicionarUsuario, updateUsuario, deleteUsuario } = require("../models/usuariosModel");
+const { getUsuarios, adicionarUsuario, updateUsuario, deleteUsuario, findUsuario } = require("../models/usuariosModel");
 
 require("dotenv").config({ path: ".env" });
 
@@ -64,6 +65,27 @@ module.exports.putUsuario = async (req, res) => {
       res.status(200).send({"Sucesso": result});
   } catch (err) {
     res.status.send({"err": err});
+  }
+};
+
+module.exports.login = async (req, res) => {
+  const {nome, senha} = req.params;
+
+  try{
+
+    const dbConn = dbConnection();
+    const usuario = await findUsuario(dbConn, nome, senha);
+
+    const token = jwt.sign(
+      { idUsuario: usuario.idUsuario, nome: usuario.nome, tipo: usuario.tipo },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' } 
+    );
+
+    res.status(200).send({"token": token});
+
+  }catch(err) {
+    res.status(400).send({"err": err.message});
   }
 };
 
