@@ -19,6 +19,25 @@ module.exports.getUsuarios = async (req, res) => {
  }
 };
 
+module.exports.getUsuarioById = async (req, res) => {
+  const dbConn = dbConnection();
+
+  try{
+
+    const idUsuario = req.params.id;
+
+    const usuario = await getUsuarios(dbConn);
+
+    const usuarioById = usuario.find((usuario) => usuario.idUsuario == idUsuario);
+
+    res.status(200).send({"Usuario": usuarioById});
+
+  } catch (err) {
+
+    res.status(400).send({"err": err});
+  }
+}
+
 module.exports.postUsuario = async (req, res) => {
   const { nome, cpf, telefone, email, senha, nasc, tipo } = req.params;
 
