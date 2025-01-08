@@ -9,10 +9,10 @@ const contratoRoute = require("./contrato.routes");
 const manutencaoRoute = require("./manutencao.routes");
 const usuarioRoute = require("./usuario.routes");
 
-router.use("/itens", auth.checarAuth, itemRoute);
-router.use("/clientes", auth.checarAuth, clienteRoute);
-router.use("/contrato", auth.checarAuth, contratoRoute);
-router.use("/manutencao", auth.checarAuth, manutencaoRoute);
+router.use("/itens", auth.checarAuthComum, itemRoute);
+router.use("/clientes", auth.checarAuthComum, clienteRoute);
+router.use("/contrato", auth.checarAuthComum, contratoRoute);
+router.use("/manutencao", auth.checarAuthComum, manutencaoRoute);
 router.use("/usuario", usuarioRoute);
 
 module.exports = router;

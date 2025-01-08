@@ -9,6 +9,7 @@ const password = process.env.SENHA;
 
 module.exports = () => {
   return (dbConn = mysql.createPool({
+    connectionLimit: 50,
     host: host,
     user: user,
     password: password,

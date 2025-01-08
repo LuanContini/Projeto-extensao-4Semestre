@@ -6,15 +6,16 @@ const validacaoUsuario = require("../middleware/validacao.usuarios");
 const auth = require("../middleware/auth.usuario");
 
 
-router.get("/", auth.checarAuth, usuarioController.getUsuarios);
+router.get("/", auth.checarAuthAdmin, usuarioController.getUsuarios);
+router.get("/:id", auth.checarAuthAdmin, usuarioController.getUsuarioById);
 
 router.post("/login/:nome/:senha", usuarioController.login);
-router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuth, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
+router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
 
-router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuth, usuarioController.putUsuario);
+router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, usuarioController.putUsuario);
 
 
-router.delete('/:idUsuario', auth.checarAuth, usuarioController.deleteUsuario);
+router.delete('/:idUsuario', auth.checarAuthAdmin, usuarioController.deleteUsuario);
 
 // nome,
 // cpf,
