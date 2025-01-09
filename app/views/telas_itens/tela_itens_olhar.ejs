@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto;
+        }
+
+        .icon {
+            width: 30px; 
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 30px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .product-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .product-header:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #000000;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        .back-button:hover {
+            color: #333;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 30px;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-details div:first-child {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .product-details div:last-child {
+            color: #333;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+
+        .search-input {
+            padding: 12px 20px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            flex: 1;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            background-color: #fff;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #f8f8f8;
+            border-color: #d1d1d1;
+        }
+
+        .add-item-btn {
+            padding: 12px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-item-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .items-table {
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .items-table th,
+        .items-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .items-table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 2px solid #e1e1e1;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .items-table th:hover {
+            background-color: #f1f1f1;
+        }
+
+        .items-table tbody tr {
+            border-bottom: 1px solid #e1e1e1;
+            transition: background-color 0.3s ease;
+        }
+
+        .items-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-alocado {
+            background-color: rgba(63, 81, 181, 0.1);
+            color: #3F51B5;
+        }
+        .status-alocado .status-dot {
+            background-color: #3F51B5;
+        }
+
+        .status-disponivel {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+        .status-disponivel .status-dot {
+            background-color: #4CAF50;
+        }
+
+        .status-manutencao {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+        }
+        .status-manutencao .status-dot {
+            background-color: #F44336;
+        }
+
+        .action-btn {
+            padding: 5px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .view-btn { background-color: #673AB7; }
+        .delete-btn { background-color: #F44336; }
+
+        .action-btn:hover {
+            opacity: 1;
+        }
+
+        .description-btn {
+            padding: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .description-btn:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
+
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
+            ITENS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
+            CONTRATOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
+            MANUTENÇÃO
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
+            USUÁRIOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
+            CLIENTES
+        </a>
+        <a href="#" class="sidebar-item profile">
+            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
+            PERFIL
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="product-header">
+            <button class="back-button">←</button>
+            <div class="product-info">
+                <img src="public/assets/icons/testeImagem.jpg" alt="<%= product.name %>" class="product-image">
+                <div class="product-details">
+                    <div>NOME</div>
+                    <div><%= product.name %></div>
+                </div>
+                <div class="product-details">
+                    <div>CATEGORIA</div>
+                    <div><%= product.category %></div>
+                </div>
+                <div class="product-details">
+                    <div>TOTAL</div>
+                    <div><%= product.total %></div>
+                </div>
+                <div class="product-details">
+                    <div>PREÇO</div>
+                    <div>R$ <%= product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></div>
+                </div>
+            </div>
+            <button class="description-btn" title="Descrição">💬</button>
+        </div>
+
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Buscar por ID">
+                <button class="filter-btn">🔍 Filtros</button>
+            </div>
+            <button class="add-item-btn">+ ITEM</button>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>Código ↑</th>
+                    <th>Data de Cadastro ↑</th>
+                    <th>Data de Reserva ↑</th>
+                    <th>Data de Revolução ↑</th>
+                    <th>Status ↑</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% items.forEach(function(item) { %>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>#<%= item.code %></td>
+                        <td><%= new Date(item.registerDate).toLocaleDateString('pt-BR') %></td>
+                        <td><%= item.reservationDate ? new Date(item.reservationDate).toLocaleDateString('pt-BR') : '-' %></td>
+                        <td><%= item.returnDate ? new Date(item.returnDate).toLocaleDateString('pt-BR') : '-' %></td>
+                        <td>
+                            <div class="status status-<%= item.status.toLowerCase() %>">
+                                <span class="status-dot"></span>
+                                <%= item.status %>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="action-btn view-btn">👁️</button>
+                            <button class="action-btn delete-btn" title="Remover">🗑️</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Add sorting functionality if needed
+        document.querySelectorAll('th').forEach(header => {
+            header.addEventListener('click', () => {
+                // Implement sorting logic here
+            });
+        });
+    </script>
+</body>
+</html>
