@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Produtos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto;
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-contract-btn {
+            padding: 8px 20px;
+            background-color: #4c5faf;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .stats-bar {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .products-table th {
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .products-table th .arrow {
+            margin-left: 5px;
+            font-size: 10px;
+        }
+
+        .action-btn {
+            padding: 5px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .view-btn { background-color: #673AB7; }
+        .edit-btn { background-color: #2196F3; }
+        .delete-btn { background-color: #F44336; }
+
+        .stock-indicator {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .stock-high { background-color: #4CAF50; }
+        .stock-medium { background-color: #FFC107; }
+        .stock-low { background-color: #F44336; }
+        .stock-concluido { background-color: #001aff; }
+
+        .icon {
+            width: 30px; 
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        /* Modal Styles */
+        .operation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #6B68FF;
+            padding: 30px;
+            border-radius: 10px;
+            width: 500px;
+            color: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            margin-bottom: 25px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .operation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .operation-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .operation-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .operation-item img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
+            ITENS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
+            CONTRATOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
+            MANUTENÇÃO
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
+            USUÁRIOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
+            CLIENTES
+        </a>
+        <a href="#" class="sidebar-item profile">
+            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
+            PERFIL
+        </a>
+    </div>    
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Contrato</h2>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Nome, ID, Tipo...">
+                <!--<button class="filter-btn">🔍 Filtros</button>-->
+            </div>
+            <button class="add-contract-btn">+ CONTRATO</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <p>R$<%= totalValue %></p>
+                <div class="stock-indicator stock-high"></div>
+                <small>Em Andamento</small>
+            </div>
+            <div class="stat-item">
+                <p>R$<%= forecastedProfit %></p>
+                <div class="stock-indicator stock-medium"></div>
+                <small>Pendente</small>
+            </div>
+            <div class="stat-item">
+                <p>R$<%= forecastedProfit %></p>
+                <div class="stock-indicator stock-concluido"></div>
+                <small>Concluído</small>
+            </div>
+            <div class="stat-item">
+                <p>R$<%= forecastedProfit %></p>
+                <small>Lucro previsto (Contratos)</small>
+            </div>
+            <div class="stat-item">
+                <p>R$<%= forecastedProfit %></p>
+                <small>Total</small>
+            </div>
+        </div>
+
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th onclick="sortTable(0)">
+                        Nome <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(1)">
+                        Operação <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(2)">
+                        Cidade <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(3)">
+                        Saída.Eq. <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(4)">
+                        Entrada.Eq. <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(5)">
+                        Lucro <span class="arrow">▼</span>
+                    </th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(function(product) { %>
+                    <tr>
+                        <td style="position: relative;"> <!-- TROCAR AS DATAS PARA OS DADOS DO BANCO DE DADOS-->
+                            <div class="stock-indicator 
+                                <%= (function() {
+                                    const currentDate = new Date();
+                                    const exitDate = new Date(product.exitDate);
+                                    const entryDate = new Date(product.entryDate);
+                                    
+                                    if (currentDate >= exitDate && currentDate <= entryDate) {
+                                        return 'stock-high'; // Em andamento
+                                    } else if (currentDate < exitDate) {
+                                        return 'stock-medium'; // Pendente
+                                    } else {
+                                        return 'stock-concluido'; // Concluído
+                                    }
+                                })() %>" 
+                                style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%);">
+                            </div>
+                            <img src="../public/assets/icons/testeImagemContrato.jpg" alt="<%= product.name %>" width="70">
+                        </td>
+                        <td><%= product.name %></td>
+                        <td><%= product.category %></td>
+                        <td><%= product.available %></td>
+                        <td><%= product.reserved %></td>
+                        <td><%= product.maintenance %></td>
+                        <td><%= product.total %></td>
+                        <td>
+                            <button class="action-btn view-btn">📦</button>
+                            <button class="action-btn delete-btn">🗑️</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>            
+        </table>
+    </div>
+
+    <!-- Operation Modal -->
+    <div id="operationModal" class="operation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Operação</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <p class="modal-subtitle">Escolha como será o contrato</p>
+            <div class="operation-grid">
+                <div class="operation-item">
+                    <img src="../public/assets/img_tela_contratos/locacao.png" alt="Locação">
+                    <span>Locação</span>
+                </div>
+                <div class="operation-item">
+                    <img src="../public/assets/img_tela_contratos/entrega.png" alt="Entrega">
+                    <span>Entrega</span>
+                </div>
+                <div class="operation-item">
+                    <img src="../public/assets/img_tela_contratos/montar.png" alt="Apenas Montar">
+                    <span>Apenas Montar</span>
+                </div>
+                <div class="operation-item">
+                    <img src="../public/assets/img_tela_contratos/operar.png" alt="Montar e Operar">
+                    <span>Montar e Operar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sortDirection = [true, true, true, true, true, true, true];
+
+        function sortTable(columnIndex) {
+            const table = document.querySelector('.products-table');
+            const rows = Array.from(table.rows).slice(1);
+            const isAscending = sortDirection[columnIndex];
+
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex].innerText;
+                const cellB = rowB.cells[columnIndex].innerText;
+
+                if (columnIndex === 6) {
+                    return isAscending
+                        ? parseFloat(cellA.replace('R$', '').trim()) - parseFloat(cellB.replace('R$', '').trim())
+                        : parseFloat(cellB.replace('R$', '').trim()) - parseFloat(cellA.replace('R$', '').trim());
+                } else if (columnIndex === 2 || columnIndex === 3 || columnIndex === 4 || columnIndex === 5) {
+                    return isAscending
+                        ? parseInt(cellA) - parseInt(cellB)
+                        : parseInt(cellB) - parseInt(cellA);
+                } else {
+                    return isAscending
+                        ? cellA.localeCompare(cellB)
+                        : cellB.localeCompare(cellA);
+                }
+            });
+
+            const arrows = table.querySelectorAll('.arrow');
+            arrows.forEach((arrow, index) => {
+                if (index === columnIndex) {
+                    arrow.innerText = isAscending ? '▲' : '▼';
+                } else {
+                    arrow.innerText = '▼';
+                }
+            });
+
+            rows.forEach(row => table.appendChild(row));
+            sortDirection[columnIndex] = !isAscending;
+        }
+
+        function confirmDeletion(row) {
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.zIndex = '9999';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+
+            const confirmBox = document.createElement('div');
+            confirmBox.style.backgroundColor = 'white';
+            confirmBox.style.padding = '20px';
+            confirmBox.style.borderRadius = '8px';
+            confirmBox.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            confirmBox.style.textAlign = 'center';
+
+            const message = document.createElement('p');
+            message.innerHTML = '<strong style="color: red;">Tem certeza?</strong><br>Isso irá retornar todos os itens adicionados ao contrato.';
+            message.style.marginBottom = '20px';
+            confirmBox.appendChild(message);
+
+            const yesButton = document.createElement('button');
+            yesButton.innerText = 'Sim';
+            yesButton.style.margin = '0 10px';
+            yesButton.style.padding = '10px 20px';
+            yesButton.style.backgroundColor = '#4CAF50';
+            yesButton.style.color = 'white';
+            yesButton.style.border = 'none';
+            yesButton.style.borderRadius = '4px';
+            yesButton.style.cursor = 'pointer';
+            yesButton.onclick = function () {
+                row.remove();
+                document.body.removeChild(overlay);
+            };
+            confirmBox.appendChild(yesButton);
+
+            const noButton = document.createElement('button');
+            noButton.innerText = 'Não';
+            noButton.style.margin = '0 10px';
+            noButton.style.padding = '10px 20px';
+            noButton.style.backgroundColor = '#F44336';
+            noButton.style.color = 'white';
+            noButton.style.border = 'none';
+            noButton.style.borderRadius = '4px';
+            noButton.style.cursor = 'pointer';
+            noButton.onclick = function () {
+                document.body.removeChild(overlay);
+            };
+            confirmBox.appendChild(noButton);
+
+            overlay.appendChild(confirmBox);
+            document.body.appendChild(overlay);
+        }
+
+        document.querySelectorAll('.delete-btn').forEach((btn, index) => {
+            btn.onclick = () => confirmDeletion(btn.closest('tr'));
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('operationModal');
+        const addContractBtn = document.querySelector('.add-contract-btn');
+        const closeBtn = document.querySelector('.close-btn');
+        const operationItems = document.querySelectorAll('.operation-item');
+
+        addContractBtn.onclick = () => {
+            modal.style.display = 'flex';
+        }
+
+        closeBtn.onclick = () => {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        operationItems.forEach(item => {
+            item.onclick = () => {
+                const operationType = item.querySelector('span').textContent;
+                console.log(`Selected operation: ${operationType}`);
+                modal.style.display = 'none';
+                // adicionar logica de navegação aqui pra proxima tela
+            }
+        });
+    </script>
+</body>
+</html>
+            
