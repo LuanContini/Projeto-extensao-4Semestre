@@ -4,7 +4,9 @@ require("dotenv").config({ path: ".env" });
 
 
 module.exports.checarAuthComum = (req, res, next) => {
-    const token = req.headers['authorization'];
+    
+    const token = req.session.token;
+    console.log("token", token)
 
     if (!token) {
         return res.status(401).json({ message: "Token não fornecido" });
@@ -23,7 +25,7 @@ module.exports.checarAuthComum = (req, res, next) => {
 };
 
 module.exports.checarAuthAdmin = (req, res, next) => {
-    const token = req.headers['authorization'];
+    const token = req.session.token;
 
     if (!token) {
         return res.status(401).json({ message: "Token não fornecido" });

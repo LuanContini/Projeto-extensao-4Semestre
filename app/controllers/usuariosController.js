@@ -101,11 +101,20 @@ module.exports.login = async (req, res) => {
       { expiresIn: '1d' } 
     );
 
+    req.session.token = token;
+
     res.status(200).send({"token": token});
 
   }catch(err) {
-    res.status(400).send({"err": err});
+    res.status(400).send({"err": err.message});
   }
+};
+
+module.exports.logout = (req, res) => {
+
+  res.clearCookie('connect.sid');
+
+  res.send(200).send("Usuário deslogado");
 };
 
 module.exports.deleteUsuario = async (req, res) => {

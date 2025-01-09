@@ -10,6 +10,8 @@ router.get("/", auth.checarAuthAdmin, usuarioController.getUsuarios);
 router.get("/:id", auth.checarAuthAdmin, usuarioController.getUsuarioById);
 
 router.post("/login/:nome/:senha", usuarioController.login);
+router.post("/login/logout", usuarioController.logout);
+
 router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
 
 router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, usuarioController.putUsuario);
