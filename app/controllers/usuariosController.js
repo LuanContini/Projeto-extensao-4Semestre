@@ -103,6 +103,7 @@ module.exports.login = async (req, res) => {
 
     req.session.token = token;
 
+
     res.status(200).send({"token": token});
 
   }catch(err) {
@@ -111,11 +112,15 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.logout = (req, res) => {
-
-  res.clearCookie('connect.sid');
-
-  res.send(200).send("Usuário deslogado");
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).send({ message: 'Erro ao encerrar a sessão.' });
+    }
+    res.clearCookie('connect.sid'); // Limpa o cookie de sessão
+    res.status(200).send({ message: 'Logout realizado com sucesso.' });
+  });
 };
+
 
 module.exports.deleteUsuario = async (req, res) => {
   const { idUsuario } = req.params;
