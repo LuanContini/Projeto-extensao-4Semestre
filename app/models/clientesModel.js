@@ -84,8 +84,7 @@ module.exports = {
       UPDATE contratante
       SET nome = ?, telefone = ?, email = ?, observacao = ?, imagem = ?, 
           cpf = ?, cnpj = ?
-      WHERE idContratante = ?;
-    `;
+      WHERE idContratante = ?;`;
 
     return new Promise((resolve, reject) => {
       dbConnection.query(

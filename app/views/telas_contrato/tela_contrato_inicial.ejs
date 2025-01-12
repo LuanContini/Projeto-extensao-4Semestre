@@ -226,33 +226,7 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
-            ITENS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
-            CONTRATOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
-            MANUTENÇÃO
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
-            USUÁRIOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
-            CLIENTES
-        </a>
-        <a href="#" class="sidebar-item profile">
-            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
-            PERFIL
-        </a>
-    </div>    
+    <%- include('../assets/menu.ejs')%>
 
     <div class="main-content">
         <div class="header">
@@ -266,30 +240,30 @@
 
         <div class="stats-bar">
             <div class="stat-item">
-                <p>R$<%= totalValue %></p>
+                <p><%= andamento %></p>
                 <div class="stock-indicator stock-high"></div>
                 <small>Em Andamento</small>
             </div>
             <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
+                <p><%= pendente %></p>
                 <div class="stock-indicator stock-medium"></div>
                 <small>Pendente</small>
             </div>
             <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
+                <p><%= concluido %></p>
                 <div class="stock-indicator stock-concluido"></div>
                 <small>Concluído</small>
             </div>
             <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
+                <p></p>
                 <small>Lucro previsto (Contratos)</small>
             </div>
             <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
+                <p></p>
                 <small>Total</small>
             </div>
         </div>
-
+        
         <table class="products-table">
             <thead>
                 <tr>
@@ -316,39 +290,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% products.forEach(function(product) { %>
-                    <tr>
-                        <td style="position: relative;"> <!-- TROCAR AS DATAS PARA OS DADOS DO BANCO DE DADOS-->
-                            <div class="stock-indicator 
-                                <%= (function() {
-                                    const currentDate = new Date();
-                                    const exitDate = new Date(product.exitDate);
-                                    const entryDate = new Date(product.entryDate);
-                                    
-                                    if (currentDate >= exitDate && currentDate <= entryDate) {
-                                        return 'stock-high'; // Em andamento
-                                    } else if (currentDate < exitDate) {
-                                        return 'stock-medium'; // Pendente
-                                    } else {
-                                        return 'stock-concluido'; // Concluído
-                                    }
-                                })() %>" 
-                                style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%);">
-                            </div>
-                            <img src="../public/assets/icons/testeImagemContrato.jpg" alt="<%= product.name %>" width="70">
-                        </td>
-                        <td><%= product.name %></td>
-                        <td><%= product.category %></td>
-                        <td><%= product.available %></td>
-                        <td><%= product.reserved %></td>
-                        <td><%= product.maintenance %></td>
-                        <td><%= product.total %></td>
-                        <td>
-                            <button class="action-btn view-btn">📦</button>
-                            <button class="action-btn delete-btn">🗑️</button>
-                        </td>
-                    </tr>
-                <% }); %>
+                
             </tbody>            
         </table>
     </div>

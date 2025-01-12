@@ -1,4 +1,3 @@
-
 INSERT INTO usuario (nome, cpf, email, senha, telefone, tipo, imagem)
 VALUES 
 ('João Silva', '12345678901', 'joao.silva@email.com', 'senhaCriptografada', '011987654321', 'Administrador', NULL),
@@ -12,20 +11,20 @@ VALUES
 ('Ricardo Alves', '89012345678', 'ricardo.alves@email.com', 'senhaCriptografada', '011991156677', 'Administrador', NULL),
 ('Juliano Barbosa', '90123456789', 'juliano.barbosa@email.com', 'senhaCriptografada', '011998833445', 'Operador', NULL);
 
-INSERT INTO contratante (nome, email, telefone, imagem, observacao)
+INSERT INTO contratante (nome, email, telefone, imagem, observacao, cpf, cnpj)
 VALUES 
-('Empresa X', 'empresa.x@email.com', '011922334455', NULL, 'Empresa especializada em locações de equipamentos'),
-('Fulano de Tal', 'fulano.tal@email.com', '0111987654321', NULL, 'Pessoa física contratante de equipamentos'),
-('Tech Solutions', 'tech.solutions@email.com', '011933445566', NULL, 'Empresa de TI oferecendo serviços tecnológicos'),
-('Construtora ABC', 'construtora.abc@email.com', '011944556677', NULL, 'Construtora de obras residenciais'),
-('Flora Garden', 'flora.garden@email.com', '011955667788', NULL, 'Empresa especializada em jardinagem'),
-('Fast Delivery', 'fast.delivery@email.com', '011966778899', NULL, 'Serviço de entregas rápidas'),
-('Alimentos SA', 'alimentos.sa@email.com', '011977889900', NULL, 'Indústria alimentícia'),
-('Móveis Planejados', 'moveis.planejados@email.com', '011988990011', NULL, 'Fábrica de móveis personalizados'),
-('Medtech', 'medtech@email.com', '011999001122', NULL, 'Tecnologia médica'),
-('Auto Peças', 'auto.pecas@email.com', '0119100112233', NULL, 'Comércio de peças automotivas');
+('Empresa X', 'empresa.x@email.com', '011922334455', NULL, 'Empresa especializada em locações de equipamentos', '12345678901', '12345678000101'),
+('Fulano de Tal', 'fulano.tal@email.com', '0111987654321', NULL, 'Pessoa física contratante de equipamentos', '98765432100', '12345678000102'),
+('Tech Solutions', 'tech.solutions@email.com', '011933445566', NULL, 'Empresa de TI oferecendo serviços tecnológicos', '23456789012', '23456789000103'),
+('Construtora ABC', 'construtora.abc@email.com', '011944556677', NULL, 'Construtora de obras residenciais', '34567890123', '34567890000104'),
+('Flora Garden', 'flora.garden@email.com', '011955667788', NULL, 'Empresa especializada em jardinagem', '45678901234', '45678901000105'),
+('Fast Delivery', 'fast.delivery@email.com', '011966778899', NULL, 'Serviço de entregas rápidas', '56789012345', '56789012000106'),
+('Alimentos SA', 'alimentos.sa@email.com', '011977889900', NULL, 'Indústria alimentícia', '67890123456', '67890123000107'),
+('Móveis Planejados', 'moveis.planejados@email.com', '011988990011', NULL, 'Fábrica de móveis personalizados', '78901234567', '78901234000108'),
+('Medtech', 'medtech@email.com', '011999001122', NULL, 'Tecnologia médica', '89012345678', '89012345000109'),
+('Auto Peças', 'auto.pecas@email.com', '0119100112233', NULL, 'Comércio de peças automotivas', '90123456789', '90123456000110');
 
-INSERT INTO pessoaJuridica (idContratante, cnpj)
+/*INSERT INTO pessoaJuridica (idContratante, cnpj)
 VALUES 
 (1, '12345678000195'),
 (2, '23456789000164'),
@@ -49,9 +48,9 @@ VALUES
 (7, '78901234567'),
 (8, '89012345678'),
 (9, '90123456789'),
-(10, '01234567890');
+(10, '01234567890');*/
 
-INSERT INTO contrato (tipo, valor_total, cep, localEvento, localRetirada, dataHora_Ini, dataHora_Term, desc_empregados, idUsuario, idContratante)
+INSERT INTO contrato (tipo, valorTotal, cep, localEvento, localRetirada, dataHoraIni, dataHoraTerm, descEmpregados, idUsuario, idContratante)
 VALUES
 ('Locacao', 1500.00, '12345678', 'Local A', 'Retirada A', '2024-12-01 08:00:00', '2024-12-01 18:00:00', 'Evento para empresa A', 1, 1),
 ('Evento', 3000.00, '23456789', 'Local B', 'Retirada B', '2024-12-02 09:00:00', '2024-12-02 19:00:00', 'Casamento B', 2, 2),
@@ -103,7 +102,7 @@ VALUES
 ('9012345678901', '2024-12-09 16:00:00', 9),
 ('0123456789012', '2024-12-10 17:00:00', 10);
 
-INSERT INTO manutencao (motivo, data_Inic, data_Retorno, responsavel)
+INSERT INTO manutencao (motivo, dataInic, dataRetorno, responsavel)
 VALUES
 ('Troca de peça', '2024-12-01 08:00:00', '2024-12-01 10:00:00', 'Carlos Souza'),
 ('Reparo no motor', '2024-12-02 09:00:00', '2024-12-02 11:00:00', 'Maria Oliveira'),
@@ -116,7 +115,7 @@ VALUES
 ('Limpeza de sistema', '2024-12-09 16:00:00', '2024-12-09 18:00:00', 'Juliana Pereira'),
 ('Revisão geral', '2024-12-10 17:00:00', '2024-12-10 19:00:00', 'Ricardo Alves');
 
-INSERT INTO historicoManutencao (data_Inic, data_Term, idManutencao, idItens)
+INSERT INTO historicoManutencao (dataInic, dataTerm, idManutencao, idItens)
 VALUES
 ('2024-12-01 08:00:00', '2024-12-01 10:00:00', 1, 1),
 ('2024-12-02 09:00:00', '2024-12-02 11:00:00', 2, 2),

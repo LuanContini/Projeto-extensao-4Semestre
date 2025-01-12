@@ -11,7 +11,7 @@ const usuarioRoute = require("./usuario.routes");
 
 router.use("/itens", auth.checarAuthComum, itemRoute);
 router.use("/clientes", auth.checarAuthComum, clienteRoute);
-router.use("/contrato", auth.checarAuthComum, contratoRoute);
+router.use("/contrato", contratoRoute);
 router.use("/manutencao", auth.checarAuthComum, manutencaoRoute);
 router.use("/usuario", usuarioRoute);
 

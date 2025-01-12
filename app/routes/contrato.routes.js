@@ -3,7 +3,8 @@ const router = express.Router();
 
 const contratosController = require("../controllers/contratosController");
 
-router.get("/", contratosController.getContratos);
+//router.get("/", contratosController.getContratos);
+router.get("/", contratosController.getContratoStatus);
 router.get("/:id", contratosController.getContratoById);
 
 router.post('/'/*outros dados específicos */, contratosController.postContrato);
