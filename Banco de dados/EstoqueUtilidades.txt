@@ -21,8 +21,8 @@ SELECT
     g.nome AS grupoNome,
     c.idContrato,
     c.tipo,
-    c.dataHora_Ini,
-    c.dataHora_Term
+    c.dataHoraIni,
+    c.dataHoraTerm
 FROM 
     itens i
 JOIN 
@@ -32,10 +32,10 @@ JOIN
 JOIN 
     contrato c ON r.idContrato = c.idContrato
 WHERE 
-    CURDATE() BETWEEN DATE(c.dataHora_Ini) AND DATE(c.dataHora_Term);
+    CURDATE() BETWEEN DATE(c.dataHoraIni) AND DATE(c.dataHoraTerm);
     
 
---clientes
+/*-- clientes
 
     CREATE VIEW vw_clientes_documentos AS
 SELECT 
@@ -50,22 +50,22 @@ FROM
 LEFT JOIN 
     pessoaFisica pf ON c.idContratante = pf.idContratante
 LEFT JOIN 
-    pessoJuridica pj ON c.idContratante = pj.idContratante;
+    pessoJuridica pj ON c.idContratante = pj.idContratante;*/
 
 
---contratos
+-- contratos
 
 CREATE VIEW vw_contratos_itens AS
 SELECT 
     co.idContrato,
     co.tipo,
-    co.valor_total,
+    co.valorTotal,
     co.cep,
     co.localEvento,
     co.localRetirada,
-    co.dataHora_Ini,
-    co.dataHora_Term,
-    co.desc_empregados,
+    co.dataHoraIni,
+    co.dataHoraTerm,
+    co.descEmpregados,
     i.idItens,
     i.codBarras,
     i.dataLocacao,
@@ -83,34 +83,34 @@ CREATE VIEW vw_contratos AS
 SELECT 
     idContrato,
     tipo,
-    valor_total,
+    valorTotal,
     cep,
     localEvento,
     localRetirada,
-    dataHora_Ini,
-    dataHora_Term,
-    desc_empregados,
+    dataHoraIni,
+    dataHoraTerm,
+    descEmpregados,
     idUsuario,
     idContratante
 FROM 
     contrato;
 
---manutencao
+-- manutencao
 
 CREATE VIEW vw_manutencoes AS
 SELECT 
     m.idManutencao,
     m.motivo,
-    m.data_Inic AS manutencaoInicio,
-    m.data_Retorno AS manutencaoRetorno,
+    m.dataInic AS manutencaoInicio,
+    m.dataRetorno AS manutencaoRetorno,
     m.responsavel,
     i.idItens,
     i.codBarras,
     i.dataLocacao,
     g.nome AS grupoNome,
     h.idHistorico,
-    h.data_Inic AS historicoInicio,
-    h.data_Term AS historicoTermino
+    h.dataInic AS historicoInicio,
+    h.dataTerm AS historicoTermino
 FROM 
     manutencao m
 LEFT JOIN 
@@ -173,7 +173,7 @@ SELECT
      INNER JOIN reserva r ON i.idGrupo = r.idGrupo
      INNER JOIN contrato c ON r.idContrato = c.idContrato
      WHERE i.idGrupo = g.idGrupo
-     AND c.dataHora_Term > NOW()
+     AND c.dataHoraTerm > NOW()
     ) AS reservado,
     (SELECT COUNT(i.idItens)
      FROM itens i
@@ -191,7 +191,7 @@ SELECT
           INNER JOIN reserva r2 ON i2.idGrupo = r2.idGrupo
           INNER JOIN contrato c2 ON r2.idContrato = c2.idContrato
           WHERE i2.idGrupo = g.idGrupo
-          AND c2.dataHora_Term > NOW())
+          AND c2.dataHoraTerm > NOW())
      AND i.idItens NOT IN 
          (SELECT i3.idItens 
           FROM itens i3 
@@ -218,7 +218,7 @@ SELECT
         WHEN r.idReserva IS NOT NULL THEN 'Reservado'
         ELSE 'Disponível'
     END AS status,
-    r.dataHora_loca AS dataReserva,  -- Data de reserva
+    r.dataHoraloca AS dataReserva,  -- Data de reserva
     NULL AS dataRetorno,  -- Como o retorno não é fornecido, será NULL aqui
     IFNULL(m.dataRetorno, NULL) AS dataRetornoManutencao  -- Data de retorno de manutenção
 FROM 

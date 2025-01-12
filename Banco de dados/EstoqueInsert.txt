@@ -127,3 +127,9 @@ VALUES
 ('2024-12-08 15:00:00', '2024-12-08 17:00:00', 8, 8),
 ('2024-12-09 16:00:00', '2024-12-09 18:00:00', 9, 9),
 ('2024-12-10 17:00:00', '2024-12-10 19:00:00', 10, 10);
+
+-- Criando um usuario Administrador
+use controle_locacao;
+INSERT INTO usuario (nome, cpf, email, senha, telefone, tipo, imagem)
+VALUES 
+('Admin', '11111122232', 'admin.admin@email.com', '$2b$10$zbds3Sjw.E40MpFCazCLV.4AYLJ2rrieDAqXYEZWB0niWFOAxmY7a', '011991156677', 'Administrador', NULL);

@@ -49,17 +49,23 @@ deleteContrato: (dbConnection, idContrato, callback) => {
 getContratoStatus: (dbConnection) => {
   console.log("[Model contrato por status]");
   const sql = `
-    SELECT 
+      SELECT 
       CASE
-        WHEN NOW() BETWEEN dataHoraIni AND dataHoraTerm THEN 'andamento'
-        WHEN NOW() < dataHoraTerm THEN 'pendente'
-        WHEN NOW() > dataHoraTerm THEN 'concluído'
-        ELSE 'desconhecido'
+          WHEN NOW() BETWEEN dataHoraIni AND dataHoraTerm THEN 'andamento'
+          WHEN NOW() < dataHoraTerm THEN 'pendente'
+          WHEN NOW() > dataHoraTerm THEN 'concluído'
+          ELSE 'desconhecido'
       END AS status,
       SUM(valorTotal) AS totalContratos
-    FROM contrato
-    GROUP BY status;
-  `;
+  FROM contrato
+  GROUP BY 
+      CASE
+          WHEN NOW() BETWEEN dataHoraIni AND dataHoraTerm THEN 'andamento'
+          WHEN NOW() < dataHoraTerm THEN 'pendente'
+          WHEN NOW() > dataHoraTerm THEN 'concluído'
+          ELSE 'desconhecido'
+      END;
+    `;
   return new Promise((resolve, reject) => {
     dbConnection.query(sql, (err, results) => {
       if (err) {

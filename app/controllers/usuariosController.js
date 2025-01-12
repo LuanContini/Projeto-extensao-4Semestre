@@ -126,9 +126,9 @@ module.exports.login = async (req, res) => {
     req.session.token = token;
 
     const returnTo = req.session.returnTo || '/';
-        delete req.session.returnTo; 
+        delete req.session.returnTo;
         res.redirect(returnTo);
-
+        
   }catch(err) {
     res.status(400).send({"err": err.message});
   }
