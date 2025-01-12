@@ -1,10 +1,11 @@
 const crypto = require('crypto');
+const dbConnection = require('../../config/dbConnection');
 
 module.exports = {
   // Função para buscar itens
   getItens:  (dbConnection) => {
     console.log("[Model itens]");
-    const sql = "SELECT * FROM itens;";
+    const sql = "SELECT * FROM itens_com_status;";
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, (err, results) => {
         if (err) {
@@ -16,7 +17,7 @@ module.exports = {
     });
   },
   getGrupos: (dbConnection) => {
-    const sql = "SELECT * FROM grupo;";
+    const sql = "SELECT * FROM vw_itens_status;";
 
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, (err, result) => {
@@ -24,6 +25,20 @@ module.exports = {
           reject(err);
         }
         else {
+          resolve(result);
+        }
+      });
+    });
+  },  
+  getCategorias: (dbConnection) => {
+    const sql = 'Select * FROM categorias_grupos';
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(sql, (err, result) => {
+        if(err){
+          reject(err);
+        }
+        else{
           resolve(result);
         }
       });
@@ -59,7 +74,7 @@ module.exports = {
   },
 
   // Função para adicionar item
-  adicionarItem: (dbConnection, codBarras, nome, categoria, precoGrupo) => {
+  adicionarItem: (dbConnection, nome, categoria, precoGrupo) => {
     console.log("[Model adicionar item e criar grupo se necessário]");
 
     const verificarGrupoSql = `SELECT idGrupo FROM grupo WHERE nome = ? AND categoria = ?`;
@@ -129,8 +144,10 @@ module.exports = {
         [nome, categoria, precoGrupo, idGrupo],
         (err, results) => {
           if (err) {
+            
             reject(err);
           } else {
+            console.log(results);
             resolve(results);
           }
         }

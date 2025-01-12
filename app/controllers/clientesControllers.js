@@ -2,7 +2,7 @@ const dbConnection = require("../../config/dbConnection");
 
 const {
   getClientes,
-  getClienteById, 
+  getClienteById,
   adicionarCliente,
   adicionarPessoaFisica,
   adicionarPessoaJuridica,
@@ -18,8 +18,10 @@ module.exports.getClientes = async (req, res) => {
     const dbConn = dbConnection();
 
     const clientes = await getClientes(dbConn);
-
-    res.status(200).send({ "clientes": clientes });
+    res.render("./telas_clientes/tela_clientes.ejs", {
+      "clients": clientes,
+      selectedClient: "", usuario: req.user
+    });
   } catch (err) {
     res.status(400).send({ "err": err });
   }
@@ -42,48 +44,62 @@ module.exports.getClienteById = async (req, res) => {
 
 //INSERT CLIENTE
 module.exports.postCliente = async (req, res) => {
-  const { nome, telefone, email, observacao, tipo, cpf, cnpj } = req.params;
+  const { nome, telefone, email, observacao, imagem, cpf, cnpj} = req.body;
 
+  console.log(cpf, cnpj);
   try {
     const dbConn = dbConnection();
 
-    const idCliente = await adicionarCliente(dbConn, nome, telefone, email, observacao);
+    const idCliente = await adicionarCliente(
+      dbConn,
+      nome,
+      telefone,
+      email,
+      observacao,
+      imagem,
+      cpf,
+      cnpj
+    );
 
-    if (tipo === 'fisica' && cpf) {
-      await adicionarPessoaFisica(dbConn, idCliente, cpf);
-    } else if (tipo === 'juridica' && cnpj) {
-      await adicionarPessoaJuridica(dbConn, idCliente, cnpj);
-    } else {
-      return res.status(400).send({ error: 'Tipo inválido ou dados incompletos' });
-    }
-
-    res.status(201).send({ message: 'Cliente adicionado com sucesso!', idCliente });
+    res
+      .status(201)
+      .send({ message: "Cliente adicionado com sucesso!", idCliente });
   } catch (err) {
-    res.status(500).send({ error: 'Erro ao adicionar cliente', details: err.message });
+    console.log(err);
+    res.status(500).send({ error: "Erro ao adicionar cliente", details: err });
   }
 };
 
 //UPDATE CLIENTE
 module.exports.putCliente = async (req, res) => {
-  const idCliente = req.params.idCliente;
-  const { nome, email, telefone, imagem, observacao, tipo, cpf, cnpj } = req.params;
+  const idCliente = req.params.id; // ID do cliente a ser atualizado
+  const { nome, telefone, email, observacao, imagem, cnpj, cpf} = req.body;
 
+  console.log(cpf, cnpj);
+
+  
   try {
-    const dbConn = dbConnection();
+    const dbConn = dbConnection(); // Conexão com o banco de dados
 
-    await putCliente(dbConn, idCliente, nome, telefone, imagem, email, observacao);
+    // Atualiza os dados do cliente na tabela contratante
+    await putCliente(
+      dbConn,
+      idCliente,
+      nome,
+      telefone,
+      email,
+      observacao,
+      imagem,
+      cpf,
+      cnpj
+    );
 
-    if (tipo === 'fisica' && cpf) {
-      await atualizarPessoaFisica(dbConn, idCliente, cpf);
-    } else if (tipo === 'juridica' && cnpj) {
-      await atualizarPessoaJuridica(dbConn, idCliente, cnpj);
-    } else {
-      return res.status(400).send({ error: 'Tipo inválido ou dados incompletos' });
-    }
-
-    res.status(200).send({ message: 'Cliente atualizado com sucesso!' });
+    res.status(200).send({ message: "Cliente atualizado com sucesso!" });
   } catch (err) {
-    res.status(500).send({ error: 'Erro ao atualizar cliente', details: err.message });
+    console.log(err);
+    res
+      .status(500)
+      .send({ error: "Erro ao atualizar cliente", details: err.message });
   }
 };
 
@@ -94,7 +110,7 @@ module.exports.deleteCliente = async (req, res) => {
   try {
     const dbConn = dbConnection();
 
-    const deletar = await deleteCliente(dbConn, idCliente,);
+    const deletar = await deleteCliente(dbConn, idCliente);
 
     res.status(200).send({ "delete": deletar });
   } catch (err) {

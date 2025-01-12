@@ -11,12 +11,11 @@ CREATE TABLE IF NOT EXISTS usuario (
 	senha VARCHAR(100) NOT NULL, -- Armazenar com criptografia + salt
 	dataNasc DATE, -- Validar idade minima ou datas posteriores a atual e se ajustar ao padrao (YYYY-MM-DD)
 	telefone VARCHAR(20) NOT NULL,
-	data_cad TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	dataCad TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	tipo ENUM('Administrador', 'Operador') NOT NULL DEFAULT 'Operador', -- Tipo so pode ser armazenado com 1 desses 2 tipos
 	imagem LONGBLOB,
 	PRIMARY KEY(idUsuario),
-    CHECK(LENGTH(nome) >= 3), -- Validar tamanho do nome é maior ou igual que 3 caracteres
-	CHECK(LENGTH(telefone) >= 12) -- Validar telefone como maior ou igual a 12 Digitos
+    CHECK(LENGTH(nome) >= 3), 
 );
 
 -- SELECT nome, DATE_FORMAT(data_nascimento, '%d/%m/%Y') AS data_nascimento_br FROM usuarios;
@@ -28,8 +27,7 @@ CREATE TABLE IF NOT EXISTS contratante (
     telefone VARCHAR(20) NOT NULL, -- Validar minimo de números
     imagem LONGBLOB,
     observacao VARCHAR(300),
-	CHECK(LENGTH(nome) >= 3), -- Validar tamanho do nome é maior ou igual que 3 caracteres
-    CHECK(LENGTH(telefone) >= 12), -- Validar telefone como maior ou igual a 12 Digitos
+	CHECK(LENGTH(nome) >= 3), 
     PRIMARY KEY(idContratante)
 );
 
@@ -85,7 +83,7 @@ CREATE TABLE grupo (
 
 CREATE TABLE IF NOT EXISTS reserva(
 	idReserva INT AUTO_INCREMENT,
-    dataHora_loca TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    dataHoraLoca TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     idGrupo INT NOT NULL,
     idContrato INT NOT NULL,
     PRIMARY KEY(idReserva),

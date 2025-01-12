@@ -1,0 +1,35 @@
+<div class="sidebar">
+        <img src="/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
+
+        <a href="/itens" class="sidebar-item">
+            <img src="/icons/side-bar/itens.png" alt="Itens" class="icon">
+            ITENS
+        </a>
+        
+        <a href="#" class="sidebar-item">
+            <img src="/icons/side-bar/contracts.png" alt="Contratos" class="icon">
+            CONTRATOS
+        </a>
+        <a href="/manutencao" class="sidebar-item">
+            <img src="/icons/side-bar/maintenance.png" alt="Manutenção" class="icon">
+            MANUTENÇÃO
+        </a>
+        
+        <a href="/clientes" class="sidebar-item">
+            <img src="/icons/side-bar/clients.png" alt="Clientes" class="icon">
+            CLIENTES
+        </a>
+        <a href="#" class="sidebar-item profile">
+            <img src="/icons/side-bar/profile.png" alt="Perfil" class="icon">
+            PERFIL
+        </a>
+        <% const tipoUsuario = (typeof usuario !== 'undefined' && usuario) ? usuario.tipo : 'Operador'; %>
+<% if (tipoUsuario === 'Administrador') { %>
+    <a href="/usuario" class="sidebar-item">
+        <img src="/icons/side-bar/users.png" alt="Usuários" class="icon">
+        USUÁRIOS
+    </a>
+<% } %>
+
+
+    </div>

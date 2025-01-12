@@ -1,5 +1,4 @@
 module.exports = {
-
   //GETS
 
   getClientes: (dbConnection) => {
@@ -8,166 +7,116 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, (err, result) => {
-        if(err){
+        if (err) {
           reject(err);
-        }
-        else{
+        } else {
           resolve(result);
         }
       });
-      
     });
   },
   getClienteById: (dbConnection, idCliente) => {
-    console.log('[Model getClienteById]');
+    console.log("[Model getClienteById]");
 
-    const sql = 'SELECT * FROM contratante WHERE idContratante = ?';
+    const sql = "SELECT * FROM contratante WHERE idContratante = ?";
 
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, [idCliente], (err, result) => {
-        if(err){
+        if (err) {
           reject(err);
-        }
-        else{
+        } else {
           resolve(result);
         }
       });
     });
   },
   //---------------
-  
+
   //INSERT
 
-  adicionarCliente: (dbConnection, nome, telefone, email, observacao) => {
+  adicionarCliente: (
+    dbConnection,
+    nome,
+    telefone,
+    email,
+    observacao,
+    imagem,
+    cpf,
+    cnpj
+  ) => {
     console.log("[Model adicionar cliente]");
     const sql = `
-        INSERT INTO contratante (nome, email, telefone, observacao)
-        VALUES (?, ?, ?, ?);
+        INSERT INTO contratante (nome, telefone, email, observacao, imagem, 
+          cpf, cnpj)
+        VALUES (?, ?, ?, ?, ?, ?, ?);
       `;
 
     return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [nome, email, telefone, observacao], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result.insertId);
+      dbConnection.query(
+        sql,
+        [nome, telefone, email, observacao, imagem, cpf, cnpj],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result.insertId);
+          }
         }
-      });
-    });
-    
-  },
-  adicionarPessoaFisica: (dbConnection, idContratante, cpf) => {
-    const sql = `
-        INSERT INTO pessoaFisica (idContratante, cpf)
-        VALUES (?, ?);
-      `;
-
-    return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [idContratante, cpf], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  },
-  adicionarPessoaJuridica: (dbConnection, idContratante, cnpj) => {
-    const sql = `
-        INSERT INTO pessoaJuridica (idContratante, cnpj)
-        VALUES (?, ?);
-      `;
-      
-    return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [idContratante, cnpj], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
+      );
     });
   },
   //----------------
 
   //UPDATE
 
-  putCliente: (dbConnection, idCliente, nome, telefone, imagem, email, observacao) => {
-    console.log('[Model update Cliente]');
+  putCliente: (
+    dbConnection,
+    idCliente,
+    nome,
+    telefone,
+    email,
+    observacao,
+    imagem,
+    cpf,
+    cnpj
+  ) => {
     const sql = `
-        UPDATE contratante
-        SET nome = ?, email = ?, telefone = ?, imagem = ?, observacao = ?
-        WHERE idContratante = ?
-      `;
+      UPDATE contratante
+      SET nome = ?, telefone = ?, email = ?, observacao = ?, imagem = ?, 
+          cpf = ?, cnpj = ?
+      WHERE idContratante = ?;
+    `;
 
     return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [nome, email, telefone, imagem, observacao, idCliente], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+      dbConnection.query(
+        sql,
+        [nome, telefone, email, observacao, imagem, cpf, cnpj, idCliente],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
         }
-      });
-    });
-  },
-  atualizarPessoaFisica: (dbConnection, idCliente, cpf) => {
-    const sql = `
-        UPDATE pessoaFisica
-        SET cpf = ?
-        WHERE idContratante = ?
-      `;
-    return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [cpf, idCliente], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  },
-  atualizarPessoaJuridica: (dbConnection, idCliente, cnpj) => {
-
-    const sql = `
-        UPDATE pessoaJuridica
-        SET cnpj = ?
-        WHERE idContratante = ?
-      `;
-
-    return new Promise((resolve, reject) => {
-      
-      dbConnection.query(sql, [cnpj, idCliente], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
+      );
     });
   },
   //------------
 
   //DELETE
   deleteCliente: async (dbConnection, idCliente) => {
-    console.log('[Model deletar Cliente]');
-    
+    console.log("[Model deletar Cliente]");
+
     const sql = `DELETE FROM contratante WHERE idContratante = ?;`;
 
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, [idCliente], (err, result) => {
-        if(err) {
+        if (err) {
           reject(err);
-        }
-        else{
+        } else {
           resolve(result);
         }
       });
     });
-    
-  }
+  },
 };

@@ -11,10 +11,10 @@ router.get('/', clientesController.getClientes);
 router.get('/:id', clientesController.getClienteById);
 
 //INSERT
-router.post('/:nome/:telefone/:email/:observacao/:tipo/:cpf/:cnpj', auth.checarAuthAdmin, validacaoCliente.validarCliente, clientesController.postCliente);
+router.post('/', auth.checarAuthAdmin, validacaoCliente.validarCliente, clientesController.postCliente);
 
 //UPDATE
-router.put('/:idCliente/:nome/:telefone/:imagem/:email/:observacao/:tipo/:cpf/:cnpj', auth.checarAuthAdmin, clientesController.putCliente);
+router.put('/:id', auth.checarAuthAdmin, clientesController.putCliente);
 
 //DELETE
 router.delete('/:id', auth.checarAuthAdmin, clientesController.deleteCliente);

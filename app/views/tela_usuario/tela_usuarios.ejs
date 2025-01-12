@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script>
+        window.usuarios = <%- JSON.stringify(usuarios) %>;
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuários</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            height: 100vh; /* Altura total da tela */
+            overflow: hidden; /* Impede rolagem na tela principal */
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto; 
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            margin-left: 100px; /* Espaço para a sidebar */
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px; /* Reduzido para melhor visualização */
+            position: sticky; /* Fixa o cabeçalho */
+            top: 0; /* Fixa no topo */
+            background: white; /* Fundo branco para o cabeçalho */
+            z-index: 10; /* Garante que fique acima de outros elementos */
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #000000;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .page-title {
+            flex-grow: 1;
+            margin-left: 20px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        /* User specific styles */
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
+            flex: 1; /* Permite que o conteúdo ocupe o espaço restante */
+            overflow: auto; /* Permite rolagem apenas no conteúdo */
+        }
+
+        .user-list {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: calc(100vh - 100px); /* Altura máxima para evitar rolagem excessiva */
+            overflow-y: auto; /* Permite rolagem vertical */
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px; /* Reduzido para melhor visualização */
+            position: sticky; /* Fixa a barra de pesquisa */
+            top: 0; /* Fixa no topo */
+            background: white; /* Fundo branco para a barra de pesquisa */
+            z-index: 10; /* Garante que fique acima de outros elementos */
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .add-user-btn {
+            padding: 10px 20px;
+            background-color: #5bb7c2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .usuarios-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .usuarios-table th,
+        .usuarios-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .usuarios-table tr.selected {
+            background-color: #f0f0f0;
+        }
+
+        .user-details {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: calc(100vh - 100px); /* Altura máxima para evitar rolagem excessiva */
+            overflow-y: auto; /* Permite rolagem vertical */
+        }
+
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .edit-btn {
+            padding: 10px 20px;
+            background-color: #1a1b4b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            padding: 10px 20px;
+            background-color: #d9534f; /* Cor vermelha para o botão de exclusão */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px; /* Espaçamento entre os botões */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .password-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container input[type="password"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-right: 10px; 
+        }
+
+        .show-password-label {
+            margin-left: 5px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 20px; 
+            height: 15px; 
+            cursor: pointer; 
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group textarea {
+            height: 100px; 
+        }
+
+        .form-group input[type="file"] {
+            padding: 0; 
+        }
+    </style>
+</head>
+<body>
+    <%- include('../assets/menu.ejs') %>
+
+    <div class="main-content">
+        <div class="header">
+            <button class="back-button">←</button>
+            <h1 class="page-title">Usuários</h1>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="user-list">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Nome, CPF..." />
+                    <% if (usuario.tipo === 'Administrador') { %>
+                    <button class="add-user-btn">+ USUÁRIO</button>
+                    <% } %>
+                </div>
+
+                <table class="usuarios-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Tipo de Usuário</th> <!-- Nova coluna adicionada -->
+                            <th>CPF</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <% usuarios.forEach(function(user) { %>
+                        <tr data-id="<%= user.idUsuario %>">
+                            <td><%= user.idUsuario %></td>
+                            <td><%= user.nome %></td>
+                            <td><%= user.tipo %></td> <!-- Exibindo o tipo de usuário -->
+                            <td><%= user.cpf %></td>
+                            <td><%= user.email %></td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="user-details" id="userDetails" style="display: none;">
+                <div class="edit-header">
+                    <h2>Informações do Usuário</h2>
+                    <% if (usuario.tipo === 'Administrador') { %>
+                    <button class="edit-btn" id="editButton">EDITAR</button>
+                    <button class="delete-btn" id="deleteButton">EXCLUIR</button>
+                    <% } %>
+                </div>
+
+                <form id="userForm">
+                    <div class="form-group">
+                        <label>Nome completo</label>
+                        <input type="text" name="nome" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" name="senha" id="senha" disabled />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Repetir Senha</label>
+                        <input type="password" name="repetirSenha" id="repetirSenha" disabled />
+                    </div>
+                    
+                    <div class="form-group">
+                        Mostrar senha:<input type="checkbox" id="mostrarSenha" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input id="cpf" type="text" name="cpf" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input id="telefone" type="tel" name="telefone" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" name="dataNasc" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Usuário</label>
+                        <select name="tipo" id="tipo" disabled>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Operador">Operador</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Imagem</label>
+                        <input type="file" name="imagem" id="imagem" accept="image/*" disabled />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/usuario-controller.js"></script>
+</body>
+</html>

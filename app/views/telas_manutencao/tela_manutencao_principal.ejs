@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Manutenção</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto; 
+        }
+
+        .icon {
+            width: 30px; 
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            margin-left: 100px; /* Espaço para a sidebar */
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        .add-contract-btn {
+            padding: 8px 20px;
+            background-color: #4c5faf;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .manutencao-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .manutencao-table th,
+        .manutencao-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .manutencao-table th {
+            background-color: #f9f9f9;
+        }
+
+        .action-btn {
+            padding: 5px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .view-btn { background-color: #2196F3; color: white; }
+        .delete-btn { background-color: #F44336; color: white; }
+
+        /* Modal Styles */
+        .operation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 500px;
+            color: black;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Tabela do Modal */
+        .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .item-table th,
+        .item-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item-table th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../assets/menu.ejs') %>
+    <div class="main-content">
+        <div class="header">
+            <h2>Manutenções</h2>
+            <button class="add-contract-btn">+ MANUTENÇÃO</button>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nome de grupo ou responsável" onkeyup="filterTable()">
+        </div>
+
+        <table class="manutencao-table" id="manutencaoTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome do Grupo</th>
+                    <th>Responsável</th>
+                    <th>Motivo</th>
+                    <th>Data Inicial</th>
+                    <th>Data Retorno</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% Object.keys(itensEmManutencao).forEach(function(grupoId) { %>
+                    <% const grupo = itensEmManutencao[grupoId]; %>
+                    <% grupo.itens.forEach(function(item) { %>
+                        <tr>
+                            <td><%= item.idManutencao %></td>
+                            <td><%= grupo.nomeGrupo %></td>
+                            <td><%= item.responsavel %></td>
+                            <td><%= item.motivo %></td>
+                            <td><%= new Date(item.dataInic).toLocaleString() %></td>
+                            <td><%= new Date(item.dataRetorno).toLocaleString() %></td>
+                            <td>
+                                <button class="action-btn view-btn" onclick="openModal('<%= item.idManutencao %>', '<%= grupo.nomeGrupo %>')">Ver Itens</button>
+                                <button class="action-btn delete-btn" onclick="confirmDeletion(<%= item.idManutencao %>)">🗑️</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para exibir detalhes dos itens -->
+    <div id="itemModal" class="operation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes dos Itens</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody">
+                <!-- Detalhes dos itens serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(idManutencao, nomeGrupo) {
+            const modal = document.getElementById('itemModal');
+            const modalBody = document.getElementById('modalBody');
+            modal.style.display = 'flex';
+
+            // Aqui você pode fazer uma requisição para obter os itens da manutenção
+            // Para este exemplo, vamos simular a resposta
+            const itens = [
+                { idItens: 1, codBarras: "1234567890123", dataLocacao: "2024-12-01T11:00:00.000Z" },
+                { idItens: 2, codBarras: "9876543210123", dataLocacao: "2024-12-02T11:00:00.000Z" }
+            ];
+
+            modalBody.innerHTML = `
+                <h4>Itens da Manutenção ID: ${idManutencao} - Grupo: ${nomeGrupo}</h4>
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th>ID Item</th>
+                            <th>Código de Barras</th>
+                            <th>Data de Locação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itens.map(item => `
+                            <tr>
+                                <td>${item.idItens}</td>
+                                <td>${item.codBarras}</td>
+                                <td>${new Date(item.dataLocacao).toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('itemModal');
+            modal.style.display = 'none';
+        }
+
+        function confirmDeletion(idManutencao) {
+            const confirmation = confirm("Tem certeza que deseja deletar esta manutenção?");
+            if (confirmation) {
+                // Aqui você pode fazer a requisição para deletar a manutenção
+                console.log(`Manutenção ID ${idManutencao} deletada.`);
+                // Após a deleção, você pode atualizar a tabela ou recarregar a página
+            }
+        }
+
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('manutencaoTable');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                const tdGrupo = tr[i].getElementsByTagName('td')[1]; // Nome do Grupo
+                const tdResponsavel = tr[i].getElementsByTagName('td')[2]; // Responsável
+                if (tdGrupo || tdResponsavel) {
+                    const txtGrupo = tdGrupo.textContent || tdGrupo.innerText;
+                    const txtResponsavel = tdResponsavel.textContent || tdResponsavel.innerText;
+                    if (txtGrupo.toLowerCase().indexOf(filter) > -1 || txtResponsavel.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Contrato</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 20px;
+        }
+
+        .left-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #000000;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .location-badge {
+            display: flex;
+            align-items: center;
+            padding: 5px 15px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            margin-left: auto;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .location-badge::before {
+            content: "📍";
+            margin-right: 5px;
+        }
+
+        .finalize-button {
+            padding: 10px 30px;
+            background-color: #2F3640;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .content-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .form-section {
+            background-color: #f3f3f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .required::after {
+            content: '*';
+            color: red;
+            margin-left: 3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .dates-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .equipment-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .add-equipment {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .equipment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .equipment-table th, .equipment-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .category-badge {
+            background: #eeeeee;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .delete-btn {
+            color: #ff4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .image-upload {
+            background-color: white;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 131px;
+            text-align: center;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .upload-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .operation-section, .form-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+
+        .operation-type {
+            background: #f8f8f8;
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .change-operation {
+            width: 100%;
+            padding: 12px;
+            background-color: #E8E3FF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cloud-icon {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
+            ITENS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
+            CONTRATOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
+            MANUTENÇÃO
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
+            USUÁRIOS
+        </a>
+        <a href="#" class="sidebar-item">
+            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
+            CLIENTES
+        </a>
+        <a href="#" class="sidebar-item profile">
+            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
+            PERFIL
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <button class="back-button" onclick="history.back()">←</button>
+            <h1 class="page-title">Adicionar Contrato</h1>
+            <div class="location-badge">Locação</div>
+            <button class="finalize-button" onclick="submitForm()">Finalizar</button>
+        </div>
+
+        <div class="content-container">
+            <div class="left-section">
+                <form id="contractForm" method="POST" action="/contracts/add">
+                    <div class="form-section">
+                        <h2 class="section-title">Informações Gerais</h2>
+                        <div class="form-group">
+                            <label class="required">Nome</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Local de Retirada</label>
+                            <input type="text" name="pickup_location" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <div class="dates-container">
+                                <div>
+                                    <label class="required">Data de Saída</label>
+                                    <input type="date" name="start_date" class="date-input" required>
+                                </div>
+                                <div>
+                                    <label class="required">Data de Entrada</label>
+                                    <input type="date" name="end_date" class="date-input" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">CEP</label>
+                            <input type="text" name="cep" class="form-control" pattern="\d{5}-\d{3}" placeholder="00000-000" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Contratante</label>
+                            <select name="client_id" class="form-control" required>
+                                <option value="">Escolha uma opção</option>
+                                <% clients.forEach(function(client) { %>
+                                    <option value="<%= client.id %>"><%= client.name %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Local do Evento</label>
+                            <input type="text" name="event_location" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="equipment-header">
+                            <h2 class="section-title">Equipamentos <span class="equipment-count"><%= equipmentCount %> unidades</span></h2>
+                            <button type="button" class="add-equipment" onclick="openEquipmentModal()">+ EQUIPAMENTO</button>
+                        </div>
+                        <table class="equipment-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" onclick="toggleAllEquipment(this)"></th>
+                                    <th>Código</th>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Preço</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% equipment.forEach(function(item) { %>
+                                    <tr>
+                                        <td><input type="checkbox" name="equipment[]" value="<%= item.id %>"></td>
+                                        <td>#<%= item.code %></td>
+                                        <td>🔍 <%= item.name %></td>
+                                        <td><span class="category-badge"><%= item.category %></span></td>
+                                        <td>R$ <%= item.price.toFixed(2) %></td>
+                                        <td><button type="button" class="delete-btn" onclick="removeEquipment(<%= item.id %>)">🗑️</button></td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+
+            <div class="right-section">
+                <div class="form-section">
+                    <h2 class="section-title">Carregar Imagem <span style="color: #666">(não obrigatório)</span></h2>
+                    <div class="image-upload">
+                        <img src="public/assets/icons/upload_imagem.png" alt="Upload" class="cloud-icon">
+                        <br>
+                        <button type="button" class="upload-button" onclick="triggerFileInput()">Upload de Imagem</button>
+                        <input type="file" id="fileInput" style="display: none" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="operation-section">
+                    <h2 class="section-title">Operação</h2>
+                    <div class="operation-type">Locação</div>
+                    <button type="button" class="change-operation" onclick="changeOperation()">Mudar Operação</button>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Observação</h2>
+                    <textarea name="observation" class="form-control" rows="4" placeholder="Escreva aqui"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CEP mask
+        document.querySelector('input[name="cep"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            if (value.length > 5) {
+                value = value.slice(0, 5) + '-' + value.slice(5);
+            }
+            e.target.value = value;
+        });
+
+        // Equipment functions
+        function toggleAllEquipment(source) {
+            const checkboxes = document.getElementsByName('equipment[]');
+            checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+        }
+
+        function removeEquipment(id) {
+            if (confirm('Deseja remover este equipamento?')) {
+                // AJAX call to remove equipment
+                fetch(`/contracts/equipment/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    });
+            }
+        }
+
+        function submitForm() {
+            const form = document.getElementById('contractForm');
+            if (form.checkValidity()) {
+                form.submit();
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        }
+
+        function openEquipmentModal() {
+            // Implementation for equipment modal
+        }
+
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function changeOperation() {
+            // Implementation for changing operation
+        }
+    </script>
+</body>
+</html>

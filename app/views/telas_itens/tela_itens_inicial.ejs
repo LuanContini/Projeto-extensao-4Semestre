@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta nome="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Produtos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto; /* Move o item PERFIL para o final */
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-grupo-btn {
+            padding: 8px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .stats-bar {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .grupos-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grupos-table th,
+        .grupos-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .grupos-table th {
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .grupos-table th .arrow {
+            margin-left: 5px;
+            font-size: 10px;
+        }
+
+        .action-btn {
+            padding: 5px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .view-btn { background-color: #673AB7; }
+        .edit-btn { background-color: #2196F3; }
+        .delete-btn { background-color: #F44336; }
+
+        .stock-indicator {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .stock-high { background-color: #4CAF50; }
+        .stock-medium { background-color: #FFC107; }
+        .stock-low { background-color: #F44336; }
+
+        .icon {
+            width: 30px; 
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('../assets/menu.ejs')%>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Itens</h2>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Nome, ID, Tipo...">
+                <button class="filter-btn">🔍 Filtros</button>
+            </div>
+            <% if (usuario.tipo === 'Administrador') { %>
+            <button class="add-grupo-btn" onclick="window.location.href='itens/criar-itens';">+ PRODUTO</button>
+            <% } %>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stock-indicator stock-high"></div>
+                <br>
+                <small>Estoque Alto</small>
+            </div>
+            <div class="stat-item">
+                <div class="stock-indicator stock-medium"></div>
+                <br>
+                <small>Estoque Baixo</small>
+            </div>
+            <div class="stat-item">
+                <div class="stock-indicator stock-low"></div>
+                <br>
+                <small>Sem Estoque</small>
+            </div>
+        </div>
+
+        <table class="grupos-table">
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th onclick="sortTable(1)">
+                        Nome <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(2)">
+                        Categoria <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(3)">
+                        Disponível <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(4)">
+                        Reservado <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(5)">
+                        Manutenção <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(6)">
+                        Total <span class="arrow">▼</span>
+                    </th>
+                    <th onclick="sortTable(7)">
+                        Preço <span class="arrow">▼</span>
+                    </th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% grupo.forEach(function(grupo) { %>
+                    <tr>
+                        <td>
+                            <img src="<%= grupo.imagem ? grupo.imagem : '/icons/side-bar/itens.png' %>" alt="<%= grupo.nome %>" width="70">
+                        </td>
+                        <td><%= grupo.nome %></td>
+                        <td><%= grupo.categoria %></td>
+                        <td><%= grupo.disponivel %></td>
+                        <td><%= grupo.reservado %></td>
+                        <td><%= grupo.manutencao %></td>
+                        <td><%= grupo.quantidadeItens %></td>
+                        <td>R$<%= grupo.precoGrupo %></td>
+                        <td>
+                            <button class="action-btn view-btn"><a href="itens/<%= grupo.idGrupo %>">👁️</a></button>
+                            <% if (usuario.tipo === 'Administrador') { %>
+                                <button class="action-btn edit-btn"><a href="itens/editar/<%= grupo.idGrupo %>">✏️</a></button>
+                                <button class="action-btn delete-btn">🗑️</button>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        
+        <script>
+            let sortDirection = [true, true, true, true, true, true, true, true]; // Define o estado da ordenação de cada coluna (true para crescente)
+        
+            function sortTable(columnIndex) {
+                const table = document.querySelector('.grupos-table');
+                const rows = Array.from(table.rows).slice(1); // Remove o cabeçalho
+                const isAscending = sortDirection[columnIndex];
+                
+                // Alterna a direção da ordenação
+                sortDirection[columnIndex] = !isAscending;
+        
+                // Ordena as linhas
+                rows.sort((rowA, rowB) => {
+                    const cellA = rowA.cells[columnIndex].innerText.trim();
+                    const cellB = rowB.cells[columnIndex].innerText.trim();
+        
+                    if (columnIndex === 7) { // Preço (precisa ser tratado como número)
+                        const priceA = parseFloat(cellA.replace('R$', '').trim());
+                        const priceB = parseFloat(cellB.replace('R$', '').trim());
+                        return isAscending ? priceA - priceB : priceB - priceA;
+                    } else if (columnIndex === 3 || columnIndex === 4 || columnIndex === 5 || columnIndex === 6) { // Números (Disponível, Reservado, Manutenção, Total)
+                        const numA = parseInt(cellA);
+                        const numB = parseInt(cellB);
+                        return isAscending ? numA - numB : numB - numA;
+                    } else { // Texto (Nome, Categoria)
+                        return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                    }
+                });
+        
+                // Atualiza a tabela com as linhas ordenadas
+                rows.forEach(row => table.appendChild(row));
+        
+                // Atualizar a direção das setas
+                const arrows = table.querySelectorAll('.arrow');
+                arrows.forEach((arrow, index) => {
+                    if (index === columnIndex -1) {
+                        arrow.innerText = isAscending ? '▲' : '▼';
+                    } else {
+                        arrow.innerText = '▼';
+                    }
+                });
+            }
+        
+    function confirmDeletion(row, idGrupo) {
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+
+        const confirmBox = document.createElement('div');
+        confirmBox.style.backgroundColor = 'white';
+        confirmBox.style.padding = '20px';
+        confirmBox.style.borderRadius = '8px';
+        confirmBox.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+        confirmBox.style.textAlign = 'center';
+
+        const message = document.createElement('p');
+        message.innerHTML = '<strong style="color: red;">Tem certeza?</strong><br>Isso irá remover todos os itens adicionados ao produto.';
+        message.style.marginBottom = '20px';
+        confirmBox.appendChild(message);
+
+        const yesButton = document.createElement('button');
+        yesButton.innerText = 'Sim';
+        yesButton.style.margin = '0 10px';
+        yesButton.style.padding = '10px 20px';
+        yesButton.style.backgroundColor = '#4CAF50';
+        yesButton.style.color = 'white';
+        yesButton.style.border = 'none';
+        yesButton.style.borderRadius = '4px';
+        yesButton.style.cursor = 'pointer';
+        yesButton.onclick = async function () {
+            try {
+                const response = await fetch(`/itens/grupo/${idGrupo}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    row.remove(); 
+                    document.body.removeChild(overlay); 
+                } else {
+                    alert('Erro ao excluir o item. Tente novamente.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao excluir o item. Tente novamente.');
+            }
+        };
+        confirmBox.appendChild(yesButton);
+
+        // Botão "Não"
+        const noButton = document.createElement('button');
+        noButton.innerText = 'Não';
+        noButton.style.margin = '0 10px';
+        noButton.style.padding = '10px 20px';
+        noButton.style.backgroundColor = '#F44336';
+        noButton.style.color = 'white';
+        noButton.style.border = 'none';
+        noButton.style.borderRadius = '4px';
+        noButton.style.cursor = 'pointer';
+        noButton.onclick = function () {
+            document.body.removeChild(overlay); 
+        };
+        confirmBox.appendChild(noButton);
+
+        overlay.appendChild(confirmBox);
+        document.body.appendChild(overlay);
+    }
+
+    document.querySelectorAll('.delete-btn').forEach((btn) => {
+        const idGrupo = btn.closest('tr').querySelector('a').getAttribute('href').split('/').pop(); // Pega o idGrupo da URL
+        btn.onclick = () => confirmDeletion(btn.closest('tr'), idGrupo);
+    });
+
+    </script>
+</body>
+</html>

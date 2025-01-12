@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Grupo</title>
+    <style>
+        /* Estilos já definidos no seu código */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #000000;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .page-title {
+            flex-grow: 1;
+            margin-left: 20px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .finalize-button {
+            padding: 10px 30px;
+            background-color: #2F3640;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .content-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .left-section, .right-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .form-section {
+            background-color: #f3f3f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .required::after {
+            content: '*';
+            color: red;
+            margin-left: 3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .image-upload {
+            background-color: white;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 131px;
+            text-align: center;
+        }
+
+        .upload-icon {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .upload-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .category-section {
+            margin-top: 20px;
+        }
+
+        .category-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .add-category-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #999;
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            margin-left: 5px;
+            cursor: help;
+        }
+
+        .cloud-icon {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Popup Styles */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        .popup-close {
+            background-color: #e8e3d9;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('../assets/menu.ejs')%>
+
+    <div class="main-content">
+        <form action="/itens/<%= grupo.idGrupo %>" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+    
+    <div class="header">
+        <button class="back-button"><a href="/itens">←</a></button>
+        <h1 class="page-title">Editar Produto</h1>
+        <button class="finalize-button" type="submit">Finalizar</button>
+    </div>
+
+    <div class="content-container">
+        <div class="left-section">
+            <div class="form-section">
+                <h2 class="section-title">Informações Gerais</h2>
+                <div class="form-group">
+                    <label class="required">Nome do Produto</label>
+                    <input type="text" class="form-control" placeholder="Nome do Produto"
+                        id="nomeProduto" name="nome" required minlength="5" maxlength="100"
+                        value="<%= grupo.nome %>">
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Categoria do grupo</label>
+                    <select class="category-select" id="category-select" name="categoria" required>
+                        <option value="" disabled selected>Selecione ou crie a categoria</option>                            
+                        <% categorias.forEach(categoria => { %>
+                            <option value="<%= categoria.categoria %>" 
+                                <%= categoria.categoria === grupo.categoria ? 'selected' : '' %> >
+                                <%= categoria.categoria %>
+                            </option>
+                        <% }) %>
+                    </select>
+                    <button type="button" class="add-category-button" onclick="showPopup()">Adicionar nova Categoria</button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title">Específicos</h2>
+                <div class="form-group">
+                    <label class="required">Preço p/ Unidade (R$)</label>
+                    <input type="number" class="form-control" placeholder="Preço do Produto" 
+                        id="precoProduto" name="precoGrupo" required step="0.01" min="0"
+                        value="<%= grupo.precoGrupo %>">
+                </div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="form-section">
+                <h2 class="section-title">Carregar Imagem</h2>
+                <div class="image-upload">
+                    <div class="upload-icon">
+                        <img src="<%= grupo.imagem %>" alt="Upload" class="cloud-icon">
+                    </div>
+                    <br>
+                    <button class="upload-button">Upload de Imagem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+    </form>
+    </div>
+
+    <div id="popup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="document.getElementById('popup').style.display = 'none'">X</button>
+            <h2>Adicionar nova Categoria</h2>
+            <input type="text" id="new-category" class="form-control" placeholder="Digite o nome da categoria">
+            <button type="button" class="add-category-button" onclick="addCategory()">Adicionar</button>
+        </div>
+    </div>
+
+    <script>
+        function showPopup() {
+            document.getElementById("popup").style.display = "flex";
+        }
+
+        function addCategory() {
+            const category = document.getElementById("new-category").value;
+            if (category) {
+                const select = document.getElementById("category-select");
+                const newOption = document.createElement("option");
+                newOption.textContent = category;
+                select.appendChild(newOption);
+                select.value = category;
+
+                document.getElementById("popup").style.display = "none";
+                document.getElementById("new-category").value = "";
+            }
+        }
+    </script>
+</body>
+</html>

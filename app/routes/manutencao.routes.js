@@ -10,10 +10,10 @@ router.get("/", manutencaoController.getManutencao);
 router.get("/:id", manutencaoController.getManutencaoById);
 
 //POST
-router.post('/:idItens/:motivo/:dataInic/:dataRetorno/:responsavel', auth.checarAuthAdmin, validacaoManutencao.validarManutencao, manutencaoController.postManutencao);
+router.post('/', auth.checarAuthAdmin, validacaoManutencao.validarManutencao, manutencaoController.postManutencao);
 
 //PUT
-router.put('/:idManutencao/:motivo/:dataInic/:dataRetorno/:responsavel', auth.checarAuthAdmin, manutencaoController.putManutencao);
+router.put('/:idManutencao', auth.checarAuthAdmin, manutencaoController.putManutencao);
 
 //DELETE
 router.delete('/:id', auth.checarAuthAdmin, manutencaoController.deleteManutencao);
