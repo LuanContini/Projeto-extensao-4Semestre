@@ -29,21 +29,38 @@ module.exports = {
   //--------------------------------------------------------
   
   //INSERT
-  inserirManutencao: async ( dbConnection, { motivo, dataInic, dataRetorno, responsavel }) => {
+  inserirManutencao: async (dbConnection, { motivo, dataInic, dataRetorno, responsavel }) => {
     const insertManutencaoQuery = `
       INSERT INTO manutencao (motivo, dataInic, dataRetorno, responsavel)
       VALUES (?, ?, ?, ?);
     `;
-    const [result] = await dbConnection.promise().execute(insertManutencaoQuery, [motivo, dataInic, dataRetorno, responsavel]);
-    return result.insertId;
+
+    return new Promise((resolve, reject) => {
+      dbConnection.query(insertManutencaoQuery, [motivo, dataInic, dataRetorno, responsavel], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results.insertId);
+        }
+      });
+    });
   },
-   inserirHistoricoManutencao: async (dbConnection, { dataInic, dataTerm, idManutencao, idItens }) => {
+  
+  inserirHistoricoManutencao: async (dbConnection, { dataInic, dataTerm, idManutencao, idItens }) => {
     const insertHistoricoQuery = `
       INSERT INTO historicoManutencao (dataInic, dataTerm, idManutencao, idItens)
       VALUES (?, ?, ?, ?);
     `;
-    await dbConnection.promise().execute(insertHistoricoQuery, [dataInic, dataTerm, idManutencao, idItens]);
-    dbConnection.end();
+    
+    return new Promise((resolve, reject) => {
+      dbConnection.query(insertHistoricoQuery, [dataInic, dataTerm, idManutencao, idItens], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   },
   //--------------------------------------------------------
 

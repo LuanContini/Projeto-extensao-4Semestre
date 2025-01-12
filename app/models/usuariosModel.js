@@ -43,7 +43,7 @@ module.exports = {
               tipo: usuario.tipo,
             });
           } else {
-            reject(new Error("Senha incorreta"));
+            reject(new Error("Usuario ou senha não encontrado"));
           }
         } catch (compareError) {
           reject(compareError);

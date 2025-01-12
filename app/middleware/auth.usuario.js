@@ -8,7 +8,7 @@ module.exports.checarAuthComum = (req, res, next) => {
     
     if (!token) {
         req.session.returnTo = req.originalUrl; 
-        return res.render('telas_logins/tela_login');
+        return res.render('telas_logins/tela_login', {error: null});
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -26,7 +26,7 @@ module.exports.checarAuthAdmin = (req, res, next) => {
 
     if (!token) {
         req.session.returnTo = req.originalUrl;
-        return res.render('telas_logins/tela_login');
+        return res.render('telas_logins/tela_login', {error: null});
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {

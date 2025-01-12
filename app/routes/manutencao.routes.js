@@ -7,6 +7,7 @@ const auth = require("../middleware/auth.usuario");
 
 //GET
 router.get("/", manutencaoController.getManutencao);
+router.get("/adicionar", manutencaoController.telaAdicionar);
 router.get("/:id", manutencaoController.getManutencaoById);
 
 //POST

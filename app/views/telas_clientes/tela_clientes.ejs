@@ -4,6 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script>
+      window.clients = <%- JSON.stringify(clients) %>;
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clientes</title>
     <style>
@@ -167,12 +170,12 @@
 
       .delete-btn {
           padding: 10px 20px;
-          background-color: #d9534f; /* Cor vermelha para o botão de exclusão */
+          background-color: #d9534f;
           color: white;
           border: none;
           border-radius: 4px;
           cursor: pointer;
-          margin-left: 10px; /* Espaçamento entre os botões */
+          margin-left: 10px;
       }
 
       .profile-upload {
@@ -208,12 +211,12 @@
       }
 
       .form-group textarea {
-          resize: vertical; /* Permite redimensionar verticalmente */
-          height: 100px; /* Altura padrão para o campo de observação */
+          resize: vertical;
+          height: 100px;
       }
 
       .form-group input[type="file"] {
-          padding: 0; /* Remove padding do input de arquivo */
+          padding: 0;
       }
     </style>
   </head>
@@ -222,39 +225,38 @@
 
     <div class="main-content">
       <div class="header">
-        <button class="back-button">←</button>
         <h1 class="page-title">Clientes</h1>
       </div>
 
       <div class="content-wrapper">
         <div class="client-list">
-            <div class="search-bar">
-                <input type="text" class="search-input" placeholder="Nome, ID..." />
-                <% if (usuario.tipo === 'Administrador') { %>
-                <button class="add-client-btn">+ CLIENTE</button>
-                <% } %>
-            </div>
-        
-            <table class="clients-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Telefone</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody id="clientTableBody">
-                    <% clients.forEach(function(client) { %>
-                    <tr data-id="<%= client.idContratante %>">
-                        <td><%= client.idContratante %></td>
-                        <td><%= client.nome %></td>
-                        <td><%= client.telefone %></td>
-                        <td><%= client.email %></td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+          <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Nome, ID..." />
+            <% if (usuario.tipo === 'Administrador') { %>
+            <button class="add-client-btn">+ CLIENTE</button>
+            <% } %>
+          </div>
+
+          <table class="clients-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="clientTableBody">
+              <% clients.forEach(function(client) { %>
+              <tr data-id="<%= client.idContratante %>">
+                <td><%= client.idContratante %></td>
+                <td><%= client.nome %></td>
+                <td><%= client.telefone %></td>
+                <td><%= client.email %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
         </div>
 
         <div class="client-details" id="clientDetails" style="display: none;">
@@ -320,204 +322,6 @@
       </div>
     </div>
 
-    <script>
-                            const clients = <%- JSON.stringify(clients) %>;
-                            const clientTableBody = document.getElementById('clientTableBody');
-
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const clientRows = document.querySelectorAll('.clients-table tbody tr');
-                                const clientDetails = document.getElementById('clientDetails');
-                                const editButton = document.getElementById('editButton');
-                                const clientForm = document.getElementById('clientForm');
-                                const tipoDocumento = document.getElementById('tipoDocumento');
-                                const documentoInput = document.getElementById('documento');
-                                let isEditing = false;
-                                let currentClientId = null;
-
-                                const telefoneMask = new Inputmask('(99) 99999-9999');
-                                telefoneMask.mask(document.querySelectorAll('input[name="telefone"]'));
-
-                                function aplicarMascaraDocumento() {
-                                    if (tipoDocumento.value === 'cpf') {
-                                        const cpfMask = new Inputmask('999.999.999-99');
-                                        cpfMask.mask(documentoInput);
-                                    } else if (tipoDocumento.value === 'cnpj') {
-                                        const cnpjMask = new Inputmask('99.999.999/9999-99');
-                                        cnpjMask.mask(documentoInput);
-                                    }
-                                }
-
-                                aplicarMascaraDocumento();
-
-                                tipoDocumento.addEventListener('change', function() {
-                                    aplicarMascaraDocumento();
-                                });
-
-                                function populateClientDetails(clientData) {
-                                    clientForm.nome.value = clientData.nome;
-                                    tipoDocumento.value = clientData.cpf ? 'cpf' : 'cnpj';
-                                    documentoInput.value = clientData.cpf || clientData.cnpj;
-                                    clientForm.email.value = clientData.email;
-                                    clientForm.telefone.value = clientData.telefone;
-                                    document.getElementById('observacao').value = clientData.observacao || ''; // Preencher o campo de observação
-                                    aplicarMascaraDocumento();
-                                }
-
-                                clientRows.forEach(row => {
-                                    row.addEventListener('click', function() {
-                                        clientRows.forEach(r => r.classList.remove('selected'));
-                                        this.classList.add('selected');
-
-                                        currentClientId = this.dataset.id;
-                                        const selectedClient = clients.find(client => client.idContratante == currentClientId);
-
-                                        if (selectedClient) {
-                                            populateClientDetails(selectedClient);
-                                            clientDetails.style.display = 'block';
-                                        }
-                                    });
-                                });
-
-                                editButton.addEventListener('click', async function() {
-                                    isEditing = !isEditing;
-                                    const inputs = clientForm.querySelectorAll('input');
-                                    const select = document.getElementById('tipoDocumento');
-
-                                    if (isEditing) {
-                                        editButton.textContent = 'SALVAR';
-                                        inputs.forEach(input => input.disabled = false);
-                                        select.disabled = false;
-                                    } else {
-                                        editButton.textContent = 'EDITAR';
-                                        inputs.forEach(input => input.disabled = true);
-                                        select.disabled = true;
-
-                                        const novoCliente = {
-                                          nome: clientForm.nome.value.trim(),
-                                          email: clientForm.email.value.trim(),
-                                          telefone: limparValor(clientForm.telefone.value),
-                                          observacao: document.getElementById('observacao').value.trim(), // Incluir a observação
-                                          imagem: document.getElementById('imagem').files[0] || null, // Incluir a imagem
-                                          cpf: tipoDocumento.value === 'cpf' ? limparValor(documentoInput.value) : null,
-                                          cnpj: tipoDocumento.value === 'cnpj' ? limparValor(documentoInput.value) : null
-                                      };
-
-                                        console.log('Dados do novo cliente:', novoCliente);
-                                        if (!novoCliente.email) {
-                                            alert('O email não pode ser vazio.');
-                                            return;
-                                        }
-
-                                        try {
-                                            const response = await fetch(currentClientId ? `/clientes/${currentClientId}`
-                                            : '/clientes/', {
-                                                method: currentClientId ? 'PUT' : 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                },
-                                                body: JSON.stringify(novoCliente),
-                                            });
-
-                                            if (response.ok) {
-                                                const clienteCriado = await response.json();
-                                                alert(currentClientId ? 'Cliente atualizado com sucesso!' : 'Cliente criado com sucesso!');
-                                                currentClientId ? atualizarTabelaClientes(clienteCriado) : adicionarClienteTabela(clienteCriado);
-                                            } else {
-                                                const errorData = await response.json();
-                                                alert(`Erro ao ${currentClientId ? 'atualizar' : 'criar'} o cliente: ${errorData.message}`);
-                                            }
-                                        } catch (error) {
-                                            console.error('Erro:', error);
-                                            alert('Erro ao processar a solicitação. Tente novamente.');
-                                        }
-                                    }
-                                });
-
-                                document.querySelector('.add-client-btn').addEventListener('click', function() {
-                                    currentClientId = null;
-                                    clientForm.reset();
-                                    clientDetails.style.display = 'block';
-                                    isEditing = true;
-                                    editButton.textContent = 'SALVAR';
-                                    const inputs = clientForm.querySelectorAll('input');
-                                    const select = document.getElementById('tipoDocumento');
-                                    inputs.forEach(input => input.disabled = false);
-                                    select.disabled = false;
-                                });
-
-                                document.getElementById('deleteButton').addEventListener('click', async function() {
-                        const confirmDelete = confirm('Tem certeza que deseja excluir este cliente?');
-                        if (!confirmDelete) return;
-
-                        try {
-                            const response = await fetch(`/clientes/${currentClientId}`, {
-                                method: 'DELETE',
-                            });
-
-                            if (response.ok) {
-                                alert('Cliente excluído com sucesso!');
-                                const linhaExistente = clientTableBody.querySelector(`tr[data-id="${currentClientId}"]`);
-                                if (linhaExistente) {
-                                    clientTableBody.removeChild(linhaExistente);
-                                }
-                                clientDetails.style.display = 'none';
-                            } else {
-                                const errorData = await response.json();
-                                alert(`Erro ao excluir o cliente: ${errorData.message}`);
-                            }
-                        } catch (error) {
-                            console.error('Erro:', error);
-                            alert('Erro ao processar a solicitação de exclusão. Tente novamente.');
-                        }
-
-                        
-      });
-      document.querySelector('.search-input').addEventListener('input', function() {
-          const searchTerm = this.value.toLowerCase(); // Obtém o valor da busca em minúsculas
-          const clientRows = document.querySelectorAll('.clients-table tbody tr'); // Seleciona todas as linhas da tabela
-
-          clientRows.forEach(row => {
-              const clientId = row.querySelector('td:first-child').textContent.toLowerCase(); // ID do cliente
-              const clientName = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // Nome do cliente
-
-              // Verifica se o ID ou o nome do cliente contém o termo de busca
-              if (clientId.includes(searchTerm) || clientName.includes(searchTerm)) {
-                  row.style.display = ''; // Mostra a linha se corresponder
-              } else {
-                  row.style.display = 'none'; // Oculta a linha se não corresponder
-              }
-          });
-                    });
-
-                                function adicionarClienteTabela(cliente) {
-                                    const novaLinha = document.createElement('tr');
-                                    novaLinha.setAttribute('data-id', cliente.idContratante);
-                                    novaLinha.innerHTML = `
-                                        <td>${cliente.idContratante}</td>
-                                        <td>${cliente.nome}</td>
-                                        <td>${cliente.telefone}</td>
-                                        <td>${cliente.email}</td>
-                                    `;
-                                    clientTableBody.appendChild(novaLinha);
-                                }
-
-                                // Função para atualizar a tabela de clientes
-                                function atualizarTabelaClientes(clienteAtualizado) {
-                                    const linhaExistente = clientTableBody.querySelector(`tr[data-id="${clienteAtualizado.idContratante}"]`);
-                                    if (linhaExistente) {
-                                        linhaExistente.innerHTML = `
-                                            <td>${clienteAtualizado.idContratante}</td>
-                                            <td>${clienteAtualizado.nome}</td>
-                                            <td>${clienteAtualizado.telefone}</td>
-                                            <td>${clienteAtualizado.email}</td>
-                                        `;
-                                    }
-                                }
-                            });
-
-                            function limparValor(valor) {
-                                return valor.replace(/[^\d]/g, '');
-                            }
-    </script>
+    <script src="/scripts/cliente-controller.js"></script>
   </body>
 </html>

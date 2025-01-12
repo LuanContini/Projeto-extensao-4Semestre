@@ -53,7 +53,7 @@ module.exports.editarGrupo = async (req, res) => {
     const grupoComItens = await getGrupoComItens(dbConn, idGrupo);
     const categorias = await getCategorias(dbConn);
 
-    res.render('telas_itens/itens_editar_produto.ejs', { 'grupo': grupoComItens, 'categorias': categorias });
+    res.render('telas_itens/itens_editar_produto.ejs', { 'grupo': grupoComItens, 'categorias': categorias, usuario: req.user});
   } catch (err) {
     res.status(403).send({ 'erro': err.message });
   }
@@ -91,7 +91,7 @@ module.exports.criarGrupo = async (req, res) => {
   try {
     const categorias = await getCategorias(dbConn);
 
-    res.render('telas_itens/itens_adicionar_produto.ejs', {'categorias': categorias});
+    res.render('telas_itens/itens_adicionar_produto.ejs', {'categorias': categorias, usuario: req.user});
   } catch (err) {
     res.status(403).send({ 'erro': err.message });
   }
@@ -99,12 +99,20 @@ module.exports.criarGrupo = async (req, res) => {
 };
 
 module.exports.postItem = async (req, res) => {
-  const { nome, categoria, precoGrupo } = req.body; 
+  const { nome, categoria, precoGrupo, quantidadeItens } = req.body; 
 
   const dbConn = dbConnection();
 
   try {
-    const post = await adicionarItem(dbConn, nome, categoria, precoGrupo);
+    const quantidade = parseInt(quantidadeItens, 10);
+    if (isNaN(quantidade) || quantidade <= 0) {
+      quantidadeItens = 1;
+    }
+
+    for (let i = 0; i < quantidade; i++) {
+      await adicionarItem(dbConn, nome, categoria, precoGrupo);
+    }
+
     res.redirect('/itens');
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
