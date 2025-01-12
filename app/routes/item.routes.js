@@ -6,12 +6,14 @@ const { validarItem } = require("../middleware/validacao.item");
 const auth = require("../middleware/auth.usuario");
 
 router.get("/", itemController.getItens);
+router.get("/criar-itens", auth.checarAuthAdmin, itemController.criarGrupo);
 router.get("/:id", itemController.getGrupoById);
+router.get("/editar/:id", auth.checarAuthAdmin, itemController.editarGrupo);
 
 //cod_barras, idGrupo, nome, categoria, preco_loca,
-router.post("/:nome/:categoria/:precoGrupo", auth.checarAuthAdmin, validarItem, itemController.postItem);
+router.post("/criar-grupo", auth.checarAuthAdmin, validarItem, itemController.postItem);
 
-router.put('/:nome/:categoria/:precoGrupo/:idGrupo', auth.checarAuthAdmin, itemController.putItem);
+router.put('/:idGrupo', auth.checarAuthAdmin, itemController.putItem);
 
 router.delete('/:id', auth.checarAuthAdmin, itemController.deleteItem);
 

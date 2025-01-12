@@ -7,15 +7,15 @@ const auth = require("../middleware/auth.usuario");
 
 
 router.get("/", auth.checarAuthAdmin, usuarioController.getUsuarios);
+router.get('/login', usuarioController.telaLogin);
 router.get("/:id", auth.checarAuthAdmin, usuarioController.getUsuarioById);
 
-router.post("/login/:nome/:senha", usuarioController.login);
+router.post("/login", usuarioController.login);
 router.post("/login/logout", usuarioController.logout);
 
-router.post('/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
+router.post('/', auth.checarAuthAdmin, validacaoUsuario.validarUsuario, usuarioController.postUsuario);
 
-router.put('/:idUsuario/:nome/:cpf/:telefone/:email/:senha/:nasc/:tipo', auth.checarAuthAdmin, usuarioController.putUsuario);
-
+router.put('/:idUsuario', auth.checarAuthAdmin, validacaoUsuario.validarUsuario, usuarioController.putUsuario); 
 
 router.delete('/:idUsuario', auth.checarAuthAdmin, usuarioController.deleteUsuario);
 

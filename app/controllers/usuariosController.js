@@ -13,8 +13,10 @@ module.exports.getUsuarios = async (req, res) => {
  try{
   const usuarios = await getUsuarios(dbConn);
 
-  res.status(200).send({"usuarios": usuarios});
- } catch (err){
+  res.render("./tela_usuario/tela_usuarios.ejs", {
+    usuarios: usuarios,
+    selectedClient: "", usuario: req.user
+  }); } catch (err){
   res.status(400).send({"err": err});
  }
 };
@@ -39,7 +41,7 @@ module.exports.getUsuarioById = async (req, res) => {
 }
 
 module.exports.postUsuario = async (req, res) => {
-  const { nome, cpf, telefone, email, senha, nasc, tipo } = req.params;
+  const { nome, cpf, telefone, email, senha, dataNasc, tipo } = req.body;
 
   try {
     const dbConn = dbConnection();
@@ -55,7 +57,7 @@ module.exports.postUsuario = async (req, res) => {
       telefone,
       email,
       senhaEncriptada,
-      nasc,
+      dataNasc,
       tipo
     );
 
@@ -67,28 +69,48 @@ module.exports.postUsuario = async (req, res) => {
 };
 
 module.exports.putUsuario = async (req, res) => {
-  const { idUsuario, nome, cpf, telefone, email, senha, nasc, tipo } = req.params;
-  
-  try{
+  const { nome, cpf, telefone, email, senha, dataNasc, tipo } = req.body;
+  const idUsuario = req.params.idUsuario;
+
+  try {
     const dbConn = dbConnection();
 
-    const result = await updateUsuario(dbConn, idUsuario,
+    let senhaEncriptada;
+
+    if(senha){
+    const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
+
+    senhaEncriptada = await bcrypt.hash(senha, salt);
+    }
+
+    const usuario = await updateUsuario(
+      dbConn,
+      idUsuario,
       nome,
       cpf,
       telefone,
       email,
-      senha,
-      nasc,
-      tipo);
+      senhaEncriptada,
+      dataNasc,
+      tipo
+    );
 
-      res.status(200).send({"Sucesso": result});
+    res.status(200).send({ message: "Usuário adicionado com sucesso!", usuario });
+
   } catch (err) {
-    res.status.send({"err": err});
+    res.status(400).send({ err: err.message });
   }
 };
 
+
+module.exports.telaLogin = (req, res) => {
+  
+  res.render();
+}
 module.exports.login = async (req, res) => {
-  const {nome, senha} = req.params;
+  const {nome, senha} = req.body;
+
+  console.log(nome, senha);
 
   try{
 
@@ -103,7 +125,9 @@ module.exports.login = async (req, res) => {
 
     req.session.token = token;
 
-    res.status(200).send({"token": token});
+    const returnTo = req.session.returnTo || '/';
+        delete req.session.returnTo; 
+        res.redirect(returnTo);
 
   }catch(err) {
     res.status(400).send({"err": err.message});

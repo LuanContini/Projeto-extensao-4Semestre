@@ -4,22 +4,19 @@ require("dotenv").config({ path: ".env" });
 
 
 module.exports.checarAuthComum = (req, res, next) => {
-    
     const token = req.session.token;
-    console.log("token", token)
-
+    
     if (!token) {
-        return res.status(401).json({ message: "Token não fornecido" });
+        req.session.returnTo = req.originalUrl; 
+        return res.render('telas_logins/tela_login');
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            console.log(token);
             return res.status(403).json({ message: "Token inválido" });
         }
 
         req.user = decoded;
-        console.log("user",req.user);
         next();
     });
 };
@@ -28,24 +25,20 @@ module.exports.checarAuthAdmin = (req, res, next) => {
     const token = req.session.token;
 
     if (!token) {
-        return res.status(401).json({ message: "Token não fornecido" });
+        req.session.returnTo = req.originalUrl;
+        return res.render('telas_logins/tela_login');
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            console.log(token);
             return res.status(403).json({ message: "Token inválido" });
         }
 
-        
-        if(decoded.tipo === 'Administrador'){
+        if (decoded.tipo === 'Administrador') {
             req.user = decoded;
-            console.log("user",req.user);
             next();
+        } else {
+            return res.status(403).json({ message: "Usuário não tem permissão" });
         }
-        else{
-            return res.status(403).json({message: "Usuário não tem permissão"});
-        }
-        
     });
 };

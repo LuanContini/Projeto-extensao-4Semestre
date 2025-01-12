@@ -8,7 +8,7 @@ const {
   deleteItem,
   deleteGrupo,
   getGrupos,
-  getGrupoById,
+  getCategorias,
 } = require("../models/itensModel");
 
 // GET all items
@@ -18,50 +18,94 @@ module.exports.getItens = async (req, res) => {
     const itens = await getItens(dbConn);
     const grupos = await getGrupos(dbConn);
 
-    const itensComGrupos = grupos.map(grupo => ({
-      ...grupo,
-      itens: itens.filter(item => item.idGrupo === grupo.idGrupo)
-    }));
-    res.status(200).send({ 'itensComGrupos': itensComGrupos });
+    const itensComGrupos = grupos.map(grupo => {
+      const itensDoGrupo = itens.filter(item => item.idGrupo === grupo.idGrupo);
+      return {
+        ...grupo,
+        itens: itensDoGrupo,
+        quantidadeItens: itensDoGrupo.length 
+      };
+    });
+
+    res.render('telas_itens/tela_itens_inicial.ejs', { 'grupo': itensComGrupos, 'usuario': req.user });
   } catch (err) {
     res.status(403).send({ 'erro:': err.message });
   }
 };
 
-// GET item by ID
 module.exports.getGrupoById = async (req, res) => {
   const dbConn = dbConnection();
   const idGrupo = req.params.id;
 
   try {
-    const itens = await getItens(dbConn, idGrupo);
-    const grupo = await getGrupos(dbConn, idGrupo);
-
-    const grupoById = grupo.find((grupo) => grupo.idGrupo == idGrupo);
-
-    console.log(grupoById);
-    const grupoComItens = {
-      ...grupoById,
-      itens: itens.filter(item => item.idGrupo === grupoById.idGrupo)
-    };
-
-
-
-    res.status(200).send({ 'grupoComItens': grupoComItens});
+    const grupoComItens = await getGrupoComItens(dbConn, idGrupo);
+    res.render('telas_itens/tela_itens_olhar.ejs', { 'grupo': grupoComItens, 'usuario': req.user });
   } catch (err) {
     res.status(403).send({ 'erro': err.message });
   }
 };
 
+module.exports.editarGrupo = async (req, res) => {
+  const dbConn = dbConnection();
+  const idGrupo = req.params.id;
+
+  try {
+    const grupoComItens = await getGrupoComItens(dbConn, idGrupo);
+    const categorias = await getCategorias(dbConn);
+
+    res.render('telas_itens/itens_editar_produto.ejs', { 'grupo': grupoComItens, 'categorias': categorias });
+  } catch (err) {
+    res.status(403).send({ 'erro': err.message });
+  }
+};
+
+
+// GET item by ID
+const getGrupoComItens = async (dbConn, idGrupo) => {
+  const itens = await getItens(dbConn, idGrupo);
+  const grupo = await getGrupos(dbConn, idGrupo);
+  
+  const grupoById = grupo.find((grupo) => grupo.idGrupo == idGrupo);
+  
+  if (!grupoById) {
+    throw new Error("Grupo não encontrado");
+  }
+
+  const itensDoGrupo = itens.filter(item => item.idGrupo === grupoById.idGrupo);
+
+  return {
+    ...grupoById,
+    itens: itensDoGrupo,
+    quantidadeItens: itensDoGrupo.length
+  };
+};
+
+
 // POST new item
+
+module.exports.criarGrupo = async (req, res) => {
+
+
+    const dbConn = dbConnection();
+
+  try {
+    const categorias = await getCategorias(dbConn);
+
+    res.render('telas_itens/itens_adicionar_produto.ejs', {'categorias': categorias});
+  } catch (err) {
+    res.status(403).send({ 'erro': err.message });
+  }
+  
+};
+
 module.exports.postItem = async (req, res) => {
-  const { codBarras, nome, categoria, precoGrupo } = req.params; 
+  const { nome, categoria, precoGrupo } = req.body; 
 
   const dbConn = dbConnection();
 
   try {
-    const post = await adicionarItem(dbConn, codBarras, nome, categoria, precoGrupo);
-    res.status(200).send({ 'result': post });
+    const post = await adicionarItem(dbConn, nome, categoria, precoGrupo);
+    res.redirect('/itens');
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
   }
@@ -69,13 +113,17 @@ module.exports.postItem = async (req, res) => {
 
 // UPDATE item
 module.exports.putItem = async (req, res) => {
-  const { nome, categoria, precoGrupo, idGrupo } = req.params; 
+  const { nome, categoria, precoGrupo} = req.body;
+  const idGrupo = req.params.idGrupo; 
+
+  console.log(idGrupo);
 
   const dbConn = dbConnection();
 
   try {
     const result = await updateItem(dbConn, nome, categoria, precoGrupo, idGrupo);
-    res.status(200).send({ 'result': result });
+
+    res.redirect('/itens');
   } catch (err) {
     res.status(400).send({ 'erro': err.message });
   }

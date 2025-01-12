@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta nome="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Produto</title>
     <style>
         * {
@@ -60,7 +60,7 @@
             min-height: 100vh;
         }
 
-        .product-header {
+        .grupo-header {
             display: flex;
             align-items: center;
             padding: 20px;
@@ -71,7 +71,7 @@
             transition: all 0.3s ease;
         }
 
-        .product-header:hover {
+        .grupo-header:hover {
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
@@ -93,14 +93,14 @@
             color: #333;
         }
 
-        .product-info {
+        .grupo-info {
             display: flex;
             align-items: center;
             flex: 1;
             gap: 30px;
         }
 
-        .product-image {
+        .grupo-image {
             width: 60px;
             height: 60px;
             object-fit: cover;
@@ -108,17 +108,17 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .product-details {
+        .grupo-details {
             flex: 1;
         }
 
-        .product-details div:first-child {
+        .grupo-details div:first-child {
             color: #666;
             font-size: 0.9em;
             margin-bottom: 4px;
         }
 
-        .product-details div:last-child {
+        .grupo-details div:last-child {
             color: #333;
             font-weight: 500;
             font-size: 1.1em;
@@ -288,55 +288,28 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
-
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
-            ITENS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
-            CONTRATOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
-            MANUTENÇÃO
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
-            USUÁRIOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
-            CLIENTES
-        </a>
-        <a href="#" class="sidebar-item profile">
-            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
-            PERFIL
-        </a>
-    </div>
+    <%- include('../assets/menu.ejs')%>
 
     <div class="main-content">
-        <div class="product-header">
-            <button class="back-button">←</button>
-            <div class="product-info">
-                <img src="public/assets/icons/testeImagem.jpg" alt="<%= product.name %>" class="product-image">
-                <div class="product-details">
+        <div class="grupo-header">
+            <button class="back-button"><a href="/itens">←</a></button>
+            <div class="grupo-info">
+                <img src="<%= grupo.imagem ? grupo.imagem : '/icons/side-bar/itens.png' %>" alt="<%= grupo.nome %>" width="70">
+                <div class="grupo-details">
                     <div>NOME</div>
-                    <div><%= product.name %></div>
+                    <div><%= grupo.nome %></div>
                 </div>
-                <div class="product-details">
+                <div class="grupo-details">
                     <div>CATEGORIA</div>
-                    <div><%= product.category %></div>
+                    <div><%= grupo.categoria %></div>
                 </div>
-                <div class="product-details">
+                <div class="grupo-details">
                     <div>TOTAL</div>
-                    <div><%= product.total %></div>
+                    <div><%= grupo.quantidadeItens %></div>
                 </div>
-                <div class="product-details">
+                <div class="grupo-details">
                     <div>PREÇO</div>
-                    <div>R$ <%= product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></div>
+                    <div>R$ <%= grupo.precoGrupo.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></div>
                 </div>
             </div>
             <button class="description-btn" title="Descrição">💬</button>
@@ -363,15 +336,15 @@
                 </tr>
             </thead>
             <tbody>
-                <% items.forEach(function(item) { %>
+                <% grupo.itens.forEach(function(item) { %>
                     <tr>
                         <td><input type="checkbox"></td>
-                        <td>#<%= item.code %></td>
-                        <td><%= new Date(item.registerDate).toLocaleDateString('pt-BR') %></td>
-                        <td><%= item.reservationDate ? new Date(item.reservationDate).toLocaleDateString('pt-BR') : '-' %></td>
-                        <td><%= item.returnDate ? new Date(item.returnDate).toLocaleDateString('pt-BR') : '-' %></td>
+                        <td>#<%= item.codBarras %></td>
+                        <td><%= new Date(item.dataLocacao).toLocaleDateString('pt-BR') %></td>
+                        <td><%= item.dataReserva ? new Date(item.dataReserva).toLocaleDateString('pt-BR') : '-' %></td>
+                        <td><%= item.dataRetorno ? new Date(item.dataRetorno).toLocaleDateString('pt-BR') : '-' %></td>
                         <td>
-                            <div class="status status-<%= item.status.toLowerCase() %>">
+                            <div class="status status-<%= item.status %>">
                                 <span class="status-dot"></span>
                                 <%= item.status %>
                             </div>

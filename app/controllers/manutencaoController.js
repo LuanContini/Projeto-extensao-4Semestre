@@ -9,7 +9,7 @@ module.exports.getManutencao = async (req, res) => {
 
     const itensEmManutencao = await getManutencao(dbConn);
     const itensAgrupados = agruparPorGrupo(itensEmManutencao);
-    res.status(200).send({ 'itensEmManutencao': itensAgrupados });
+    res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': itensAgrupados, usuario: req.user });
   } catch (err) {
     res.status(500).send({ 'erro': err.message });
   }

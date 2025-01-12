@@ -160,3 +160,79 @@ JOIN
     historicoManutencao hm ON i.idItens = hm.idItens
 JOIN 
     manutencao m ON hm.idManutencao = m.idManutencao;
+
+
+CREATE OR REPLACE VIEW vw_itens_status AS
+SELECT 
+    g.idGrupo, 
+    g.nome,
+    g.precoGrupo,
+    g.categoria,
+    (SELECT COUNT(i.idItens)
+     FROM itens i
+     INNER JOIN reserva r ON i.idGrupo = r.idGrupo
+     INNER JOIN contrato c ON r.idContrato = c.idContrato
+     WHERE i.idGrupo = g.idGrupo
+     AND c.dataHora_Term > NOW()
+    ) AS reservado,
+    (SELECT COUNT(i.idItens)
+     FROM itens i
+     INNER JOIN historicoManutencao hm ON i.idItens = hm.idItens
+     INNER JOIN manutencao m ON hm.idManutencao = m.idManutencao
+     WHERE i.idGrupo = g.idGrupo
+     AND m.dataRetorno > NOW()
+    ) AS manutencao,
+    (SELECT COUNT(i.idItens) 
+     FROM itens i 
+     WHERE i.idGrupo = g.idGrupo 
+     AND i.idItens NOT IN 
+         (SELECT i2.idItens 
+          FROM itens i2 
+          INNER JOIN reserva r2 ON i2.idGrupo = r2.idGrupo
+          INNER JOIN contrato c2 ON r2.idContrato = c2.idContrato
+          WHERE i2.idGrupo = g.idGrupo
+          AND c2.dataHora_Term > NOW())
+     AND i.idItens NOT IN 
+         (SELECT i3.idItens 
+          FROM itens i3 
+          INNER JOIN historicoManutencao hm2 ON i3.idItens = hm2.idItens
+          INNER JOIN manutencao m2 ON hm2.idManutencao = m2.idManutencao
+          WHERE i3.idGrupo = g.idGrupo
+          AND m2.dataRetorno > NOW())
+    ) AS disponivel
+FROM grupo g
+GROUP BY g.idGrupo;
+
+
+CREATE OR REPLACE VIEW itens_com_status AS
+SELECT 
+    i.idItens,
+    i.codBarras,
+    i.dataLocacao,  -- Data de aquisição do item
+    i.idGrupo,
+    g.nome AS nomeGrupo,
+    g.categoria,
+    g.precoGrupo,
+    CASE
+        WHEN hm.idManutencao IS NOT NULL THEN 'Manutenção'
+        WHEN r.idReserva IS NOT NULL THEN 'Reservado'
+        ELSE 'Disponível'
+    END AS status,
+    r.dataHora_loca AS dataReserva,  -- Data de reserva
+    NULL AS dataRetorno,  -- Como o retorno não é fornecido, será NULL aqui
+    IFNULL(m.dataRetorno, NULL) AS dataRetornoManutencao  -- Data de retorno de manutenção
+FROM 
+    itens AS i
+LEFT JOIN 
+    grupo AS g ON i.idGrupo = g.idGrupo
+LEFT JOIN 
+    historicoManutencao AS hm ON i.idItens = hm.idItens AND hm.dataTerm IS NULL  -- Verifica se o item está em manutenção
+LEFT JOIN 
+    manutencao AS m ON hm.idManutencao = m.idManutencao  -- Detalhes da manutenção
+LEFT JOIN 
+    reserva AS r ON i.idGrupo = r.idGrupo AND r.idContrato IS NOT NULL;  -- Considera a reserva vinculada ao grupo de itens
+
+
+CREATE OR REPLACE VIEW categorias_grupos AS 
+SELECT 
+    DISTINCT(categoria) FROM grupo;

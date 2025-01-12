@@ -6,49 +6,49 @@ module.exports = {
     const sql = "SELECT * FROM usuario;";
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, (err, result) => {
-        if(err) {
+        if (err) {
           reject(err);
-        } else{
+        } else {
           resolve(result);
         }
-      })
+      });
     });
   },
   getUsuarioById: (dbConnection, idUsuario) => {
     //TODO GET USUARIO POR ID ESPECIFICO
   },
   findUsuario: (dbConnection, nome, senha) => {
-    const sql = "SELECT idUsuario, nome, tipo, senha FROM usuario WHERE nome = ?";
+    const sql =
+      "SELECT idUsuario, nome, tipo, senha FROM usuario WHERE nome = ?";
 
     return new Promise((resolve, reject) => {
-        dbConnection.query(sql, [nome], async (err, results) => {
-            if (err) {
-                return reject(err);
-            }
+      dbConnection.query(sql, [nome], async (err, results) => {
+        if (err) {
+          return reject(err);
+        }
 
-            if (results.length === 0) {
-                return reject(new Error("Usuário não encontrado"));
-            }
+        if (results.length === 0) {
+          return reject(new Error("Usuário não encontrado"));
+        }
 
-            const usuario = results[0];
+        const usuario = results[0];
 
-            try {
-                const isMatch = await bcrypt.compare(senha, usuario.senha);
+        try {
+          const isMatch = await bcrypt.compare(senha, usuario.senha);
 
-                if (isMatch) {
-
-                  resolve({
-                        idUsuario: usuario.idUsuario,
-                        nome: usuario.nome,
-                        tipo: usuario.tipo
-                    });
-                } else {
-                    reject(new Error("Senha incorreta"));
-                }
-            } catch (compareError) {
-                reject(compareError);
-            }
-        });
+          if (isMatch) {
+            resolve({
+              idUsuario: usuario.idUsuario,
+              nome: usuario.nome,
+              tipo: usuario.tipo,
+            });
+          } else {
+            reject(new Error("Senha incorreta"));
+          }
+        } catch (compareError) {
+          reject(compareError);
+        }
+      });
     });
   },
   adicionarUsuario: (
@@ -69,14 +69,14 @@ module.exports = {
         sql,
         [nome, cpf, telefone, email, senha, nasc, tipo],
         (err, result) => {
-          if(err){
+          if (err) {
             reject(err);
-          } else{
+          } else {
             resolve(result);
           }
-        });
-    })
-    
+        }
+      );
+    });
   },
   updateUsuario: (
     dbConnection,
@@ -90,39 +90,53 @@ module.exports = {
     tipo
   ) => {
     console.log("[Model Atualizar Usuario]");
-  
-    const sql = `
-      UPDATE usuario
-      SET nome = ?, cpf = ?, telefone = ?, email = ?, senha = ?, dataNasc = ?, tipo = ?
-      WHERE idUsuario = ?
-    `;
-  
+    console.log(idUsuario, nome, cpf, telefone, email, senha, nasc, tipo);
+
+    let sql;
+    const params = [nome, cpf, telefone, email, nasc, tipo, idUsuario];
+
+    if (senha && senha.trim() !== "") { 
+        sql = `
+            UPDATE usuario
+            SET nome = ?, cpf = ?, telefone = ?, email = ?, senha = ?, dataNasc = ?, tipo = ?
+            WHERE idUsuario = ?
+        `;
+        params.splice(4, 0, senha); 
+    } else {
+        sql = `
+            UPDATE usuario
+            SET nome = ?, cpf = ?, telefone = ?, email = ?, dataNasc = ?, tipo = ?
+            WHERE idUsuario = ?
+        `;
+    }
+
     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        sql,
-        [nome, cpf, telefone, email, senha, nasc, tipo, idUsuario],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
-      );
+        dbConnection.query(
+            sql,
+            params,
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            }
+        );
     });
-  },
+},
+
   deleteUsuario: (dbConnection, idUsuario) => {
     console.log("[Model usuario]");
     const sql = "DELETE FROM usuario WHERE idUsuario = ?;";
     return new Promise((resolve, reject) => {
       dbConnection.query(sql, [idUsuario], (err, result) => {
-        if(err) {
+        if (err) {
           reject(err);
-        } else{
+        } else {
           resolve(result);
         }
-      })
+      });
     });
   },
-  
 };
