@@ -4,12 +4,8 @@ const {
   getClientes,
   getClienteById,
   adicionarCliente,
-  adicionarPessoaFisica,
-  adicionarPessoaJuridica,
   deleteCliente,
   putCliente,
-  atualizarPessoaFisica,
-  atualizarPessoaJuridica,
 } = require("../models/clientesModel");
 
 //GET CLIENTE

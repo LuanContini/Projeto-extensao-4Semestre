@@ -1,11 +1,10 @@
-let sortDirection = [true, true, true, true, true, true, true, true]; // Define o estado da ordenação de cada coluna (true para crescente)
-        
+let sortDirection = [true, true, true, true, true, true, true, true]; 
+
             function sortTable(columnIndex) {
                 const table = document.querySelector('.grupos-table');
-                const rows = Array.from(table.rows).slice(1); // Remove o cabeçalho
+                const rows = Array.from(table.rows).slice(1); 
                 const isAscending = sortDirection[columnIndex];
                 
-                // Alterna a direção da ordenação
                 sortDirection[columnIndex] = !isAscending;
         
                 // Ordena as linhas
@@ -13,7 +12,7 @@ let sortDirection = [true, true, true, true, true, true, true, true]; // Define 
                     const cellA = rowA.cells[columnIndex].innerText.trim();
                     const cellB = rowB.cells[columnIndex].innerText.trim();
         
-                    if (columnIndex === 7) { // Preço (precisa ser tratado como número)
+                    if (columnIndex === 7) { 
                         const priceA = parseFloat(cellA.replace('R$', '').trim());
                         const priceB = parseFloat(cellB.replace('R$', '').trim());
                         return isAscending ? priceA - priceB : priceB - priceA;
@@ -21,12 +20,11 @@ let sortDirection = [true, true, true, true, true, true, true, true]; // Define 
                         const numA = parseInt(cellA);
                         const numB = parseInt(cellB);
                         return isAscending ? numA - numB : numB - numA;
-                    } else { // Texto (Nome, Categoria)
+                    } else { 
                         return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
                     }
                 });
         
-                // Atualiza a tabela com as linhas ordenadas
                 rows.forEach(row => table.appendChild(row));
         
                 // Atualizar a direção das setas

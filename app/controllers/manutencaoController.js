@@ -1,19 +1,16 @@
 const dbConnection = require("../../config/dbConnection");
 
 const { getManutencao, inserirHistoricoManutencao, inserirManutencao, deleteManutencao, putManutencao, getManutencaoById } = require("../models/manutencaoModel");
-
 const { getItens, getGrupos } = require("../models/itensModel");
 
 module.exports.getManutencao = async (req, res) => {
   const dbConn = await dbConnection();
 
   try {
-
-    const itensEmManutencao = await getManutencao(dbConn);
-    const itensAgrupados = agruparPorGrupo(itensEmManutencao);
-    res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': itensAgrupados, usuario: req.user });
+      const manutencaoAgrupada = await getManutencao(dbConn);
+      res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': manutencaoAgrupada, usuario: req.user });
   } catch (err) {
-    res.status(500).send({ 'erro': err.message });
+      res.status(500).send({ 'erro': err.message });
   }
 };
 
@@ -99,22 +96,4 @@ module.exports.deleteManutencao = async (req, res) => {
   } catch (err) {
     res.status(400).send({'err': err});
   }
-};
-
-
-const agruparPorGrupo = (itens) => {
-  return itens.reduce((acc, item) => {
-    const { idGrupo, nomeGrupo, categoria, precoGrupo, ...itemDetalhes } = item;
-    if (!acc[idGrupo]) {
-      acc[idGrupo] = {
-        idGrupo,
-        nomeGrupo,
-        categoria,
-        precoGrupo,
-        itens: []
-      };
-    }
-    acc[idGrupo].itens.push(itemDetalhes);
-    return acc;
-  }, {});
 };

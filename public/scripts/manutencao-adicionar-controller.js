@@ -129,13 +129,10 @@ function finalizeMaintenance() {
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Aqui você pode adicionar lógica para lidar com a resposta, como redirecionar ou mostrar uma mensagem de sucesso
+        window.location.href = '/manutencao'; 
+
     })
     .catch((error) => {
         console.error('Error:', error);
     });
-}
-
-function updateItems() {
-    // Esta função pode ser usada para qualquer atualização necessária ao selecionar um novo grupo
 }

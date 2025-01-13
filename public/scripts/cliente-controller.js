@@ -33,15 +33,34 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function populateClientDetails(clientData) {
+    const clientId = clientData.id; 
+    const clientDataFound = clients.find(client => client.id === clientId); 
+
+    if (!clientDataFound) {
+        console.error("Cliente não encontrado com o ID:", clientId);
+        return; 
+    }
+
     deleteButton.style.display = "block";
-    clientForm.nome.value = clientData.nome;
-    tipoDocumento.value = clientData.cpf ? "cpf" : "cnpj";
-    documentoInput.value = clientData.cpf || clientData.cnpj;
-    clientForm.email.value = clientData.email;
-    clientForm.telefone.value = clientData.telefone;
-    document.getElementById("observacao").value = clientData.observacao || ""; // Preencher o campo de observação
-    aplicarMascaraDocumento();
-  }
+    clientForm.nome.value = clientDataFound.nome;
+
+    if (clientDataFound.cpf) {
+        tipoDocumento.value = "cpf";
+        documentoInput.value = clientDataFound.cpf;
+    } else if (clientDataFound.cnpj) {
+        tipoDocumento.value = "cnpj";
+        documentoInput.value = clientDataFound.cnpj;
+    } else {
+        tipoDocumento.value = ""; 
+        documentoInput.value = ""; 
+    }
+
+    clientForm.email.value = clientDataFound.email;
+    clientForm.telefone.value = clientDataFound.telefone;
+    document.getElementById("observacao").value = clientDataFound.observacao || ""; 
+
+    aplicarMascaraDocumento(); 
+}
 
   clientRows.forEach((row) => {
     row.addEventListener("click", function () {

@@ -3,7 +3,7 @@ const Joi = require("joi");
 module.exports.validarUsuario = (req, res, next) => {
   // Define o schema de validação
   const schema = Joi.object({
-    nome: Joi.string().min(5).required().messages({
+    nome: Joi.string().min(2).required().messages({
       "string.base": "O nome deve ser uma string.",
       "string.min": "O nome deve ter pelo menos 5 caracteres.",
       "any.required": "O nome é obrigatório."
