@@ -12,7 +12,7 @@ module.exports = {
             i.idItens,
             i.codBarras,
             i.dataLocacao,
-            g.nomeGrupo
+            g.nome
         FROM 
             manutencao m
         LEFT JOIN 

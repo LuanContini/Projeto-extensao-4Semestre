@@ -112,7 +112,7 @@ const agruparPorGrupo = (itens) => {
               dataInic,
               dataRetorno,
               responsavel,
-              nomeGrupo,
+              nome,
               itens: []
           };
       }
