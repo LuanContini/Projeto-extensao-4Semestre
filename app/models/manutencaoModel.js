@@ -1,30 +1,42 @@
 module.exports = {
-
   //GETS
   getManutencao: (dbConnection) => {
     console.log("[Model manutencao]");
     const sql = "SELECT * FROM itens_em_manutencao_com_grupo;";
     return new Promise((resolve, reject) => {
-    dbConnection.query(sql, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err); // Retorna erro se não conseguir obter a conexão
+        }
+        connection.query(sql, (err, results) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      });
     });
-  });
   },
+
   getManutencaoById: (dbConnection, idManutencao) => {
-    const sql = "SELECT * FROM itens_em_manutencao_com_grupo where idManutencao = ?;";
+    const sql = "SELECT * FROM itens_em_manutencao_com_grupo WHERE idManutencao = ?;";
     return new Promise((resolve, reject) => {
-    dbConnection.query(sql, [idManutencao], (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err); // Retorna erro se não conseguir obter a conexão
+        }
+        connection.query(sql, [idManutencao], (err, results) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
+      });
     });
-  });
   },
   //--------------------------------------------------------
   
@@ -36,12 +48,18 @@ module.exports = {
     `;
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(insertManutencaoQuery, [motivo, dataInic, dataRetorno, responsavel], (err, results) => {
+      dbConnection.getConnection((err, connection) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(results.insertId);
+          return reject(new Error("Erro ao obter conexão: " + err.message));
         }
+        connection.query(insertManutencaoQuery, [motivo, dataInic, dataRetorno, responsavel], (err, results) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results.insertId);
+          }
+        });
       });
     });
   },
@@ -53,35 +71,46 @@ module.exports = {
     `;
     
     return new Promise((resolve, reject) => {
-      dbConnection.query(insertHistoricoQuery, [dataInic, dataTerm, idManutencao, idItens], (err, results) => {
+      dbConnection.getConnection((err, connection) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(results);
+          return reject(new Error("Erro ao obter conexão: " + err.message));
         }
+        connection.query(insertHistoricoQuery, [dataInic, dataTerm, idManutencao, idItens], (err, results) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        });
       });
     });
   },
   //--------------------------------------------------------
 
   //UPDATE
-  putManutencao: (dbConnection, {idManutencao, motivo, dataInic, dataRetorno, responsavel}) => {
+  putManutencao: (dbConnection, { idManutencao, motivo, dataInic, dataRetorno, responsavel }) => {
     const updateQuery = `
-    UPDATE manutencao
-    SET motivo = ?, dataInic = ?, dataRetorno = ?, responsavel = ?
-    WHERE idManutencao = ?;
-  `;
+      UPDATE manutencao
+      SET motivo = ?, dataInic = ?, dataRetorno = ?, responsavel = ?
+      WHERE idManutencao = ?;
+    `;
 
-  return new Promise((resolve, reject) => {
-    dbConnection.query(updateQuery, [motivo, dataInic, dataRetorno, responsavel, idManutencao], (err, result) => {
-      if(err) {
-        reject(err);
-      } else{
-        resolve(result);
-      }
+    return new Promise((resolve, reject) => {
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err); // Retorna erro se não conseguir obter a conexão
+        }
+        connection.query(updateQuery, [motivo, dataInic, dataRetorno, responsavel, idManutencao], (err, result) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      });
     });
-
-  })
   },
   //--------------------------------------------------------
 
@@ -90,12 +119,18 @@ module.exports = {
     const sql = 'DELETE FROM manutencao WHERE idManutencao = ?';
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(sql, [idManutencao], (err, result) => {
-        if(err) {
-          reject(err);
-        } else{
-          resolve(result);
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err); // Retorna erro se não conseguir obter a conexão
         }
+        connection.query(sql, [idManutencao], (err, result) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
     });
   }
