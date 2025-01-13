@@ -7,20 +7,49 @@ const fs = require('fs');
 
 require("dotenv").config({ path: ".env" });
 
+import {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} from "@aws-sdk/client-secrets-manager";
+
+const secret_name = "Projeto-extensao-4Semestre/.env";
+
+const client = new SecretsManagerClient({
+  region: "us-east-2",
+});
+
+let response;
+
+try {
+  response = await client.send(
+    new GetSecretValueCommand({
+      SecretId: secret_name,
+      VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+    })
+  );
+} catch (error) {
+  // For a list of exceptions thrown, see
+  // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+  throw error;
+}
+
+const secret = response.SecretString;
+
 let routes = require("./routes/index");
 
 let app = express();
-let port = process.env.PORT || 3000;
+
+const jwtSecret = secret.JWT_SECRET; 
 
 // Carregar o certificado e a chave privada
 const options = {
-  key: fs.readFileSync(path.join(__dirname, '../certs/privatekey.pem')), // Caminho para a chave privada
-  cert: fs.readFileSync(path.join(__dirname, '../certs/certificate.pem')) // Caminho para o certificado
+  key: fs.readFileSync(path.join(__dirname, '../certs/privatekey.pem')), 
+  cert: fs.readFileSync(path.join(__dirname, '../certs/certificate.pem')) 
 };
 
 // Configuração da sessão
 app.use(session({
-  secret: process.env.JWT_SECRET,
+  secret: jwtSecret,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // Para desenvolvimento, defina como false
