@@ -1,21 +1,21 @@
 const dbConnection = require("../../config/dbConnection");
 
 const { getManutencao, inserirHistoricoManutencao, inserirManutencao, deleteManutencao, putManutencao, getManutencaoById } = require("../models/manutencaoModel");
+
 const { getItens, getGrupos } = require("../models/itensModel");
 
 module.exports.getManutencao = async (req, res) => {
   const dbConn = await dbConnection();
 
   try {
-      const itensEmManutencao = await getManutencao(dbConn);
-      const itensAgrupados = agruparPorGrupo(itensEmManutencao);
-      console.log(agruparPorGrupo);
-      res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': itensAgrupados, usuario: req.user });
+
+    const itensEmManutencao = await getManutencao(dbConn);
+    const itensAgrupados = agruparPorGrupo(itensEmManutencao);
+    res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': itensAgrupados, usuario: req.user });
   } catch (err) {
-      res.status(500).send({ 'erro': err.message });
+    res.status(500).send({ 'erro': err.message });
   }
 };
-
 
 module.exports.getManutencaoById = async (req, res) => {
   const idManutencao = req.params.id;
@@ -101,30 +101,20 @@ module.exports.deleteManutencao = async (req, res) => {
   }
 };
 
+
 const agruparPorGrupo = (itens) => {
   return itens.reduce((acc, item) => {
-      const { idManutencao, motivo, dataInic, dataRetorno, responsavel, idItens, codBarras, dataLocacao, nome } = item;
-
-      if (!acc[idManutencao]) {
-          acc[idManutencao] = {
-              idManutencao,
-              motivo,
-              dataInic,
-              dataRetorno,
-              responsavel,
-              nome,
-              itens: []
-          };
-      }
-
-      if (idItens) {
-          acc[idManutencao].itens.push({
-              idItens,
-              codBarras,
-              dataLocacao
-          });
-      }
-
-      return acc;
+    const { idGrupo, nomeGrupo, categoria, precoGrupo, ...itemDetalhes } = item;
+    if (!acc[idGrupo]) {
+      acc[idGrupo] = {
+        idGrupo,
+        nomeGrupo,
+        categoria,
+        precoGrupo,
+        itens: []
+      };
+    }
+    acc[idGrupo].itens.push(itemDetalhes);
+    return acc;
   }, {});
 };
