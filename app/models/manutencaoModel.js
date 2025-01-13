@@ -18,7 +18,7 @@ module.exports = {
         LEFT JOIN 
             itens_em_manutencao_com_grupo i ON m.idManutencao = i.idManutencao
         LEFT JOIN 
-            grupos g ON i.idGrupo = g.idGrupo; -- Supondo que você tenha uma tabela de grupos
+            grupo g ON i.idGrupo = g.idGrupo; -- Supondo que você tenha uma tabela de grupos
     `;
     return new Promise((resolve, reject) => {
         dbConnection.getConnection((err, connection) => {
