@@ -42,7 +42,7 @@ module.exports.checarAuthComum = async (req, res, next) => {
         return res.render('telas_logins/tela_login', {error: null});
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, secret.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: "Token inválido" });
         }
@@ -63,7 +63,7 @@ module.exports.checarAuthAdmin = async (req, res, next) => {
         return res.render('telas_logins/tela_login', {error: null});
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, secret.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: "Token inválido" });
         }
