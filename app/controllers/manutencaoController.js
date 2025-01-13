@@ -103,7 +103,7 @@ module.exports.deleteManutencao = async (req, res) => {
 
 const agruparPorGrupo = (itens) => {
   return itens.reduce((acc, item) => {
-      const { idManutencao, motivo, dataInic, dataRetorno, responsavel, idItens, codBarras, dataLocacao, nomeGrupo } = item;
+      const { idManutencao, motivo, dataInic, dataRetorno, responsavel, idItens, codBarras, dataLocacao, nome } = item;
 
       if (!acc[idManutencao]) {
           acc[idManutencao] = {
