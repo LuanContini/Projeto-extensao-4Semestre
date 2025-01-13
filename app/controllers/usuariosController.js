@@ -151,6 +151,8 @@ module.exports.login = async (req, res) => {
 
   const secret = await getSecret();
 
+  console.log("secret", secret);
+
   try {
     const dbConn = dbConnection();
     const usuario = await findUsuario(dbConn, nome, senha);
