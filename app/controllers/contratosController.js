@@ -30,7 +30,7 @@ module.exports.getContratoById = async (req, res) => {
   }
 };
 
-module.exports.postContrato = (req, res) => {
+module.exports.postContrato = async (req, res) => {
   const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
 
     const dbConn = await dbConnection();
