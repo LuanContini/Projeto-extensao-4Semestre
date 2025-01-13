@@ -2,10 +2,7 @@ const mysql = require("mysql2");
 
 require("dotenv").config({ path: "../.env" });
 
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
+const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
 
 const secret_name = "Projeto-extensao-4Semestre/.env";
 
