@@ -19,7 +19,8 @@ module.exports.validarItem = (req, res, next) => {
       "number.positive": "O preço do grupo deve ser positivo.",
       "number.precision": "O preço do grupo deve ter no máximo 2 casas decimais.",
       "any.required": "O preço do grupo é obrigatório."
-    })
+    }),
+    quantidadeItens: Joi.number().allow(null, "")
   });
 
   const { error } = schema.validate(req.body);

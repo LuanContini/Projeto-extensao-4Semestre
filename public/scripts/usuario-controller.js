@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const editButton = document.getElementById("editButton");
     const userForm = document.getElementById("userForm");
     const inputs = userForm.querySelectorAll("input, select, textarea"); 
+    const deleteButton = document.getElementById("deleteButton");
+    console.log(deleteButton);
     let isEditing = false;
     let currentUserId = null;
 
@@ -147,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
         userDetails.style.display = "block"; 
         isEditing = true; 
         editButton.textContent = "SALVAR"; 
+        deleteButton.style.display = "none";
 
         resetInputs(); 
 
@@ -222,6 +225,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     function populateUserDetails(userData) {
+        deleteButton.style.display = "block";
+
         userForm.nome.value = userData.nome;
         userForm.cpf.value = userData.cpf;
         userForm.telefone.value = userData.telefone;

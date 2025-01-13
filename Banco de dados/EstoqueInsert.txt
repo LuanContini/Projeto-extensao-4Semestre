@@ -9,8 +9,13 @@ VALUES
 ('Paulo Lima', '56789012345', 'paulo.lima@email.com', 'senhaCriptografada', '011995432211', 'Operador', NULL),
 ('Juliana Pereira', '67890123456', 'juliana.pereira@email.com', 'senhaCriptografada', '011993322112', 'Administrador', NULL),
 ('Roberta Martins', '78901234567', 'roberta.martins@email.com', 'senhaCriptografada', '011992233445', 'Operador', NULL),
-('Ricardo Alves', '89012345678', 'ricardo.alves@email.com', 'senhaCriptografada', '011991156677', 'Administrador', NULL),
+('Admin', '89012345678', 'admin.admin@email.com', '$2b$10$zbds3Sjw.E40MpFCazCLV.4AYLJ2rrieDAqXYEZWB0niWFOAxmY7a', '011991156677', 'Administrador', NULL),
 ('Juliano Barbosa', '90123456789', 'juliano.barbosa@email.com', 'senhaCriptografada', '011998833445', 'Operador', NULL);
+
+INSERT INTO usuario (nome, cpf, email, senha, telefone, tipo, imagem)
+VALUES 
+('Admin', '89012345678', 'admin.admin@email.com', '$2b$10$zbds3Sjw.E40MpFCazCLV.4AYLJ2rrieDAqXYEZWB0niWFOAxmY7a', '011991156677', 'Administrador', NULL);
+
 
 INSERT INTO contratante (nome, email, telefone, imagem, observacao)
 VALUES 
@@ -25,31 +30,6 @@ VALUES
 ('Medtech', 'medtech@email.com', '011999001122', NULL, 'Tecnologia médica'),
 ('Auto Peças', 'auto.pecas@email.com', '0119100112233', NULL, 'Comércio de peças automotivas');
 
-INSERT INTO pessoaJuridica (idContratante, cnpj)
-VALUES 
-(1, '12345678000195'),
-(2, '23456789000164'),
-(3, '34567890000123'),
-(4, '45678901000112'),
-(5, '56789012000101'),
-(6, '67890123000190'),
-(7, '78901234000179'),
-(8, '89012345000168'),
-(9, '90123456000157'),
-(10, '01234567000146');
-
-INSERT INTO pessoaFisica (idContratante, cpf)
-VALUES 
-(1, '12345678901'),
-(2, '23456789012'),
-(3, '34567890123'),
-(4, '45678901234'),
-(5, '56789012345'),
-(6, '67890123456'),
-(7, '78901234567'),
-(8, '89012345678'),
-(9, '90123456789'),
-(10, '01234567890');
 
 INSERT INTO contrato (tipo, valor_total, cep, localEvento, localRetirada, dataHora_Ini, dataHora_Term, desc_empregados, idUsuario, idContratante)
 VALUES

@@ -2,10 +2,6 @@ const Joi = require("joi");
 
 module.exports.validarManutencao = (req, res, next) => {
   const schema = Joi.object({
-    idItens: Joi.number().positive().required().messages({
-      "number.base": "O idItens deve ser um número positivo.",
-      "any.required": "O idItens é obrigatório."
-    }),
     motivo: Joi.string().min(5).required().messages({
       "string.base": "O motivo deve ser uma string.",
       "string.min": "O motivo deve ter pelo menos 5 caracteres.",
@@ -25,6 +21,11 @@ module.exports.validarManutencao = (req, res, next) => {
       "string.base": "O responsável deve ser uma string.",
       "string.min": "O responsável deve ter pelo menos 1 caractere.",
       "any.required": "O responsável é obrigatório."
+    }),
+    selectedItems: Joi.array().min(1).required().messages({
+      "array.base": "Os itens selecionados devem ser um array.",
+      "array.min": "Pelo menos um item deve ser selecionado.",
+      "any.required": "Os itens selecionados são obrigatórios."
     })
   });
 
@@ -33,6 +34,7 @@ module.exports.validarManutencao = (req, res, next) => {
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
     return res.status(400).send({ err: errorMessages });
+  } else {
+    next();
   }
-  else next();
 };

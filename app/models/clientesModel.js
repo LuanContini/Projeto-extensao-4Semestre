@@ -6,30 +6,44 @@ module.exports = {
     const sql = "SELECT * FROM contratante;";
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(sql, (err, result) => {
+      dbConnection.getConnection((err, connection) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+          return reject(err);
         }
+        connection.query(sql, (err, result) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
     });
   },
+
   getClienteById: (dbConnection, idCliente) => {
     console.log("[Model getClienteById]");
 
     const sql = "SELECT * FROM contratante WHERE idContratante = ?";
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(sql, [idCliente], (err, result) => {
+      dbConnection.getConnection((err, connection) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+          return reject(err);
         }
+        connection.query(sql, [idCliente], (err, result) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
     });
   },
+
   //---------------
 
   //INSERT
@@ -52,19 +66,26 @@ module.exports = {
       `;
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        sql,
-        [nome, telefone, email, observacao, imagem, cpf, cnpj],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result.insertId);
-          }
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err);
         }
-      );
+        connection.query(
+          sql,
+          [nome, telefone, email, observacao, imagem, cpf, cnpj],
+          (err, result) => {
+            connection.release(); // Libera a conexão de volta ao pool
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result.insertId);
+            }
+          }
+        );
+      });
     });
   },
+
   //----------------
 
   //UPDATE
@@ -88,17 +109,23 @@ module.exports = {
     `;
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(
-        sql,
-        [nome, telefone, email, observacao, imagem, cpf, cnpj, idCliente],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err);
         }
-      );
+        connection.query(
+          sql,
+          [nome, telefone, email, observacao, imagem, cpf, cnpj, idCliente],
+          (err, result) => {
+            connection.release(); // Libera a conexão de volta ao pool
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
     });
   },
   //------------
@@ -110,12 +137,18 @@ module.exports = {
     const sql = `DELETE FROM contratante WHERE idContratante = ?;`;
 
     return new Promise((resolve, reject) => {
-      dbConnection.query(sql, [idCliente], (err, result) => {
+      dbConnection.getConnection((err, connection) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+          return reject(err);
         }
+        connection.query(sql, [idCliente], (err, result) => {
+          connection.release(); // Libera a conexão de volta ao pool
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
     });
   },

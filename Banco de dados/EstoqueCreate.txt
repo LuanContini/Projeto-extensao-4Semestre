@@ -1,7 +1,7 @@
--- DATABASE IF EXISTS controle_locacao_teste;
-DROP DATABASE IF EXISTS controle_locacao;
-CREATE DATABASE IF NOT EXISTS controle_locacao;
-USE controle_locacao;
+-- DATABASE IF EXISTS controle_locacL_teste;
+DROP DATABASE IF EXISTS controleLocacao;
+CREATE DATABASE IF NOT EXISTS controleLocacao;
+USE controleLocacao;
 
 CREATE TABLE IF NOT EXISTS usuario (
 	idUsuario INT AUTO_INCREMENT,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 	tipo ENUM('Administrador', 'Operador') NOT NULL DEFAULT 'Operador', -- Tipo so pode ser armazenado com 1 desses 2 tipos
 	imagem LONGBLOB,
 	PRIMARY KEY(idUsuario),
-    CHECK(LENGTH(nome) >= 3), 
+    CHECK(LENGTH(nome) >= 3)
 );
 
 -- SELECT nome, DATE_FORMAT(data_nascimento, '%d/%m/%Y') AS data_nascimento_br FROM usuarios;
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS contrato (
     cep VARCHAR(8) NOT NULL, -- Validador para se o cep tem exatamente 8 digitos
     localEvento VARCHAR(150) NOT NULL,
     localRetirada VARCHAR(150) NOT NULL,
-    dataHora_Ini DATETIME NOT NULL,
-    dataHora_Term DATETIME NOT NULL,
+    dataHoraIni DATETIME NOT NULL,
+    dataHoraTerm DATETIME NOT NULL,
     descEmpregados VARCHAR(300) NOT NULL,
     idUsuario INT NOT NULL,
     idContratante INT NOT NULL,

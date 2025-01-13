@@ -2,8 +2,10 @@ const dbConnection = require("../../config/dbConnection");
 
 const { getManutencao, inserirHistoricoManutencao, inserirManutencao, deleteManutencao, putManutencao, getManutencaoById } = require("../models/manutencaoModel");
 
+const { getItens, getGrupos } = require("../models/itensModel");
+
 module.exports.getManutencao = async (req, res) => {
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
 
   try {
 
@@ -18,7 +20,7 @@ module.exports.getManutencao = async (req, res) => {
 module.exports.getManutencaoById = async (req, res) => {
   const idManutencao = req.params.id;
   
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
 
   try {
 
@@ -30,25 +32,49 @@ module.exports.getManutencaoById = async (req, res) => {
   }
 };
 
+module.exports.telaAdicionar = async (req, res) => {
+
+  try {
+    const dbConn = await dbConnection();
+    const itens = await getItens(dbConn);
+    const grupos = await getGrupos(dbConn);
+
+    const itensComGrupos = grupos.map(grupo => {
+      const itensDoGrupo = itens.filter(item => item.idGrupo === grupo.idGrupo);
+      return {
+        ...grupo,
+        itens: itensDoGrupo,
+        quantidadeItens: itensDoGrupo.length 
+      };
+    });
+  res.render("./telas_manutencao/tela_manutencao_adicionar.ejs", {"grupoComItens": itensComGrupos, usuario: req.user});
+
+  } catch (err) {
+    res.status(500).send({'err': err.message});
+  }
+};
+
 module.exports.postManutencao = async (req, res) => {
-  const { idItens, motivo, dataInic, dataRetorno, responsavel } = req.params;
-  const dbConn = dbConnection();
+  const { motivo, dataInic, dataRetorno, responsavel, selectedItems } = req.body;
+  const dbConn = await dbConnection();
 
   try {
     const idManutencao = await inserirManutencao(dbConn, { motivo, dataInic, dataRetorno, responsavel });
 
-    // Inserir dados na tabela historicoManutencao
-    await inserirHistoricoManutencao(dbConn, { dataInic, dataTerm: dataRetorno, idManutencao, idItens });
+    for (const item of selectedItems) {
+      await inserirHistoricoManutencao(dbConn, { dataInic, dataTerm: dataRetorno, idManutencao, idItens: item.id });
+    }
 
-    res.status(201).send({ mensagem: "Item adicionado à manutenção com sucesso.", idManutencao });
+    res.status(201).send({ mensagem: "Itens adicionados à manutenção com sucesso.", idManutencao });
   } catch (err) {
     res.status(500).send({ erro: err.message });
-  }};
+  }
+};
 
 module.exports.putManutencao = async (req, res) => {
   const {idManutencao, motivo, dataInic, dataRetorno, responsavel } = req.params;
 
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
   try {
     const result = await putManutencao(dbConn, {idManutencao, motivo, dataInic, dataRetorno, responsavel });
 
@@ -65,7 +91,7 @@ module.exports.putManutencao = async (req, res) => {
 module.exports.deleteManutencao = async (req, res) => {
   const idManutencao = req.params.id;
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const result = await deleteManutencao(dbConn, idManutencao);
 

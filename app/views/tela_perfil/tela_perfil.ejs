@@ -1,0 +1,355 @@
+<!-- views/profile.ejs -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Perfil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 100px;
+            height: 100vh;
+            background-color: #e8e3d9;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;              
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .sidebar-item.profile {
+            margin-top: auto;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .content-wrapper {
+            margin-left: 100px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .edit-button {
+            background-color: #1a1b4b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .profile-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .section-title {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+
+        .photo-section {
+            margin-bottom: 30px;
+        }
+
+        .photo-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .photo-placeholder {
+            width: 150px;
+            height: 150px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .photo-info {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .photo-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .photo-button {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group input:disabled {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .date-inputs input {
+            width: 80px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../assets/menu.ejs') %>
+
+    <div class="content-wrapper">
+        <div class="main-content">
+            <div class="header">
+                <h1 class="page-title">Seu Perfil</h1>
+                <button class="edit-button" id="editButton">EDITAR</button>
+            </div>
+
+            <div class="profile-container">
+                <div class="photo-section">
+                    <h2 class="section-title">Foto de perfil</h2>
+                    <div class="photo-container">
+                        <form id="photoForm" action="/perfil/foto" method="POST" enctype="multipart/form-data">
+                            <div class="photo-placeholder">
+                                <% if (usuario.foto_url) { %>
+                                    <img src="<%= usuario.foto_url %>" alt="Foto de Perfil" id="profileImage" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
+                                <% } else { %>
+                                    <img src="/assets/icons/profile.png" alt="Profile" id="profileImage" width="50">
+                                <% } %>
+                            </div>
+                            <span class="photo-info">PNG, JPEG abaixo de 15MB</span>
+                            <div class="photo-buttons">
+                                <input type="file" id="photoInput" name="foto" accept="image/png,image/jpeg" style="display: none">
+                                <button type="button" class="photo-button" id="uploadButton">Colocar nova Foto</button>
+                                <button type="button" class="photo-button" id="removeButton" <%= !usuario.foto_url ? 'disabled' : '' %>>Remover</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <form id="profileForm" action="/perfil/atualizar" method="POST">
+                    <div class="profile-info">
+                        <div class="info-section">
+                            <h2 class="section-title">Nome completo</h2>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" name="nome" value="<%= usuario.nome %>" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Nascimento</label>
+                                <div class="date-inputs">
+                                    <% const dataNasc = new Date(usuario.dataNasc); %>
+                                    <input type="text" name="dia" placeholder="DD" maxlength="2" class="date-mask" 
+                                           value="<%= dataNasc.getDate().toString().padStart(2, '0') %>" disabled>
+                                    <input type="text" name="mes" placeholder="MM" maxlength="2" class="date-mask" 
+                                           value="<%= (dataNasc.getMonth() + 1).toString().padStart(2, '0') %>" disabled>
+                                    <input type="text" name="ano" placeholder="AAAA" maxlength="4" class="date-mask" 
+                                           value="<%= dataNasc.getFullYear() %>" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>CPF</label>
+                                <input type="text" name="cpf" class="cpf-mask" value="<%= usuario.cpf %>" disabled>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h2 class="section-title">Contato</h2>
+                            <div class="form-group">
+                                <label>EMAIL</label>
+                                <input type="email" name="email" value="<%= usuario.email %>" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="tel" name="telefone" class="phone-mask" value="<%= usuario.telefone %>" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.3/imask.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButton = document.getElementById('editButton');
+            const profileForm = document.getElementById('profileForm');
+            const uploadButton = document.getElementById('uploadButton');
+            const removeButton = document.getElementById('removeButton');
+            const photoInput = document.getElementById('photoInput');
+            const photoForm = document.getElementById('photoForm');
+            let isEditing = false;
+
+            uploadButton.addEventListener('click', () => {
+                photoInput.click();
+            });
+
+            photoInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const formData = new FormData(photoForm);
+                    
+                    fetch('/perfil/foto', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('profileImage').src = data.foto_url;
+                            removeButton.disabled = false;
+                        } else {
+                            alert('Erro ao fazer upload da foto');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao fazer upload da foto');
+                    });
+                }
+            });
+
+            removeButton.addEventListener('click', () => {
+                fetch('/perfil/foto', {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('profileImage').src = '/assets/icons/profile.png';
+                        removeButton.disabled = true;
+                    } else {
+                        alert('Erro ao remover a foto');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao remover a foto');
+                });
+            });
+
+            // Manipulação do formulário de perfil
+            editButton.addEventListener('click', function() {
+                isEditing = !isEditing;
+                const inputs = profileForm.querySelectorAll('input');
+                
+                if (isEditing) {
+                    editButton.textContent = 'SALVAR';
+                    inputs.forEach(input => input.disabled = false);
+                } else {
+                    profileForm.submit();
+                    editButton.textContent = 'EDITAR';
+                    inputs.forEach(input => input.disabled = true);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

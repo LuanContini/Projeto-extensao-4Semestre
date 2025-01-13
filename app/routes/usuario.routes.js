@@ -7,8 +7,7 @@ const auth = require("../middleware/auth.usuario");
 
 
 router.get("/", auth.checarAuthAdmin, usuarioController.getUsuarios);
-router.get('/login', usuarioController.telaLogin);
-router.get("/:id", auth.checarAuthAdmin, usuarioController.getUsuarioById);
+router.get("/perfil/:idUsuario", auth.checarAuthAdmin, usuarioController.telaPerfil);
 
 router.post("/login", usuarioController.login);
 router.post("/login/logout", usuarioController.logout);

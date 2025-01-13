@@ -24,6 +24,7 @@
 node_modules/
 EstoqueSQL/
 key/
+certs/
 
 # Logs and databases #
 ######################
