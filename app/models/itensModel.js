@@ -95,7 +95,6 @@ module.exports = {
             }
 
             idGrupo = createGroupResult.insertId;
-            console.log("Grupo criado com sucesso! ID:", idGrupo);
 
             dbConnection.query(adicionarItemSql, [idGrupo], (err, result) => {
               if (err) {
@@ -114,7 +113,6 @@ module.exports = {
           });
         } else {
           idGrupo = groupResults[0].idGrupo;
-          console.log("Grupo já existe, usando ID:", idGrupo);
 
           dbConnection.query(adicionarItemSql, [idGrupo], (err, result) => {
             if (err) {

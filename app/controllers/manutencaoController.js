@@ -47,7 +47,6 @@ module.exports.telaAdicionar = async (req, res) => {
         quantidadeItens: itensDoGrupo.length 
       };
     });
-    console.log(itensComGrupos);
   res.render("./telas_manutencao/tela_manutencao_adicionar.ejs", {"grupoComItens": itensComGrupos, usuario: req.user});
 
   } catch (err) {

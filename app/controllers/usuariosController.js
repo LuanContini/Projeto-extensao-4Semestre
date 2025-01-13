@@ -66,6 +66,9 @@ module.exports.getUsuarioById = async (req, res) => {
 };
 
 module.exports.postUsuario = async (req, res) => {
+
+  const secret = await getSecret();
+
   const { nome, cpf, telefone, email, senha, dataNasc, tipo } = req.body;
 
   try {
@@ -131,8 +134,6 @@ module.exports.telaPerfil = async (req, res) => {
   const dbConn = await dbConnection();
   try {
     const idUsuario = req.params.idUsuario;
-
-    console.log(req.user);
 
     const usuarios = await getUsuarios(dbConn);
     const usuarioById = usuarios.find(

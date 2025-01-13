@@ -124,8 +124,6 @@ module.exports.putItem = async (req, res) => {
   const { nome, categoria, precoGrupo} = req.body;
   const idGrupo = req.params.idGrupo; 
 
-  console.log(idGrupo);
-
   const dbConn = await dbConnection();
 
   try {

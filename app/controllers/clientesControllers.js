@@ -46,7 +46,6 @@ module.exports.getClienteById = async (req, res) => {
 module.exports.postCliente = async (req, res) => {
   const { nome, telefone, email, observacao, imagem, cpf, cnpj} = req.body;
 
-  console.log(cpf, cnpj);
   try {
     const dbConn = await dbConnection();
 
@@ -74,8 +73,6 @@ module.exports.postCliente = async (req, res) => {
 module.exports.putCliente = async (req, res) => {
   const idCliente = req.params.id; // ID do cliente a ser atualizado
   const { nome, telefone, email, observacao, imagem, cnpj, cpf} = req.body;
-
-  console.log(cpf, cnpj);
 
   
   try {

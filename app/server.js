@@ -65,10 +65,6 @@ async function startServer() {
     }
   }));
 
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-  });
 
   // Definir as rotas
   app.use("/", routes);
