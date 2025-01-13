@@ -7,12 +7,15 @@ module.exports.getManutencao = async (req, res) => {
   const dbConn = await dbConnection();
 
   try {
-      const manutencaoAgrupada = await getManutencao(dbConn);
-      res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': manutencaoAgrupada, usuario: req.user });
+      const itensEmManutencao = await getManutencao(dbConn);
+      const itensAgrupados = agruparPorGrupo(itensEmManutencao);
+      console.log(agruparPorGrupo);
+      res.render("./telas_manutencao/tela_manutencao_principal.ejs", { 'itensEmManutencao': itensAgrupados, usuario: req.user });
   } catch (err) {
       res.status(500).send({ 'erro': err.message });
   }
 };
+
 
 module.exports.getManutencaoById = async (req, res) => {
   const idManutencao = req.params.id;
@@ -96,4 +99,32 @@ module.exports.deleteManutencao = async (req, res) => {
   } catch (err) {
     res.status(400).send({'err': err});
   }
+};
+
+const agruparPorGrupo = (itens) => {
+  return itens.reduce((acc, item) => {
+      const { idManutencao, motivo, dataInic, dataRetorno, responsavel, idItens, codBarras, dataLocacao, nomeGrupo } = item;
+
+      if (!acc[idManutencao]) {
+          acc[idManutencao] = {
+              idManutencao,
+              motivo,
+              dataInic,
+              dataRetorno,
+              responsavel,
+              nomeGrupo,
+              itens: []
+          };
+      }
+
+      if (idItens) {
+          acc[idManutencao].itens.push({
+              idItens,
+              codBarras,
+              dataLocacao
+          });
+      }
+
+      return acc;
+  }, {});
 };

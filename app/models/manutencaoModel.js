@@ -12,26 +12,25 @@ module.exports = {
             i.idItens,
             i.codBarras,
             i.dataLocacao,
-            i.nomeGrupo,
-            i.categoria,
-            i.precoGrupo
+            g.nomeGrupo
         FROM 
             manutencao m
         LEFT JOIN 
-            itens_em_manutencao_com_grupo i ON m.idManutencao = i.idManutencao;
+            itens_em_manutencao_com_grupo i ON m.idManutencao = i.idManutencao
+        LEFT JOIN 
+            grupos g ON i.idGrupo = g.idGrupo; -- Supondo que você tenha uma tabela de grupos
     `;
     return new Promise((resolve, reject) => {
         dbConnection.getConnection((err, connection) => {
             if (err) {
-                return reject(err); 
+                return reject(err);
             }
             connection.query(sql, (err, results) => {
-                connection.release(); 
+                connection.release();
                 if (err) {
                     reject(err);
                 } else {
-                    const manutencaoAgrupada = agruparManutencaoComItens(results);
-                    resolve(manutencaoAgrupada);
+                    resolve(results);
                 }
             });
         });
@@ -153,34 +152,4 @@ module.exports = {
     });
   }
   //--------------------------------------------------------
-};
-
-const agruparManutencaoComItens = (results) => {
-  return results.reduce((acc, item) => {
-      const { idManutencao, motivo, dataInic, dataRetorno, responsavel, idItens, codBarras, dataLocacao, nomeGrupo, categoria, precoGrupo } = item;
-
-      if (!acc[idManutencao]) {
-          acc[idManutencao] = {
-              idManutencao,
-              motivo,
-              dataInic,
-              dataRetorno,
-              responsavel,
-              itens: []
-          };
-      }
-
-      if (idItens) {
-          acc[idManutencao].itens.push({
-              idItens,
-              codBarras,
-              dataLocacao,
-              nomeGrupo,
-              categoria,
-              precoGrupo
-          });
-      }
-
-      return acc;
-  }, {});
 };
