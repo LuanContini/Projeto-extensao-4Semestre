@@ -151,7 +151,6 @@ module.exports.login = async (req, res) => {
 
   const secret = await getSecret();
 
-  console.log("secret", secret);
 
   try {
     const dbConn = dbConnection();
@@ -175,6 +174,7 @@ module.exports.login = async (req, res) => {
     delete req.session.returnTo;
     res.redirect(returnTo);
   } catch (err) {
+    console.log(err);
     return res.render("telas_logins/tela_login", {
       error: "Usuario ou senha não encontrado",
     });
