@@ -5,7 +5,7 @@ const { getManutencao, inserirHistoricoManutencao, inserirManutencao, deleteManu
 const { getItens, getGrupos } = require("../models/itensModel");
 
 module.exports.getManutencao = async (req, res) => {
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
 
   try {
 
@@ -20,7 +20,7 @@ module.exports.getManutencao = async (req, res) => {
 module.exports.getManutencaoById = async (req, res) => {
   const idManutencao = req.params.id;
   
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
 
   try {
 
@@ -35,7 +35,7 @@ module.exports.getManutencaoById = async (req, res) => {
 module.exports.telaAdicionar = async (req, res) => {
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
     const itens = await getItens(dbConn);
     const grupos = await getGrupos(dbConn);
 
@@ -57,7 +57,7 @@ module.exports.telaAdicionar = async (req, res) => {
 
 module.exports.postManutencao = async (req, res) => {
   const { motivo, dataInic, dataRetorno, responsavel, selectedItems } = req.body;
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
 
   try {
     const idManutencao = await inserirManutencao(dbConn, { motivo, dataInic, dataRetorno, responsavel });
@@ -75,7 +75,7 @@ module.exports.postManutencao = async (req, res) => {
 module.exports.putManutencao = async (req, res) => {
   const {idManutencao, motivo, dataInic, dataRetorno, responsavel } = req.params;
 
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
   try {
     const result = await putManutencao(dbConn, {idManutencao, motivo, dataInic, dataRetorno, responsavel });
 
@@ -92,7 +92,7 @@ module.exports.putManutencao = async (req, res) => {
 module.exports.deleteManutencao = async (req, res) => {
   const idManutencao = req.params.id;
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const result = await deleteManutencao(dbConn, idManutencao);
 

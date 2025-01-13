@@ -5,7 +5,7 @@ const { getContratos, getContratoById, adicionarContrato } = require("../models/
 module.exports.getContratos = async (req, res) => {
   
   try{
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const contratos = await getContratos(dbConn);
 
@@ -20,7 +20,7 @@ module.exports.getContratoById = async (req, res) => {
   const idContrato = req.params.id;
 
   try{
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const contrato = await getContratoById(dbConn, idContrato);
 
@@ -33,7 +33,7 @@ module.exports.getContratoById = async (req, res) => {
 module.exports.postContrato = (req, res) => {
   const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
 
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     adicionarContrato(
       dbConn,

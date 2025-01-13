@@ -25,7 +25,8 @@ async function getSecret() {
   }
 }
 
-module.exports = () => async function createDbConnection() {
+// Função para criar a conexão com o banco de dados
+async function createDbConnection() {
   const secret = await getSecret(); 
 
   const host = secret.HOST;
@@ -40,6 +41,6 @@ module.exports = () => async function createDbConnection() {
     password: password,
     database: database,
   });
-
-
 }
+
+module.exports = createDbConnection;

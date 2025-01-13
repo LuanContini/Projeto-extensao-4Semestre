@@ -38,7 +38,7 @@ async function getSecret() {
 }
 
 module.exports.getUsuarios = async (req, res) => {
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
   try {
     const usuarios = await getUsuarios(dbConn);
     res.render("./tela_usuario/tela_usuarios.ejs", {
@@ -52,7 +52,7 @@ module.exports.getUsuarios = async (req, res) => {
 };
 
 module.exports.getUsuarioById = async (req, res) => {
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
   try {
     const idUsuario = req.params.id;
     const usuarios = await getUsuarios(dbConn);
@@ -69,7 +69,7 @@ module.exports.postUsuario = async (req, res) => {
   const { nome, cpf, telefone, email, senha, dataNasc, tipo } = req.body;
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
     const salt = await bcrypt.genSalt(Number(secret.SALT_ROUNDS));
     const senhaEncriptada = await bcrypt.hash(senha, salt);
 
@@ -99,7 +99,7 @@ module.exports.putUsuario = async (req, res) => {
   const secret = await getSecret();
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
     let senhaEncriptada;
 
     if (senha) {
@@ -128,7 +128,7 @@ module.exports.putUsuario = async (req, res) => {
 };
 
 module.exports.telaPerfil = async (req, res) => {
-  const dbConn = dbConnection();
+  const dbConn = await dbConnection();
   try {
     const idUsuario = req.params.idUsuario;
 
@@ -153,7 +153,7 @@ module.exports.login = async (req, res) => {
 
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
     const usuario = await findUsuario(dbConn, nome, senha);
 
     if (!usuario) {
@@ -195,7 +195,7 @@ module.exports.deleteUsuario = async (req, res) => {
   const { idUsuario } = req.params;
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
     const result = await deleteUsuario(dbConn, idUsuario);
     res.status(200).send({ "result": result });
   } catch (err) {
