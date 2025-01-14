@@ -118,4 +118,14 @@ module.exports = {
       });
     });
   },
+
+  fetchContratantes: async (dbConn) => {
+    const sql = "SELECT idContratante, nome, email, telefone FROM contratante";
+    return new Promise((resolve, reject) => {
+        dbConn.query(sql, (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+  }
 };

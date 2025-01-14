@@ -1,83 +1,104 @@
+const dbConnection = require("../../config/dbConnection");
+
 module.exports = {
-  getContratosModel: (dbConnection) => {
-  console.log("[Model contrato]");
-  const sql = "SELECT * FROM contrato;";
-  return new Promise((resolve, reject) => {
-    dbConnection.query(sql, (err, results) => {
-      if (err) {
-        return reject(err); // Rejeita a Promise em caso de erro
-      }
-      resolve(results); // Resolve a Promise com os resultados
-    });
-  });
-},
+    getContratosModel: async (conn) => {
+        console.log("[Model contrato]");
+        const sql = "SELECT * FROM contrato;";
+        return await conn.query(sql);
+    },
 
-  adicionarContrato: (
-  dbConnection,
-  tipo,
-  localEven,
-  cep,
-  apelido,
-  idUsuario,
-  idContratante
-) => {
-  const sql = `INSERT INTO contrato (tipo, localEven, cep, apelido, idUsuario, idContratante) VALUES (?, ?, ?, ?, ?, ?)`;
+    adicionarContrato: async (
+        conn,
+        tipo,
+        localEven,
+        cep,
+        apelido,
+        idUsuario,
+        idContratante
+    ) => {
+        const sql = `
+            INSERT INTO contrato 
+            (tipo, localEvento, cep, apelido, idUsuario, idContratante) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        
+        return await conn.query(
+            sql,
+            [tipo, localEven, cep, apelido, idUsuario, idContratante]
+        );
+    },
 
-  return new Promise((resolve, reject) => {
-    dbConnection.query(
-      sql,
-      [tipo, localEven, cep, apelido, idUsuario, idContratante],
-      (err, results) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(results);
-      }
-    );
-  });
-},
+    putContrato: (dbConnection, idContrato, contratoData) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE contrato 
+                SET tipo = ?, 
+                    localEvento = ?, 
+                    cep = ?, 
+                    apelido = ?,
+                    idUsuario = ?, 
+                    idContratante = ?
+                WHERE idContrato = ?
+            `;
+            
+            dbConnection.query(
+                sql,
+                [
+                    contratoData.tipo,
+                    contratoData.localEven,
+                    contratoData.cep,
+                    contratoData.apelido,
+                    contratoData.idUsuario,
+                    contratoData.idContratante,
+                    idContrato
+                ],
+                (err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(results);
+                }
+            );
+        });
+    },
 
+    deleteContrato: (dbConnection, idContrato) => {
+        return new Promise((resolve, reject) => {
+            const sql = "DELETE FROM contrato WHERE idContrato = ?";
+            dbConnection.query(sql, [idContrato], (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results);
+            });
+        });
+    },
 
-putContrato: (dbConnection, /*outros campos*/ callback) => {
-  //TODO EDITAR CONTRATOS MODEL
-},
+    getStatusCount: (dbConnection, callback) => {
+        const query = `
+            SELECT 
+                SUM(CASE WHEN status = 'Concluido' THEN 1 ELSE 0 END) AS concluidos,
+                SUM(CASE WHEN status = 'Em andamento' THEN 1 ELSE 0 END) AS em_andamento,
+                SUM(CASE WHEN status = 'Pendente' THEN 1 ELSE 0 END) AS pendentes,
+                COUNT(status) AS 'totalContrato',
+                SUM(valorTotal) AS 'lucroPrevisto' 
+            FROM contrato;
+        `;
 
-deleteContrato: (dbConnection, idContrato, callback) => {
-  //TODO EXCLUIR CONTRATOS MODEL
-},
+        dbConnection.query(query, (error, results) => {
+            if (error) {
+                return callback(error, null);
+            }
 
-getContratoStatus: (dbConnection) => {
-  console.log("[Model contrato por status]");
-  const sql = `
-      SELECT 
-      CASE
-          WHEN NOW() BETWEEN dataHoraIni AND dataHoraTerm THEN 'andamento'
-          WHEN NOW() < dataHoraTerm THEN 'pendente'
-          WHEN NOW() > dataHoraTerm THEN 'concluído'
-          ELSE 'desconhecido'
-      END AS status,
-      SUM(valorTotal) AS totalContratos
-  FROM contrato
-  GROUP BY 
-      CASE
-          WHEN NOW() BETWEEN dataHoraIni AND dataHoraTerm THEN 'andamento'
-          WHEN NOW() < dataHoraTerm THEN 'pendente'
-          WHEN NOW() > dataHoraTerm THEN 'concluído'
-          ELSE 'desconhecido'
-      END;
-    `;
-  return new Promise((resolve, reject) => {
-    dbConnection.query(sql, (err, results) => {
-      if (err) {
-        return reject(err);
-      }
-      else{
-        resolve(results);
-      }
+            const statusCount = {
+                pendentes: results[0].pendentes || 0,
+                concluidos: results[0].concluidos || 0,
+                em_andamento: results[0].em_andamento || 0,
+                totalContrato: results[0].totalContrato || 0,
+                lucroPrevisto: results[0].lucroPrevisto || 0
+            };
 
-    });
-  });
-},
+            callback(null, statusCount);
+        });
+    }
 };
-
-

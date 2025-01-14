@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -275,53 +275,58 @@
             width: 100px;
             height: 100px;
         }
+        .option-limited {
+            max-width: 200px; /* Defina o tamanho máximo desejado */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .equipment-list-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .equipment-list-table th, .equipment-list-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .equipment-list-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
-            ITENS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
-            CONTRATOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
-            MANUTENÇÃO
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
-            USUÁRIOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
-            CLIENTES
-        </a>
-        <a href="#" class="sidebar-item profile">
-            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
-            PERFIL
-        </a>
-    </div>
+    <%- include('../assets/menu.ejs')%>
 
     <div class="main-content">
         <div class="header">
             <button class="back-button" onclick="history.back()">←</button>
             <h1 class="page-title">Adicionar Contrato</h1>
-            <div class="location-badge">Locação</div>
+            <div class="location-badge"><%= tipo %></div>
             <button class="finalize-button" onclick="submitForm()">Finalizar</button>
         </div>
 
         <div class="content-container">
             <div class="left-section">
                 <form id="contractForm" method="POST" action="/contracts/add">
+                    <input type="hidden" name="tipo" value="<%= tipo %>">
                     <div class="form-section">
                         <h2 class="section-title">Informações Gerais</h2>
                         <div class="form-group">
                             <label class="required">Nome</label>
                             <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Tipo</label>
+                            <select name="tipo" class="form-control" required>
+                                <option value="">Selecione um tipo</option>
+                                <option value="Locacao">Locação</option>
+                                <option value="Entrega">Entrega</option>
+                                <option value="Montar">Montar</option>
+                                <option value="Operar">Operar</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="required">Local de Retirada</label>
@@ -345,11 +350,17 @@
                         </div>
                         <div class="form-group">
                             <label class="required">Contratante</label>
-                            <select name="client_id" class="form-control" required>
-                                <option value="">Escolha uma opção</option>
-                                <% clients.forEach(function(client) { %>
-                                    <option value="<%= client.id %>"><%= client.name %></option>
-                                <% }); %>
+                            <select name="contratante_id" class="form-control" id="select_contratante" required>
+                                <option value="">Selecione um contratante</option>
+                                <% if(typeof contratantes !== 'undefined' && contratantes.length > 0) { %>
+                                    <% contratantes.forEach(function(contratante) { %>
+                                        <option value="<%= contratante.idContratante %>" class="option-limited">
+                                            <%= contratante.nome %>
+                                        </option>
+                                    <% }); %>
+                                <% } else { %>
+                                    <option value="">Nenhum contratante encontrado</option>
+                                <% } %>
                             </select>
                         </div>
                         <div class="form-group">
@@ -357,10 +368,11 @@
                             <input type="text" name="event_location" class="form-control" required>
                         </div>
                     </div>
+    <!--FIM ADICIONAR CONTRATO-->
 
                     <div class="form-section">
                         <div class="equipment-header">
-                            <h2 class="section-title">Equipamentos <span class="equipment-count"><%= equipmentCount %> unidades</span></h2>
+                            <h2 class="section-title">Equipamentos <span class="equipment-count"> unidades</span></h2>
                             <button type="button" class="add-equipment" onclick="openEquipmentModal()">+ EQUIPAMENTO</button>
                         </div>
                         <table class="equipment-table">
@@ -375,16 +387,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% equipment.forEach(function(item) { %>
                                     <tr>
-                                        <td><input type="checkbox" name="equipment[]" value="<%= item.id %>"></td>
-                                        <td>#<%= item.code %></td>
-                                        <td>🔍 <%= item.name %></td>
-                                        <td><span class="category-badge"><%= item.category %></span></td>
-                                        <td>R$ <%= item.price.toFixed(2) %></td>
-                                        <td><button type="button" class="delete-btn" onclick="removeEquipment(<%= item.id %>)">🗑️</button></td>
+                                        <td><input type="checkbox" name="equipment[]" value=""></td>
+                                        <td>#</td>
+                                        <td>🔍 </td>
+                                        <td><span class="category-badge"></span></td>
+                                        <td>R$ </td>
+                                        <td><button type="button" class="delete-btn" onclick="removeEquipment()">🗑️</button></td>
                                     </tr>
-                                <% }); %>
                             </tbody>
                         </table>
                     </div>
@@ -413,6 +423,44 @@
                     <textarea name="observation" class="form-control" rows="4" placeholder="Escreva aqui"></textarea>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="equipmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEquipmentModal()">&times;</span>
+            <h2>Adicionar Equipamentos</h2>
+            <form id="equipmentForm">
+                <table class="equipment-list-table">
+                    <thead>
+                        <tr>
+                            <th>Selecionar</th>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof equipamentos !== 'undefined' && equipamentos.length > 0) { %>
+                            <% equipamentos.forEach(function(equipamento) { %>
+                                <tr>
+                                    <td><input type="checkbox" name="selectedEquipments" value="<%= equipamento.idGrupo %>"></td>
+                                    <td><%= equipamento.idGrupo %></td>
+                                    <td><%= equipamento.nome %></td>
+                                    <td><%= equipamento.categoria %></td>
+                                    <td><%= equipamento.precoGrupo %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5">Nenhum equipamento encontrado</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Adicionar Selecionados</button>
+            </form>
         </div>
     </div>
 
@@ -456,7 +504,17 @@
         }
 
         function openEquipmentModal() {
-            // Implementation for equipment modal
+            document.getElementById('equipmentModal').style.display = 'block';
+        }
+
+        function closeEquipmentModal() {
+            document.getElementById('equipmentModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('equipmentModal')) {
+                closeEquipmentModal();
+            }
         }
 
         function triggerFileInput() {
@@ -466,6 +524,7 @@
         function changeOperation() {
             // Implementation for changing operation
         }
+        
     </script>
 </body>
 </html>

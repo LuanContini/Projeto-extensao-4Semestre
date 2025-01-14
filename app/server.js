@@ -21,6 +21,9 @@ app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../public')));
 
+//Adicionar Icones dentro das Views
+app.use('/icons', express.static(path.join(__dirname, '../public/icons')));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

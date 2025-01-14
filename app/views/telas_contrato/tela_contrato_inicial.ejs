@@ -146,10 +146,10 @@
             margin-right: 5px;
         }
 
-        .stock-high { background-color: #4CAF50; }
-        .stock-medium { background-color: #FFC107; }
+        .em_andamento { background-color: #4CAF50; }
+        .pendentes { background-color: #FFC107; }
         .stock-low { background-color: #F44336; }
-        .stock-concluido { background-color: #001aff; }
+        .concluido { background-color: #001aff; }
 
         .icon {
             width: 30px; 
@@ -207,15 +207,21 @@
             background-color: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 8px;
-            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: background-color 0.3s;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%; /* Preenchendo o espaço disponível */
+            height: 100%; /* Garantindo que o botão seja clicável */
         }
 
         .operation-item:hover {
             background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05); /* Adiciona um efeito visual */
         }
 
         .operation-item img {
@@ -223,6 +229,13 @@
             height: 40px;
             margin-bottom: 10px;
         }
+
+        .operation-item span {
+            font-size: 0.9em;
+            color: white;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -240,26 +253,26 @@
 
         <div class="stats-bar">
             <div class="stat-item">
-                <p><%= andamento %></p>
-                <div class="stock-indicator stock-high"></div>
+                <p><%= em_andamento %></p>
+                <div class="stock-indicator em_andamento"></div>
                 <small>Em Andamento</small>
             </div>
             <div class="stat-item">
-                <p><%= pendente %></p>
-                <div class="stock-indicator stock-medium"></div>
+                <p><%= pendentes %></p>
+                <div class="stock-indicator pendentes"></div>
                 <small>Pendente</small>
             </div>
             <div class="stat-item">
-                <p><%= concluido %></p>
-                <div class="stock-indicator stock-concluido"></div>
+                <p><%= concluidos %></p>
+                <div class="stock-indicator concluido"></div>
                 <small>Concluído</small>
             </div>
             <div class="stat-item">
-                <p></p>
+                <p><%= lucroPrevisto %></p>
                 <small>Lucro previsto (Contratos)</small>
             </div>
             <div class="stat-item">
-                <p></p>
+                <p><%= totalContrato %></p>
                 <small>Total</small>
             </div>
         </div>
@@ -290,7 +303,35 @@
                 </tr>
             </thead>
             <tbody>
-                
+                <% if (contratos && contratos.length > 0) { %>
+                    <% contratos.forEach(contrato => { %>
+                        <tr>
+                            <td>#<%= contrato.idContrato %></td>
+                            <td><%= contrato.tipo %></td>
+                            <td><%= contrato.localEvento %></td>
+                            <td><%= new Date(contrato.dataHoraIni).toLocaleString('pt-BR') %></td>
+                            <td><%= new Date(contrato.dataHoraTerm).toLocaleString('pt-BR') %></td>
+                            <td>
+                                <span class="status-badge <%= contrato.status.toLowerCase().replace(' ', '-')%>">
+                                    <%= contrato.status %>
+                                </span>
+                            </td>
+                            <td>R$ <%= Number(contrato.valorTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })%></td>
+                            <td class="actions">
+                                <button class="edit-btn" onclick="editarContrato('<%= contrato.idContrato%>')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-btn" onclick="excluirContrato('<%= contrato.idContrato%>')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="8" class="no-data">Nenhum contrato encontrado</td>
+                    </tr>
+                <% } %>
             </tbody>            
         </table>
     </div>
@@ -304,23 +345,35 @@
             </div>
             <p class="modal-subtitle">Escolha como será o contrato</p>
             <div class="operation-grid">
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/locacao.png" alt="Locação">
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="locacao" class="operation-item">
+                    <img src="/icons/img_tela_contratos/locacao.png" alt="Locação">
                     <span>Locação</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/entrega.png" alt="Entrega">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="entrega" class="operation-item">
+                    <img src="/icons/img_tela_contratos/entrega.png" alt="Entrega">
                     <span>Entrega</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/montar.png" alt="Apenas Montar">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="montar" class="operation-item">
+                    <img src="/icons/img_tela_contratos/montar.png" alt="Apenas Montar">
                     <span>Apenas Montar</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/operar.png" alt="Montar e Operar">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="operar" class="operation-item">
+                    <img src="/icons/img_tela_contratos/operar.png" alt="Montar e Operar">
                     <span>Montar e Operar</span>
-                </div>
-            </div>
+                  </button>
+                </form>
+              </div>
+              
         </div>
     </div>
 
@@ -457,4 +510,3 @@
     </script>
 </body>
 </html>
-            

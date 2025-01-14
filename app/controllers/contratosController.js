@@ -1,122 +1,183 @@
-const dbConnection = require("../../config/dbConnection");
+const contratosModel = require('../models/contratosModel');
+const dbConnection = require('../../config/dbConnection');
 
-const { getContratosModel, putContrato, deleteContrato, adicionarContrato, getContratoStatus } = require("../models/contratosModel");
+module.exports = {
+    getContratos: async (req, res) => {
+        let conn;
+        try {
+            conn = await dbConnection();
+            const [contratos] = await contratosModel.getContratosModel(conn);
+            
+            // Calculate status counts and totals
+            const statusCount = contratos.reduce((acc, contrato) => {
+                const status = calcularStatus(contrato.dataHoraIni, contrato.dataHoraTerm);
+                
+                // Count by status
+                if (status === 'Pendente') acc.pendentes++;
+                if (status === 'Concluído') acc.concluidos++;
+                if (status === 'Em Andamento') acc.em_andamento++;
+                
+                // Calculate totals
+                acc.totalContrato++;
+                acc.lucroPrevisto += Number(contrato.valorTotal) || 0;
+                
+                return acc;
+            }, {
+                pendentes: 0,
+                concluidos: 0,
+                em_andamento: 0,
+                totalContrato: 0,
+                lucroPrevisto: 0
+            });
 
-module.exports.getContratos = async (req, res) => {
-  const dbConn = dbConnection();
-  console.log("Entrou no controller");
+            // Format contract data
+            const contratosFormatados = contratos.map(contrato => ({
+                idContrato: contrato.idContrato,
+                tipo: contrato.tipo,
+                localEvento: contrato.localEvento,
+                dataHoraIni: contrato.dataHoraIni,
+                dataHoraTerm: contrato.dataHoraTerm,
+                status: calcularStatus(contrato.dataHoraIni, contrato.dataHoraTerm),
+                valorTotal: contrato.valorTotal || 0
+            }));
 
-  try {
-    const contratos = await getContratosModel(dbConn); // Espera a função retornar os contratos
-    //console.log("Contratos:", contratos);
-    res.render("./telas_contrato/tela_contrato_inicial.ejs", {
-      contratos: contratos,
-      selectedClient: "",
-      usuario: req.user,
-    });
-  } catch (err) {
-    console.error("Erro ao buscar contratos:", err);
-    return res.status(400).send({ err });
-  }
-};
-
-module.exports.getContratoStatus = async (req, res) => {
-  const dbConn = dbConnection();
-  
-  try {
-      const contratosStatus = await getContratoStatus(dbConn);
-      console.log("Contratos por status:", contratosStatus);
-      
-      // Achar os contratos por status
-      const andamento = contratosStatus.find(item => item.status === 'Andamento')?.totalContratos || 0;
-      const pendente = contratosStatus.find(item => item.status === 'Pendente')?.totalContratos || 0;
-      const concluido = contratosStatus.find(item => item.status === 'Concluído')?.totalContratos || 0;
-
-      // Calcular o lucro previsto
-      const lucroPrevisto = contratosStatus.reduce((acc, item) => acc + item.totalContratos, 0);
-      console.log("Dados passados para a view:", { andamento, pendente, concluido, lucroPrevisto, total: andamento + pendente + concluido });
-
-      // Passar os valores para a view
-      res.render("./telas_contrato/tela_contrato_inicial.ejs", {
-        andamento: andamento,
-        pendente: pendente,
-        concluido: concluido,
-        lucroPrevisto: lucroPrevisto,
-        total: andamento + pendente + concluido,  // Total de contratos
-        usuario: req.user,
-      });
-  } catch (err) {
-    console.error("Erro ao buscar contratos por status:", err);
-    return res.status(400).send({ err });
-  }
-};
-
-
-
-
-module.exports.getContratoById = async (req, res) => {
-  const dbConn = dbConnection();
-
-  try{
-    const idContrato = req.params.id;
-
-    const contrato = await getContratoById(dbConn, idContrato);
-
-    res.status(200).send({ 'contrato': contrato});
-  }catch (err) {
-    res.status(400).send({ 'err': err});
-  }
-};
-
-module.exports.postContrato = (req, res) => {
-  const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
-
-    const dbConn = dbConnection();
-
-    adicionarContrato(
-      dbConn,
-      tipo,
-      localEven,
-      cep,
-      apelido,
-      idUsuario,
-      idContratante,
-      (error, result) => {
-        if (error) {
-          console.log("Error, ", error.message);
-        } else {
-          console.log(result);
+            res.render('telas_contrato/tela_contrato_inicial', {
+                title: 'Lista de Contratos',
+                contratos: contratosFormatados,
+                pendentes: statusCount.pendentes,
+                concluidos: statusCount.concluidos,
+                em_andamento: statusCount.em_andamento,
+                totalContrato: statusCount.totalContrato,
+                lucroPrevisto: statusCount.lucroPrevisto,
+                usuario: req.user,
+                message: ''
+            });
+        } catch (error) {
+            console.error('Erro ao buscar contratos:', error);
+            res.render('telas_contrato/tela_contrato_inicial', {
+                title: 'Lista de Contratos',
+                contratos: [],
+                pendentes: 0,
+                concluidos: 0,
+                em_andamento: 0,
+                totalContrato: 0,
+                lucroPrevisto: 0,
+                usuario: req.user,
+                message: 'Erro ao carregar contratos'
+            });
+        } finally {
+            if (conn) await conn.end();
         }
-        res.redirect("/contratos");
-      }
-    );
+    },
+
+    getContratoById: async (req, res) => {
+        let conn;
+        try {
+            const { id } = req.params;
+            conn = await dbConnection();
+            const [contrato] = await contratosModel.findById(conn, id);
+            
+            if (!contrato || contrato.length === 0) {
+                return res.status(404).json({ error: 'Contrato não encontrado' });
+            }
+            
+            res.status(200).json(contrato[0]);
+        } catch (error) {
+            console.error('Erro ao buscar contrato:', error);
+            res.status(500).json({ error: 'Erro ao buscar contrato' });
+        } finally {
+            if (conn) await conn.end();
+        }
+    },
+
+    postContrato: async (req, res) => {
+        let conn;
+        try {
+            const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+            conn = await dbConnection();
+            
+            const [result] = await contratosModel.adicionarContrato(
+                conn,
+                tipo,
+                localEven,
+                cep,
+                apelido,
+                idUsuario,
+                idContratante
+            );
+
+            res.redirect('/contratos');
+        } catch (error) {
+            console.error('Erro ao adicionar contrato:', error);
+            res.render('telas_contrato/tela_contrato_adicionar', {
+                title: 'Adicionar Contrato',
+                message: 'Erro ao adicionar contrato'
+            });
+        } finally {
+            if (conn) await conn.end();
+        }
+    },
+
+    putContrato: async (req, res) => {
+        try {
+            const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+            const { idContrato } = req.params;
+
+            if (!idContrato) {
+                return res.status(400).json({ error: 'ID do contrato não fornecido' });
+            }
+
+            const conn = await dbConnection();
+            const result = await contratosModel.putContrato(conn, idContrato, {
+                tipo,
+                localEven,
+                cep,
+                apelido,
+                idUsuario,
+                idContratante
+            });
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Contrato não encontrado' });
+            }
+
+            res.status(200).json({ message: 'Contrato atualizado com sucesso' });
+        } catch (error) {
+            console.error('Erro ao atualizar contrato:', error);
+            res.status(500).json({ error: 'Erro ao atualizar contrato' });
+        }
+    },
+
+    deleteContrato: async (req, res) => {
+        const { idContrato } = req.params;
+
+        try {
+            const dbConn = dbConnection();
+
+            const result = await deleteContrato(dbConn, idContrato);
+            if (!result) {
+                return res.status(404).send({ err: 'Contrato não encontrado' });
+            }
+
+            res.status(200).send({ result });
+        } catch (err) {
+            console.error("Erro ao deletar contrato:", err);
+            res.status(400).send({ err: 'Erro ao deletar contrato' });
+        }
+    }
 };
 
-module.exports.putContrato = (req, res) => {
-  const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+// Helper function to calculate contract status
+function calcularStatus(dataInicio, dataTermino) {
+    const hoje = new Date();
+    const inicio = new Date(dataInicio);
+    const termino = new Date(dataTermino);
 
-  const idContrato = req.params.idContrato;
-
-  try {
-    const dbConn = dbConnection();
-
-    
-  } catch (error) {
-    
-  }
-};
-
-module.exports.deleteContrato = async (req, res) => {
-  const { idContrato } = req.params;
-
-  try {
-    dbConn = dbConnection();
-
-    const result = await deleteContrato(dbConn, idContrato);
-
-    res.status(200).send({"result": result});
-  } catch (error) {
-    res.stauts(400).send({"err": err});
-  }
+    if (hoje < inicio) {
+        return 'Pendente';
+    } else if (hoje > termino) {
+        return 'Concluído';
+    } else {
+        return 'Em Andamento';
+    }
 }
-
