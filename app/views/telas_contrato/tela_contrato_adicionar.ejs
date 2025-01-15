@@ -426,44 +426,6 @@
         </div>
     </div>
 
-    <div id="equipmentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEquipmentModal()">&times;</span>
-            <h2>Adicionar Equipamentos</h2>
-            <form id="equipmentForm">
-                <table class="equipment-list-table">
-                    <thead>
-                        <tr>
-                            <th>Selecionar</th>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>Categoria</th>
-                            <th>Preço</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if(typeof equipamentos !== 'undefined' && equipamentos.length > 0) { %>
-                            <% equipamentos.forEach(function(equipamento) { %>
-                                <tr>
-                                    <td><input type="checkbox" name="selectedEquipments" value="<%= equipamento.idGrupo %>"></td>
-                                    <td><%= equipamento.idGrupo %></td>
-                                    <td><%= equipamento.nome %></td>
-                                    <td><%= equipamento.categoria %></td>
-                                    <td><%= equipamento.precoGrupo %></td>
-                                </tr>
-                            <% }); %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="5">Nenhum equipamento encontrado</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-                <button type="submit" class="btn btn-primary">Adicionar Selecionados</button>
-            </form>
-        </div>
-    </div>
-
     <script>
         // CEP mask
         document.querySelector('input[name="cep"]').addEventListener('input', function(e) {

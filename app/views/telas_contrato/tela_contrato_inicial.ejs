@@ -483,28 +483,27 @@
                             <td><%= new Date(contrato.dataHoraIni).toLocaleString('pt-BR') %></td>
                             <td><%= new Date(contrato.dataHoraTerm).toLocaleString('pt-BR') %></td>
                             <td>
-                                <span class="status-badge <%= contrato.status.toLowerCase().replace(' ', '-')%>">
+                                <span class="status-badge <%= contrato.status.toLowerCase().replace(' ', '-') %>">
                                     <%= contrato.status %>
                                 </span>
                             </td>
-                            <td>R$ <%= Number(contrato.valorTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })%></td>
+                            <td>R$ <%= Number(contrato.valorTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></td>
                             <td class="actions">
-                                <button class="edit-btn" onclick="editarContrato('<%= contrato.idContrato%>')">
+                                <button class="edit-btn" onclick="editarContrato('<%= contrato.idContrato %>')">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <form action="/contratos/deletar" method="GET">
-                                    <button type="submit" name="idContrato" value="<%= contrato.idContrato %>" class="fas fa-edit">🗑️
-                                    </button>
+                                <!-- Formulário de Deleção -->
+                                <form action="/contratos/<%= contrato.idContrato %>" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="submit" class="fas fa-edit">🗑️</button>
                                 </form>
                             </td>
                         </tr>
                     <% }); %>
                 <% } else { %>
-                    <tr>
-                        <td colspan="8" class="no-data">Nenhum contrato encontrado</td>
-                    </tr>
+                    <tr><td colspan="7">Nenhum contrato encontrado</td></tr>
                 <% } %>
-            </tbody>            
+            </tbody>                        
         </table>
     </div>
 

@@ -126,7 +126,8 @@ module.exports.putContrato = async (req, res) => {
 };
 
 module.exports.deleteContrato = async (req, res) => {
-    const idContrato = req.query.idContrato;
+    const idContrato = req.params.id; // Usar 'params' para capturar o id da URL
+
     const dbConn = dbConnection();
 
     try {
