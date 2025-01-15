@@ -1,5 +1,7 @@
 const contratosModel = require('../models/contratosModel');
 const dbConnection = require('../../config/dbConnection');
+const clientesModel = require('../models/clientesModel');
+const ContratoModel = require('../models/contratosModel');
 
 module.exports = {
     renderTelaAdicionar: async (req, res) => {
@@ -33,7 +35,7 @@ module.exports = {
             res.redirect('/contratos');
         } catch (error) {
             console.error('Erro ao adicionar contrato:', error);
-            res.render('tela_contrato_adicionar', {
+            res.render('telas_contrato/tela_contrato_adicionar', {
                 title: 'Adicionar Contrato',
                 message: 'Erro ao adicionar contrato'
             });
@@ -43,19 +45,39 @@ module.exports = {
     },
 
     getContratoByUrl: async (req, res) => {
-        console.log("Rota '/contratos/adicionar' foi acessada.");
-        
-        const { tipo } = req.query;
-
+        let conn;
         try {
+            conn = await dbConnection();
+            const tipo = req.query.tipo;
+            const clients = await contratosModel.getAllContratantes(conn);
+            const gruposComItens = await contratosModel.getGruposEItens(conn);
+
             res.render('telas_contrato/tela_contrato_adicionar', {
-                title: 'Adicionar Contrato',
-                message: '',
-                tipo: tipo || ''
+                tipo,
+                clients,
+                grupo: gruposComItens,
+                usuario: req.user
             });
         } catch (error) {
-            console.error('Erro ao renderizar tela:', error);
-            res.status(500).send('Erro ao carregar página');
+            console.error('Erro ao buscar contrato:', error);
+            res.status(500).json({ message: 'Erro ao buscar contrato' });
+        } finally {
+            if (conn) await conn.end();
         }
-    }
+    },
+
+    getItens: async (req, res) => {
+        let conn;
+        try {
+            conn = await dbConnection();
+            const gruposComItens = await ContratoModel.getGruposEItens(conn);
+
+            res.render('telas_contrato/tela_contrato_adicionar', { grupo: gruposComItens, usuario: req.user });
+        } catch (err) {
+            console.error('Erro ao buscar itens:', err);
+            res.status(500).send({ erro: err.message });
+        } finally {
+            if (conn) await conn.end();
+        }
+    },   
 };

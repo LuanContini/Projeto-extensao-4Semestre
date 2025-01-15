@@ -16,4 +16,5 @@ router.put('/:id', contratosController.putContrato);
 
 router.delete("/:id", contratosController.deleteContrato);
 
+
 module.exports = router;

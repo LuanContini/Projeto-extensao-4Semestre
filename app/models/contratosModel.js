@@ -117,6 +117,44 @@ class ContratoModel {
         const [rows] = await promiseConn.query(sql, [id]);
         return rows[0];
     }
+
+    static async getContratanteById(connection, id) {
+        const promiseConn = connection.promise();
+        const sql = "SELECT * FROM contratante WHERE idContratante = ?";
+        const [rows] = await promiseConn.query(sql, [id]);
+        return rows[0];
+    }
+
+    static async getAllContratantes(connection) {
+        const promiseConn = connection.promise();
+        const sql = "SELECT * FROM contratante";
+        const [rows] = await promiseConn.query(sql);
+        return rows;
+    }
+
+    static async getGruposEItens(connection) {
+        const promiseConn = connection.promise();
+        
+        // Buscar todos os grupos
+        const sqlGrupos = "SELECT * FROM grupo";
+        const [grupos] = await promiseConn.query(sqlGrupos);
+
+        // Buscar todos os itens
+        const sqlItens = "SELECT * FROM itens";
+        const [itens] = await promiseConn.query(sqlItens);
+
+        // Combinar itens com seus respectivos grupos
+        const gruposComItens = grupos.map(grupo => {
+            const itensDoGrupo = itens.filter(item => item.idGrupo === grupo.idGrupo);
+            return {
+                ...grupo,
+                itens: itensDoGrupo,
+                quantidadeItens: itensDoGrupo.length
+            };
+        });
+
+        return gruposComItens;
+    }
 }
 
 module.exports = ContratoModel;
