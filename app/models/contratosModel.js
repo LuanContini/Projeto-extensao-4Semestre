@@ -35,25 +35,42 @@ class ContratoModel {
         return await conn.query(sql);
     }
 
-    static async adicionarContrato(
-        conn,
-        tipo,
-        localEven,
-        cep,
-        apelido,
-        idUsuario,
-        idContratante
-    ) {
-        const sql = `
-            INSERT INTO contrato 
-            (tipo, localEvento, cep, apelido, idUsuario, idContratante) 
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        
-        return await conn.query(
-            sql,
-            [tipo, localEven, cep, apelido, idUsuario, idContratante]
-        );
+    static async adicionarContrato(conn, contratoData) {
+        const connection = await conn.promise();
+        try {
+            const sql = `
+                INSERT INTO contrato (
+                    tipo,
+                    valorTotal,
+                    cep,
+                    localEvento,
+                    localRetirada,
+                    dataHoraIni,
+                    dataHoraTerm,
+                    descEmpregados,
+                    idUsuario,
+                    idContratante
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            
+            const [result] = await connection.query(sql, [
+                contratoData.tipo,
+                contratoData.valorTotal || 0,
+                contratoData.cep,
+                contratoData.localEvento,
+                contratoData.localRetirada,
+                contratoData.dataHoraIni,
+                contratoData.dataHoraTerm,
+                contratoData.descEmpregados,
+                contratoData.idUsuario,
+                contratoData.idContratante
+            ]);
+
+            return result.insertId;
+        } catch (error) {
+            console.error('Erro SQL:', error);
+            throw error;
+        }
     }
 
     static putContrato(dbConnection, idContrato, contratoData) {

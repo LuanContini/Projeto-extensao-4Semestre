@@ -210,10 +210,41 @@
         }
 
         .category-badge {
-            background: #eeeeee;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 13px;
+            background: linear-gradient(45deg, #6B68FF, #8583FF);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .category-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #8583FF, #6B68FF);
+        }
+
+        /* Diferentes cores para diferentes categorias */
+        .category-badge[data-category="ÁUDIO"] {
+            background: linear-gradient(45deg, #FF6B6B, #FF8383);
+        }
+
+        .category-badge[data-category="VÍDEO"] {
+            background: linear-gradient(45deg, #4CAF50, #69C16C);
+        }
+
+        .category-badge[data-category="ILUMINAÇÃO"] {
+            background: linear-gradient(45deg, #FFC107, #FFD54F);
+        }
+
+        .category-badge[data-category="ESTRUTURA"] {
+            background: linear-gradient(45deg, #2196F3, #64B5F6);
         }
 
         .delete-btn {
@@ -351,6 +382,180 @@
         .modal-table th {
             background-color: rgba(255, 255, 255, 0.1);
         }
+        .add-selected-equipment {
+            background-color: #4CAF50;
+            color: white;
+            border: 2px solid rgb(65, 160, 68);
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition-duration: 0.4s;
+        }
+        .add-selected-equipment:hover {
+            background-color: #4CAF50;
+            color: black;
+            border: 2px solid #2e7e30;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-table-container {
+            height: 400px;  /* Altura fixa para a tabela */
+            overflow-y: auto;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .equipment-row {
+            display: none; /* Esconde todas as linhas por padrão */
+        }
+
+        .group-row {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            display: none;
+        }
+
+        /* Estilo personalizado para checkbox */
+        .custom-checkbox {
+            position: relative;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .custom-checkbox:checked {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .custom-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Estilo para o checkbox principal (selecionar todos) */
+        .select-all-checkbox {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .select-all-checkbox:checked {
+            background: #4CAF50;
+        }
+
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirm-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .confirm-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn.cancel {
+            background: #f1f1f1;
+            color: #666;
+        }
+
+        .confirm-btn.delete {
+            background: #ff4444;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -363,36 +568,48 @@
             <div class="location-badge"><%= tipo %></div>
             <button class="finalize-button" onclick="submitForm()">Finalizar</button>
         </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="error-message" style="color: red; background: #ffebee; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                <%= error %>
+            </div>
+        <% } %>
         
         <div class="content-container">
             <div class="left-section">
-                <form id="contractForm" method="POST" action="/contracts/add">
+                <form id="contractForm" action="/contratos/criar" method="POST">
                     <input type="hidden" name="tipo" value="<%= tipo %>">
+                    <input type="hidden" id="selectedItemIds" name="itemIds" value="">
                     <div class="form-section">
                         <h2 class="section-title">Informações Gerais</h2>
                         <div class="form-group">
                             <label class="required">Nome</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="text" name="name" class="form-control" required 
+                                   value="<%= typeof formData !== 'undefined' ? formData.name : '' %>">
                         </div>
                         <div class="form-group">
                             <label class="required">Local de Retirada</label>
-                            <input type="text" name="pickup_location" class="form-control" required>
+                            <input type="text" name="pickup_location" class="form-control" required
+                                   value="<%= typeof formData !== 'undefined' ? formData.pickup_location : '' %>">
                         </div>
                         <div class="form-group">
                             <div class="dates-container">
                                 <div>
                                     <label class="required">Data de Saída</label>
-                                    <input type="date" name="start_date" class="date-input" required>
+                                    <input type="date" name="start_date" class="date-input" required
+                                           value="<%= typeof formData !== 'undefined' ? formData.start_date : '' %>">
                                 </div>
                                 <div>
                                     <label class="required">Data de Entrada</label>
-                                    <input type="date" name="end_date" class="date-input" required>
+                                    <input type="date" name="end_date" class="date-input" required
+                                           value="<%= typeof formData !== 'undefined' ? formData.end_date : '' %>">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required">CEP</label>
-                            <input type="text" name="cep" class="form-control" pattern="\d{5}-\d{3}" placeholder="00000-000" required>
+                            <input type="text" name="cep" class="form-control" pattern="\d{5}-\d{3}" placeholder="00000-000" required
+                                   value="<%= typeof formData !== 'undefined' ? formData.cep : '' %>">
                         </div>
                         <div class="form-group">
                             <label class="required">Contratante</label>
@@ -410,17 +627,30 @@
                         </div>
                         <div class="form-group">
                             <label class="required">Local do Evento</label>
-                            <input type="text" name="event_location" class="form-control" required>
+                            <input type="text" name="event_location" class="form-control" required
+                                   value="<%= typeof formData !== 'undefined' ? formData.event_location : '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">Descrição dos Empregados</label>
+                            <textarea name="descEmpregados" class="form-control" required></textarea>
                         </div>
                     </div>
     <!--FIM ADICIONAR CONTRATO-->
 
+                    <!-- Modifique a seção de equipamentos para incluir a tabela de itens selecionados -->
                     <div class="form-section">
                         <div class="equipment-header">
-                            <h2 class="section-title">Equipamentos <span class="equipment-count"> unidades</span></h2>
+                            <h2 class="section-title">
+                                Equipamentos 
+                                <span class="equipment-count">
+                                    <%= typeof selectedItems !== 'undefined' && selectedItems ? selectedItems.length : 0 %> unidades
+                                </span>
+                            </h2>
                             <button type="button" class="add-equipment" onclick="openEquipmentModal()">+ EQUIPAMENTO</button>
                         </div>
-                        <table class="equipment-table">
+                        <!-- Add hidden input for equipment data -->
+                        <input type="hidden" name="equipmentData" id="equipmentData" value="">
+                        <table class="equipment-list-table">
                             <thead>
                                 <tr>
                                     <th>Código</th>
@@ -430,21 +660,24 @@
                                     <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <% grupo.forEach(grupo => { %>
-                                    <tr>
-                                        <td colspan="6"><strong><%= grupo.nome %> (<%= grupo.quantidadeItens %> itens)</strong></td>
-                                    </tr>
-                                    <% grupo.itens.forEach(item => { %>
-                                        <tr>
-                                            <td><%= item.codBarras %></td>
-                                            <td><%=  %></td>
-                                            <td><span class="category-badge"><%= grupo.categoria %></span></td>
-                                            <td>R$ <%= item.preco %></td>
-                                            <td><button type="button" class="delete-btn" onclick="removeEquipment()">🗑️</button></td>
+                            <tbody id="selected-equipment-list">
+                                <% if (typeof selectedItems !== 'undefined' && selectedItems.length > 0) { %>
+                                    <% selectedItems.forEach(function(item) { %>
+                                        <tr data-id="<%= item.id %>" 
+                                            data-codigo="<%= item.codigo %>"
+                                            data-nome="<%= grupo.nome %>"
+                                            data-categoria="<%= item.categoria %>"
+                                            data-preco="<%= grupo.precoGrupo %>">
+                                            <td><%= item.codigo %></td>
+                                            <td><%= grupo.nome %></td>
+                                            <td><%= item.categoria %></td>
+                                            <td>R$ <%= grupo.precoGrupo %></td>
+                                            <td>
+                                                <button type="button" class="delete-btn" onclick="showConfirmModal('<%= item.id %>')">🗑️</button>
+                                            </td>
                                         </tr>
                                     <% }); %>
-                                <% }); %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -467,17 +700,17 @@
                         <div class="form-group">
                             <label for="tipo-operacao" class="required">Tipo de Operação</label>
                             <select name="tipo-operacao" id="tipo-operacao" class="form-control" required>
-                                <option value="Locacao" <%= tipo === 'Locacao' ? 'selected' : '' %>>LOCAÇÃO</option>
-                                <option value="Entrega" <%= tipo === 'Entrega' ? 'selected' : '' %>>ENTREGA</option>
-                                <option value="Montar" <%= tipo === 'Montar' ? 'selected' : '' %>>MONTAR</option>
-                                <option value="Operar" <%= tipo === 'Operar' ? 'selected' : '' %>>OPERAR</option>
+                                <option value="Locacao" <%= typeof formData !== 'undefined' && formData.tipo_operacao === 'Locacao' ? 'selected' : '' %>>LOCAÇÃO</option>
+                                <option value="Entrega" <%= typeof formData !== 'undefined' && formData.tipo_operacao === 'Entrega' ? 'selected' : '' %>>ENTREGA</option>
+                                <option value="Montar" <%= typeof formData !== 'undefined' && formData.tipo_operacao === 'Montar' ? 'selected' : '' %>>MONTAR</option>
+                                <option value="Operar" <%= typeof formData !== 'undefined' && formData.tipo_operacao === 'Operar' ? 'selected' : '' %>>OPERAR</option>
                             </select>
                         </div>
                 </div>
 
                 <div class="form-section">
                     <h2 class="section-title">Observação</h2>
-                    <textarea name="observation" class="form-control" rows="4" placeholder="Escreva aqui"></textarea>
+                    <textarea name="observation" class="form-control" rows="4" placeholder="Escreva aqui"><%= typeof formData !== 'undefined' ? formData.observation : '' %></textarea>
                 </div>
             </div>
         </div>
@@ -490,35 +723,84 @@
                 <button class="close-btn" onclick="closeEquipmentModal()">&times;</button>
             </div>
             
-            <table class="modal-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" onclick="toggleAllEquipment(this)"></th>
-                        <th>Código</th>
-                        <th>Nome</th>
-                        <th>Categoria</th>
-                        <th>Preço</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% grupo.forEach(grupo => { %>
+            <!-- Adicione a caixa de pesquisa aqui -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="equipmentSearch" 
+                    class="search-input" 
+                    placeholder="Pesquisar equipamentos..."
+                    onkeyup="searchEquipments()"
+                >
+            </div>
+
+            <div class="modal-table-container">
+                <table class="modal-table" id="equipment-table">
+                    <thead>
                         <tr>
-                            <td colspan="6"><strong><%= grupo.nome %> (<%= grupo.quantidadeItens %> itens)</strong></td>
+                            <th>
+                                <input type="checkbox" 
+                                       class="custom-checkbox select-all-checkbox" 
+                                       onclick="toggleAllEquipment(this)">
+                            </th>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Preço Grupo</th>
                         </tr>
-                        <% grupo.itens.forEach(item => { %>
-                            <tr>
-                                <td><input type="checkbox" name="equipment[]" value="<%= item.idItens %>"></td>
-                                <td><%= item.codBarras %></td>
-                                <td>🔍 </td>
-                                <td><span class="category-badge"><%= grupo.categoria %></span></td>
-                                <td>R$ <%= item.preco %></td>
-                                <td><button type="button" class="delete-btn" onclick="removeEquipment()">🗑️</button></td>
+                    </thead>
+                    <tbody>
+                        <div class="no-results" id="noResults">
+                            Nenhum equipamento encontrado
+                        </div>
+                        <% grupo.forEach(grupo => { %>
+                            <tr class="group-row" data-id="<%= grupo.id %>">
+                                <td colspan="6"><strong><%= grupo.nome %> (<%= grupo.quantidadeItens %> itens)</strong></td>
                             </tr>
+                            <% 
+                            const itensFiltrados = grupo.itens.filter(item => {
+                                return !(typeof selectedItems !== 'undefined' && 
+                                        selectedItems.some(selected => selected.id === item.idItens));
+                            });
+                            
+                            itensFiltrados.forEach(item => { 
+                            %>
+                                <tr class="equipment-row" data-group="<%= grupo.id %>">
+                                    <td>
+                                        <input type="checkbox" 
+                                               class="custom-checkbox" 
+                                               name="equipment[]" 
+                                               value="<%= item.idItens %>">
+                                    </td>
+                                    <td><%= item.codBarras %></td>
+                                    <td><%= grupo.nome %></td>
+                                    <td>
+                                        <span class="category-badge" data-category="<%= grupo.categoria %>">
+                                            <%= grupo.categoria %>
+                                        </span>
+                                    </td>
+                                    <td>R$ <%= grupo.precoGrupo %></td>
+                                    <td><button type="button"></button></td>
+                                </tr>
+                            <% }); %>
                         <% }); %>
-                    <% }); %>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="add-selected-equipment" onclick="addSelectedEquipment()">Adicionar Selecionados</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-content">
+            <h3 class="confirm-title">Confirmar exclusão</h3>
+            <p>Deseja realmente remover este item?</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn cancel" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="confirm-btn delete" onclick="confirmDelete()">Remover</button>
+            </div>
         </div>
     </div>
 
@@ -536,7 +818,14 @@
         // Equipment functions
         function toggleAllEquipment(source) {
             const checkboxes = document.getElementsByName('equipment[]');
-            checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+            const isChecked = source.checked;
+            
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                if (row.style.display !== 'none') { // Apenas afeta checkboxes visíveis
+                    checkbox.checked = isChecked;
+                }
+            });
         }
 
         function removeEquipment(id) {
@@ -555,6 +844,23 @@
         function submitForm() {
             const form = document.getElementById('contractForm');
             if (form.checkValidity()) {
+                // Collect equipment data
+                const equipmentList = [];
+                document.querySelectorAll('#selected-equipment-list tr').forEach(row => {
+                    equipmentList.push({
+                        id: row.dataset.id,
+                        codigo: row.dataset.codigo,
+                        nome: row.dataset.nome,
+                        categoria: row.dataset.categoria,
+                        preco: row.dataset.preco
+                    });
+                });
+                
+                // Update hidden inputs
+                document.getElementById('selectedItemIds').value = equipmentList.map(item => item.id).join(',');
+                document.getElementById('equipmentData').value = JSON.stringify(equipmentList);
+                
+                // Submit the form
                 form.submit();
             } else {
                 alert('Por favor, preencha todos os campos obrigatórios.');
@@ -567,6 +873,9 @@
 
         function closeEquipmentModal() {
             document.getElementById('equipmentModal').style.display = 'none';
+            document.getElementById('equipmentSearch').value = '';
+            searchEquipments(); // Reset da pesquisa
+            resetCheckboxes();
         }
 
         window.onclick = function(event) {
@@ -584,6 +893,307 @@
             // Implementation for changing operation
         }
         
+        function addSelectedEquipment() {
+            const selectedItems = [];
+            document.querySelectorAll('#equipment-table input[name="equipment[]"]:checked').forEach(checkbox => {
+                selectedItems.push(checkbox.value);
+            });
+
+            if (selectedItems.length > 0) {
+                const tipo = document.querySelector('input[name="tipo"]').value;
+                const formState = saveFormState(); // Pega o estado atual do formulário
+                
+                // Pega os IDs dos itens que já estão na tabela
+                const existingIds = [];
+                document.querySelectorAll('#selected-equipment-list tr').forEach(row => {
+                    const id = row.getAttribute('data-id');
+                    if (id) existingIds.push(id);
+                });
+
+                resetCheckboxes();
+                
+                // Constrói a URL incluindo os dados do formulário
+                let newUrl = `/contratos/inserir?tipo=${tipo}&itemIds=${selectedItems.join(',')}`
+                if (existingIds.length > 0) {
+                    newUrl += `&existingIds=${existingIds.join(',')}`;
+                }
+
+                // Adiciona os dados do formulário à URL
+                Object.entries(formState).forEach(([key, value]) => {
+                    if (value) {
+                        newUrl += `&${key}=${encodeURIComponent(value)}`;
+                    }
+                });
+
+                window.location.href = newUrl;
+            } else {
+                alert('Por favor, selecione pelo menos um equipamento.');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Exemplo de selectedItemIds vindo do backend
+            const selectedItemIds = [1, 3]; // Substitua pelos dados do backend
+
+            if (Array.isArray(selectedItemIds) && selectedItemIds.length > 0) {
+                selectedItemIds.forEach(id => {
+                    const checkbox = document.querySelector(`input[name="equipment[]"][value="${id}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    } else {
+                        console.warn(`Checkbox com valor "${id}" não encontrado.`);
+                    }
+                });
+            } else {
+                console.warn("selectedItemIds está vazio ou não é um array.");
+            }
+        });
+
+        // Adicione essa função no início do seu script
+        function resetCheckboxes() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // Adicione esse listener para executar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            resetCheckboxes();
+        });
+
+        // Modifique a função closeEquipmentModal para resetar os checkboxes ao fechar
+        function closeEquipmentModal() {
+            document.getElementById('equipmentModal').style.display = 'none';
+            document.getElementById('equipmentSearch').value = '';
+            searchEquipments(); // Reset da pesquisa
+            resetCheckboxes();
+        }
+
+        // Modifique a função addSelectedEquipment para resetar após adicionar
+        function addSelectedEquipment() {
+            const selectedItems = [];
+            document.querySelectorAll('#equipment-table input[name="equipment[]"]:checked').forEach(checkbox => {
+                selectedItems.push(checkbox.value);
+            });
+
+            if (selectedItems.length > 0) {
+                const tipo = document.querySelector('input[name="tipo"]').value;
+                const formState = saveFormState(); // Pega o estado atual do formulário
+                
+                // Pega os IDs dos itens que já estão na tabela
+                const existingIds = [];
+                document.querySelectorAll('#selected-equipment-list tr').forEach(row => {
+                    const id = row.getAttribute('data-id');
+                    if (id) existingIds.push(id);
+                });
+
+                resetCheckboxes();
+                
+                // Constrói a URL incluindo os dados do formulário
+                let newUrl = `/contratos/inserir?tipo=${tipo}&itemIds=${selectedItems.join(',')}`
+                if (existingIds.length > 0) {
+                    newUrl += `&existingIds=${existingIds.join(',')}`;
+                }
+
+                // Adiciona os dados do formulário à URL
+                Object.entries(formState).forEach(([key, value]) => {
+                    if (value) {
+                        newUrl += `&${key}=${encodeURIComponent(value)}`;
+                    }
+                });
+
+                window.location.href = newUrl;
+            } else {
+                alert('Por favor, selecione pelo menos um equipamento.');
+            }
+        }
+
+        // Modifique a função toggleAllEquipment para manter o controle
+        function toggleAllEquipment(source) {
+            const checkboxes = document.getElementsByName('equipment[]');
+            const isChecked = source.checked;
+            
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                if (row.style.display !== 'none') { // Apenas afeta checkboxes visíveis
+                    checkbox.checked = isChecked;
+                }
+            });
+        }
+
+        // Adicione função para mostrar item novamente quando removido da seleção
+        async function removeSelectedItem(id) {
+            const formState = saveFormState();
+            const row = document.querySelector(`#selected-equipment-list tr[data-id="${id}"]`);
+            
+            if (row) {
+                row.remove();
+                
+                // Atualiza a URL e os parâmetros
+                const url = new URL(window.location.href);
+                const tipo = url.searchParams.get('tipo');
+                const existingIds = url.searchParams.get('existingIds')?.split(',') || [];
+                const itemIds = url.searchParams.get('itemIds')?.split(',') || [];
+
+                const updatedExistingIds = existingIds.filter(existingId => existingId !== id);
+                const updatedItemIds = itemIds.filter(itemId => itemId !== id);
+
+                // Constrói a nova URL com todos os parâmetros necessários
+                let newUrl = `/contratos/inserir?tipo=${tipo}`;
+                if (updatedExistingIds.length > 0) {
+                    newUrl += `&existingIds=${updatedExistingIds.join(',')}`;
+                }
+                if (updatedItemIds.length > 0) {
+                    newUrl += `&itemIds=${updatedItemIds.join(',')}`;
+                }
+
+                // Adiciona os dados do formulário à URL
+                Object.entries(formState).forEach(([key, value]) => {
+                    if (value) {
+                        newUrl += `&${key}=${encodeURIComponent(value)}`;
+                    }
+                });
+
+                try {
+                    // Faz a requisição AJAX para atualizar a página
+                    const response = await fetch(newUrl);
+                    if (!response.ok) throw new Error('Erro ao atualizar');
+                    
+                    // Recarrega a página com a nova URL
+                    window.location.href = newUrl;
+                    
+                } catch (error) {
+                    console.error('Erro ao remover item:', error);
+                    alert('Erro ao remover o item. Tente novamente.');
+                }
+            }
+        }
+
+        // Adicione esta função para salvar o estado do formulário
+        function saveFormState() {
+            const formState = {
+                name: document.querySelector('input[name="name"]').value,
+                pickup_location: document.querySelector('input[name="pickup_location"]').value,
+                start_date: document.querySelector('input[name="start_date"]').value,
+                end_date: document.querySelector('input[name="end_date"]').value,
+                cep: document.querySelector('input[name="cep"]').value,
+                contratante: document.querySelector('select[name="contratante"]').value,
+                event_location: document.querySelector('input[name="event_location"]').value,
+                observation: document.querySelector('textarea[name="observation"]').value,
+                tipo_operacao: document.querySelector('select[name="tipo-operacao"]').value
+            };
+            return formState;
+        }
+
+        // Adicione esta função para restaurar o estado do formulário
+        function restoreFormState(formState) {
+            document.querySelector('input[name="name"]').value = formState.name;
+            document.querySelector('input[name="pickup_location"]').value = formState.pickup_location;
+            document.querySelector('input[name="start_date"]').value = formState.start_date;
+            document.querySelector('input[name="end_date"]').value = formState.end_date;
+            document.querySelector('input[name="cep"]').value = formState.cep;
+            document.querySelector('select[name="contratante"]').value = formState.contratante;
+            document.querySelector('input[name="event_location"]').value = formState.event_location;
+            document.querySelector('textarea[name="observation"]').value = formState.observation;
+            document.querySelector('select[name="tipo-operacao"]').value = formState.tipo_operacao;
+        }
+
+        // Modifique ou adicione a função updateEquipmentCount
+        function updateEquipmentCount() {
+            const count = document.querySelectorAll('#selected-equipment-list tr').length;
+            document.querySelector('.equipment-count').textContent = `${count} unidades`;
+        }
+
+        function searchEquipments() {
+            const searchInput = document.getElementById('equipmentSearch');
+            const filter = searchInput.value.toLowerCase().trim();
+            const table = document.getElementById('equipment-table');
+            const rows = table.getElementsByTagName('tr');
+            const noResults = document.getElementById('noResults');
+            let hasResults = false;
+            
+            // Objeto para rastrear grupos visíveis
+            const visibleGroups = {};
+
+            // Se o campo de busca estiver vazio, esconde todas as linhas de equipamento
+            if (filter === '') {
+                Array.from(rows).forEach(row => {
+                    if (row.classList.contains('equipment-row')) {
+                        row.style.display = 'none';
+                    } else if (row.classList.contains('group-row')) {
+                        row.style.display = 'table-row';
+                    }
+                });
+                noResults.style.display = 'none';
+                return;
+            }
+
+            // Procura por correspondências
+            Array.from(rows).forEach(row => {
+                if (row.classList.contains('equipment-row')) {
+                    const cells = row.getElementsByTagName('td');
+                    const groupId = row.getAttribute('data-group');
+                    
+                    const searchableText = [
+                        cells[1].textContent || '', // Código
+                        cells[2].textContent || '', // Nome
+                        cells[3].textContent || ''  // Categoria
+                    ].join(' ').toLowerCase();
+
+                    if (searchableText.includes(filter)) {
+                        row.style.display = 'table-row';
+                        visibleGroups[groupId] = true;
+                        hasResults = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            // Atualiza visibilidade dos grupos
+            Array.from(rows).forEach(row => {
+                if (row.classList.contains('group-row')) {
+                    const groupId = row.getAttribute('data-id');
+                    row.style.display = visibleGroups[groupId] ? 'table-row' : 'none';
+                }
+            });
+
+            // Mostra/esconde mensagem de "nenhum resultado"
+            noResults.style.display = hasResults ? 'none' : 'block';
+        }
+
+        let itemToDelete = null;
+
+        function showConfirmModal(id) {
+            itemToDelete = id;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            itemToDelete = null;
+        }
+
+        async function confirmDelete() {
+            if (itemToDelete) {
+                await removeSelectedItem(itemToDelete);
+                closeConfirmModal();
+            }
+        }
+
+        // Adicione este listener para fechar o modal ao clicar fora
+        window.onclick = function(event) {
+            const confirmModal = document.getElementById('confirmModal');
+            const equipmentModal = document.getElementById('equipmentModal');
+            
+            if (event.target === confirmModal) {
+                closeConfirmModal();
+            }
+            if (event.target === equipmentModal) {
+                closeEquipmentModal();
+            }
+        }
     </script>
 </body>
 </html>
