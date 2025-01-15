@@ -24,6 +24,7 @@
 node_modules/
 EstoqueSQL/
 key/
+certs/
 
 # Logs and databases #
 ######################
@@ -40,3 +41,5 @@ key/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.txt

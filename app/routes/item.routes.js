@@ -12,6 +12,8 @@ router.get("/editar/:id", auth.checarAuthAdmin, itemController.editarGrupo);
 
 //cod_barras, idGrupo, nome, categoria, preco_loca,
 router.post("/criar-grupo", auth.checarAuthAdmin, validarItem, itemController.postItem);
+router.post("/:idGrupo", auth.checarAuthAdmin, itemController.postItemById);
+
 
 router.put('/:idGrupo', auth.checarAuthAdmin, itemController.putItem);
 

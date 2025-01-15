@@ -32,7 +32,7 @@ const schema = Joi.object({
         "string.max": "O e-mail deve ter no máximo 50 caracteres.",
         "any.required": "O e-mail é obrigatório."
     }),
-    observacao: Joi.string().allow(null),
+    observacao: Joi.string().allow(null, ""),
     imagem: Joi.string().allow(null),
 }).custom((value, helpers) => {
     // Verifica se pelo menos um dos campos (cpf ou cnpj) está presente

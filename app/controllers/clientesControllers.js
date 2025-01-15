@@ -4,18 +4,14 @@ const {
   getClientes,
   getClienteById,
   adicionarCliente,
-  adicionarPessoaFisica,
-  adicionarPessoaJuridica,
   deleteCliente,
   putCliente,
-  atualizarPessoaFisica,
-  atualizarPessoaJuridica,
 } = require("../models/clientesModel");
 
 //GET CLIENTE
 module.exports.getClientes = async (req, res) => {
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const clientes = await getClientes(dbConn);
     res.render("./telas_clientes/tela_clientes.ejs", {
@@ -32,7 +28,7 @@ module.exports.getClienteById = async (req, res) => {
   const idCliente = req.params.id;
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const cliente = await getClienteById(dbConn, idCliente);
 
@@ -46,9 +42,8 @@ module.exports.getClienteById = async (req, res) => {
 module.exports.postCliente = async (req, res) => {
   const { nome, telefone, email, observacao, imagem, cpf, cnpj} = req.body;
 
-  console.log(cpf, cnpj);
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const idCliente = await adicionarCliente(
       dbConn,
@@ -75,11 +70,9 @@ module.exports.putCliente = async (req, res) => {
   const idCliente = req.params.id; // ID do cliente a ser atualizado
   const { nome, telefone, email, observacao, imagem, cnpj, cpf} = req.body;
 
-  console.log(cpf, cnpj);
-
   
   try {
-    const dbConn = dbConnection(); // Conexão com o banco de dados
+    const dbConn = await dbConnection(); // Conexão com o banco de dados
 
     // Atualiza os dados do cliente na tabela contratante
     await putCliente(
@@ -108,7 +101,7 @@ module.exports.deleteCliente = async (req, res) => {
   const idCliente = req.params.id;
 
   try {
-    const dbConn = dbConnection();
+    const dbConn = await dbConnection();
 
     const deletar = await deleteCliente(dbConn, idCliente);
 

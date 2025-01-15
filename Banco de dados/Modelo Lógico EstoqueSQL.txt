@@ -23,3 +23,4 @@ HistoricoManutencao(#IdHistorico, IdManutencao, Data_Inic, Data_Term, IdItem, Id
 	IdManutencao referência Manutencao
 
 Manutencao(#IdManutencao, Motivo, Data_Inic, Data_Retorno, Responsavel)
+	

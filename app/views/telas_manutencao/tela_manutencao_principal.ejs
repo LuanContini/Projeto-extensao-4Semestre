@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>      window.itensEmManutencao = <%- JSON.stringify(itensEmManutencao) %>;
+    </script>
     <title>Gerenciamento de Manutenção</title>
     <style>
         * {
@@ -10,47 +12,6 @@
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
-        }
-
-        .sidebar {
-            width: 100px;
-            height: 100vh;
-            background-color: #e8e3d9;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar .logo {
-            width: 80px;
-            height: auto;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .sidebar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;    
-            padding: 15px 0;
-            color: #333;
-            text-decoration: none;              
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .sidebar-item.profile {
-            margin-top: auto; 
-        }
-
-        .icon {
-            width: 30px; 
-            height: 30px;
-            margin-bottom: 5px;
         }
 
         .main-content {
@@ -166,13 +127,15 @@
             background-color: #f0f0f0;
         }
     </style>
+        <link rel="stylesheet" href="/style/menu.css">
+
 </head>
 <body>
     <%- include('../assets/menu.ejs') %>
     <div class="main-content">
         <div class="header">
             <h2>Manutenções</h2>
-            <button class="add-contract-btn">+ MANUTENÇÃO</button>
+            <button class="add-contract-btn"><a href="/manutencao/adicionar">+ MANUTENÇÃO</a></button>
         </div>
 
         <div class="search-bar">
@@ -192,22 +155,21 @@
                 </tr>
             </thead>
             <tbody>
-                <% Object.keys(itensEmManutencao).forEach(function(grupoId) { %>
-                    <% const grupo = itensEmManutencao[grupoId]; %>
-                    <% grupo.itens.forEach(function(item) { %>
+                <% Object.keys(itensEmManutencao).forEach(function(idManutencao) { %>
+                    <% const grupo = itensEmManutencao[idManutencao]; %>
+                    <% console.log(grupo);%>
                         <tr>
-                            <td><%= item.idManutencao %></td>
+                            <td><%= grupo.idManutencao %></td>
                             <td><%= grupo.nomeGrupo %></td>
-                            <td><%= item.responsavel %></td>
-                            <td><%= item.motivo %></td>
-                            <td><%= new Date(item.dataInic).toLocaleString() %></td>
-                            <td><%= new Date(item.dataRetorno).toLocaleString() %></td>
+                            <td><%= grupo.responsavel %></td>
+                            <td><%= grupo.motivo %></td>
+                            <td><%= new Date(grupo.dataInic).toLocaleString() %></td>
+                            <td><%= new Date(grupo.dataRetorno).toLocaleString() %></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openModal('<%= item.idManutencao %>', '<%= grupo.nomeGrupo %>')">Ver Itens</button>
-                                <button class="action-btn delete-btn" onclick="confirmDeletion(<%= item.idManutencao %>)">🗑️</button>
+                                <button class="action-btn view-btn" onclick="openModal('<%= grupo.idManutencao %>', '<%= grupo.nomeGrupo %>')">Ver Itens</button>
+                                <button class="action-btn delete-btn" onclick="confirmDeletion(<%= grupo.idManutencao %>)">🗑️</button>
                             </td>
                         </tr>
-                    <% }); %>
                 <% }); %>
             </tbody>
         </table>
@@ -226,76 +188,6 @@
         </div>
     </div>
 
-    <script>
-        function openModal(idManutencao, nomeGrupo) {
-            const modal = document.getElementById('itemModal');
-            const modalBody = document.getElementById('modalBody');
-            modal.style.display = 'flex';
-
-            // Aqui você pode fazer uma requisição para obter os itens da manutenção
-            // Para este exemplo, vamos simular a resposta
-            const itens = [
-                { idItens: 1, codBarras: "1234567890123", dataLocacao: "2024-12-01T11:00:00.000Z" },
-                { idItens: 2, codBarras: "9876543210123", dataLocacao: "2024-12-02T11:00:00.000Z" }
-            ];
-
-            modalBody.innerHTML = `
-                <h4>Itens da Manutenção ID: ${idManutencao} - Grupo: ${nomeGrupo}</h4>
-                <table class="item-table">
-                    <thead>
-                        <tr>
-                            <th>ID Item</th>
-                            <th>Código de Barras</th>
-                            <th>Data de Locação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itens.map(item => `
-                            <tr>
-                                <td>${item.idItens}</td>
-                                <td>${item.codBarras}</td>
-                                <td>${new Date(item.dataLocacao).toLocaleString()}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('itemModal');
-            modal.style.display = 'none';
-        }
-
-        function confirmDeletion(idManutencao) {
-            const confirmation = confirm("Tem certeza que deseja deletar esta manutenção?");
-            if (confirmation) {
-                // Aqui você pode fazer a requisição para deletar a manutenção
-                console.log(`Manutenção ID ${idManutencao} deletada.`);
-                // Após a deleção, você pode atualizar a tabela ou recarregar a página
-            }
-        }
-
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('manutencaoTable');
-            const tr = table.getElementsByTagName('tr');
-
-            for (let i = 1; i < tr.length; i++) {
-                const tdGrupo = tr[i].getElementsByTagName('td')[1]; // Nome do Grupo
-                const tdResponsavel = tr[i].getElementsByTagName('td')[2]; // Responsável
-                if (tdGrupo || tdResponsavel) {
-                    const txtGrupo = tdGrupo.textContent || tdGrupo.innerText;
-                    const txtResponsavel = tdResponsavel.textContent || tdResponsavel.innerText;
-                    if (txtGrupo.toLowerCase().indexOf(filter) > -1 || txtResponsavel.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="/scripts/manutencao-principal-controller.js"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@ router.get('/:id', clientesController.getClienteById);
 router.post('/', auth.checarAuthAdmin, validacaoCliente.validarCliente, clientesController.postCliente);
 
 //UPDATE
-router.put('/:id', auth.checarAuthAdmin, clientesController.putCliente);
+router.put('/:id', auth.checarAuthAdmin, validacaoCliente.validarCliente, clientesController.putCliente);
 
 //DELETE
 router.delete('/:id', auth.checarAuthAdmin, clientesController.deleteCliente);

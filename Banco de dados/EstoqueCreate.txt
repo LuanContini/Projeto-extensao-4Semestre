@@ -1,7 +1,7 @@
--- DATABASE IF EXISTS controle_locacao_teste;
-DROP DATABASE IF EXISTS controle_locacao;
-CREATE DATABASE IF NOT EXISTS controle_locacao;
-USE controle_locacao;
+-- DATABASE IF EXISTS controle_locacL_teste;
+DROP DATABASE IF EXISTS controleLocacao;
+CREATE DATABASE IF NOT EXISTS controleLocacao;
+USE controleLocacao;
 
 CREATE TABLE IF NOT EXISTS usuario (
 	idUsuario INT AUTO_INCREMENT,
@@ -27,13 +27,11 @@ CREATE TABLE IF NOT EXISTS contratante (
     telefone VARCHAR(20) NOT NULL, -- Validar minimo de números
     imagem LONGBLOB,
     observacao VARCHAR(300),
-    cpf VARCHAR(11) UNIQUE NOT NULL,
-    cnpj VARCHAR(14) UNIQUE NOT NULL,
 	CHECK(LENGTH(nome) >= 3), 
     PRIMARY KEY(idContratante)
 );
 
-/*CREATE TABLE IF NOT EXISTS pessoaJuridica(
+CREATE TABLE IF NOT EXISTS pessoaJuridica(
     idContratante INT NOT NULL,
     cnpj VARCHAR(14) UNIQUE NOT NULL, -- CNPJ Conter validador de numero e tamanho
     CHECK(LENGTH(cnpj) = 14), -- Validar cnpj é valido e se tem 14 digitos
@@ -51,7 +49,7 @@ CREATE TABLE IF NOT EXISTS pessoaFisica (
     FOREIGN KEY (idContratante) REFERENCES contratante(idContratante)
     ON UPDATE CASCADE
     ON DELETE CASCADE
-); */
+);  
 
 CREATE TABLE IF NOT EXISTS contrato (
     idContrato INT AUTO_INCREMENT,

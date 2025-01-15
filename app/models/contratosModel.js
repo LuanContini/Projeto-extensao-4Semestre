@@ -1,32 +1,48 @@
 const dbConnection = require("../../config/dbConnection");
 
 class ContratoModel {
-    static async getAllContratos(connection) {
-        const [rows] = await connection.query(`
-            SELECT 
-                c.*,
-                u.nome as usuario_nome,
-                ct.nome as contratante_nome,
-                c.status,
-                c.valorTotal
-            FROM contrato c
-            JOIN usuario u ON c.idUsuario = u.idUsuario
-            JOIN contratante ct ON c.idContratante = ct.idContratante
-        `);
-        return rows;
+    static getAllContratos(connection) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT 
+                    c.*,
+                    u.nome as usuario_nome,
+                    ct.nome as contratante_nome,
+                    c.status,
+                    c.valorTotal
+                FROM contrato c
+                JOIN usuario u ON c.idUsuario = u.idUsuario
+                JOIN contratante ct ON c.idContratante = ct.idContratante
+            `;
+            
+            connection.query(sql, (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results);
+            });
+        });
     }
 
-    static async getStatusCount(connection) {
-        const [rows] = await connection.query(`
-            SELECT 
-                COALESCE(SUM(CASE WHEN status = 'Concluido' THEN 1 ELSE 0 END), 0) AS concluidos,
-                COALESCE(SUM(CASE WHEN status = 'Em andamento' THEN 1 ELSE 0 END), 0) AS em_andamento,
-                COALESCE(SUM(CASE WHEN status = 'Pendente' THEN 1 ELSE 0 END), 0) AS pendentes,
-                COUNT(status) AS totalContrato,
-                COALESCE(SUM(valorTotal), 0) AS lucroPrevisto 
-            FROM contrato
-        `);
-        return rows[0];
+    static getStatusCount(connection) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT 
+                    COALESCE(SUM(CASE WHEN status = 'Concluido' THEN 1 ELSE 0 END), 0) AS concluidos,
+                    COALESCE(SUM(CASE WHEN status = 'Em andamento' THEN 1 ELSE 0 END), 0) AS em_andamento,
+                    COALESCE(SUM(CASE WHEN status = 'Pendente' THEN 1 ELSE 0 END), 0) AS pendentes,
+                    COUNT(status) AS totalContrato,
+                    COALESCE(SUM(valorTotal), 0) AS lucroPrevisto 
+                FROM contrato
+            `;
+            
+            connection.query(sql, (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results[0]);
+            });
+        });
     }
     
     static async getContratosModel(conn) {

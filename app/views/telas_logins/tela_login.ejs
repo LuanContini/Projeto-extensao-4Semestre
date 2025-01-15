@@ -87,6 +87,12 @@
             <h1>LOGIN</h1>
         </div>
         <p class="subtitle">Coloque seu nome e sua senha</p>
+        
+        <% if (error) { %>
+            <div id="error-message" style="color: red; text-align: center;">
+                <%= error %>
+            </div>
+        <% } %>
 
         <form action="/usuario/login" method="POST">
             <div class="form-group">
@@ -99,8 +105,10 @@
 
             <button type="submit" class="btn">Entrar</button>
 
+            
+
             <div class="forgot-password">
-                <a href="/esqueci-senha">Esqueci a senha</a>
+                <a href="#">Esqueci a senha</a>
             </div>
         </form>
     </div>

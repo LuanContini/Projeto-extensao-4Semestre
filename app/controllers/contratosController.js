@@ -11,12 +11,12 @@ const handleError = (res, err, message) => {
 };
 
 module.exports.getContratos = async (req, res) => {
-    let dbConn;
+    let conn;
     try {
-        dbConn = await dbConnection().promise();
+        conn = await dbConnection();
         
-        const contratos = await ContratoModel.getAllContratos(dbConn);
-        const statusCount = await ContratoModel.getStatusCount(dbConn);
+        const contratos = await ContratoModel.getAllContratos(conn);
+        const statusCount = await ContratoModel.getStatusCount(conn);
 
         const viewData = {
             contratos,
@@ -31,9 +31,10 @@ module.exports.getContratos = async (req, res) => {
         res.render("./telas_contrato/tela_contrato_inicial.ejs", viewData);
 
     } catch (err) {
-        handleError(res, err, "Erro ao buscar dados dos contratos");
+        console.error('Erro ao buscar dados dos contratos:', err);
+        res.status(500).send('Erro ao buscar dados dos contratos');
     } finally {
-        if (dbConn) await dbConn.end();
+        if (conn) conn.end();
     }
 };
 
