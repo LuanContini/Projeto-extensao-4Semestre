@@ -13,6 +13,6 @@ router.post('/adicionar', contratosAdicionarController.postContrato);
 router.get("/:id", contratosController.getContratoById);
 router.post('/', contratosController.postContrato);
 router.put('/:id', contratosController.putContrato);
-router.delete('/:id', contratosController.deleteContrato);
+router.delete('/deletar/:id', contratosController.deleteContrato); // Nova rota para deletar
 
 module.exports = router;

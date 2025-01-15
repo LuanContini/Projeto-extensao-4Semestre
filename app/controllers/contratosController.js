@@ -38,30 +38,30 @@ module.exports.getContratos = async (req, res) => {
 };
 
 module.exports.getContratoById = async (req, res) => {
-    let dbConn;
-    try {
-        const { id } = req.params;
-        if (!id) throw new Error("ID do contrato não fornecido");
+    const id = req.params.id;
+    const dbConn = dbConnection();
 
-        // Get promise-based connection
-        dbConn = await dbConnection().promise();
+    try {
+        console.log('Fetching contract with ID:', id); // Debug log
+        
+        if (!id) {
+            throw new Error('ID não fornecido');
+        }
+
         const contrato = await ContratoModel.getContratoById(dbConn, id);
         
         if (!contrato) {
-            return res.status(404).json({
-                success: false,
-                message: "Contrato não encontrado"
-            });
+            return res.status(404).json({ message: 'Contrato não encontrado' });
         }
 
-        res.status(200).json({
-            success: true,
-            data: contrato
-        });
+        console.log('Contract found:', contrato); // Debug log
+        res.status(200).json(contrato);
+
     } catch (err) {
-        handleError(res, err, "Erro ao buscar contrato");
+        console.error('Error fetching contract:', err); // Error log
+        res.status(400).json({ error: err.message });
     } finally {
-        if (dbConn) await dbConn.end();
+        if (dbConn) dbConn.end();
     }
 };
 
@@ -126,12 +126,12 @@ module.exports.putContrato = async (req, res) => {
 };
 
 module.exports.deleteContrato = async (req, res) => {
-    const idContrato = req.params.id;
+    const idContrato = req.query.idContrato;
     const dbConn = dbConnection();
 
     try {
         const result = await ContratoModel.deleteContrato(dbConn, idContrato);
-        res.status(200).send({ message: "Contrato deletado com sucesso", result });
+        res.redirect('/contratos');
     } catch (err) {
         res.status(400).send({ error: err.message });
     } finally {

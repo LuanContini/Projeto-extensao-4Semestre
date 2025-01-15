@@ -101,6 +101,22 @@ class ContratoModel {
             });
         });
     }
+
+    static async getContratoById(connection, id) {
+        const promiseConn = connection.promise();
+        const sql = `
+            SELECT 
+                c.*,
+                u.nome as usuario_nome,
+                ct.nome as contratante_nome
+            FROM contrato c
+            JOIN usuario u ON c.idUsuario = u.idUsuario
+            JOIN contratante ct ON c.idContratante = ct.idContratante
+            WHERE c.idContrato = ?`;
+
+        const [rows] = await promiseConn.query(sql, [id]);
+        return rows[0];
+    }
 }
 
 module.exports = ContratoModel;
