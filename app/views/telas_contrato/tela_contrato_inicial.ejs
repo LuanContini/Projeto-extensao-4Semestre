@@ -235,6 +235,63 @@
             color: white;
             font-weight: bold;
         }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: transform 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #6c757d;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            color: #212529;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .stock-indicator {
+            height: 4px;
+            width: 50px;
+            border-radius: 2px;
+            margin: 0.5rem 0;
+        }
+
+        .em-andamento { background: #ffd700; }
+        .pendentes { background: #dc3545; }
+        .concluido { background: #28a745; }
 
     </style>
 </head>
@@ -252,30 +309,45 @@
         </div>
 
         <div class="stats-bar">
-            <div class="stat-item">
-                <p><%= em_andamento %></p>
-                <div class="stock-indicator em_andamento"></div>
-                <small>Em Andamento</small>
-            </div>
-            <div class="stat-item">
-                <p><%= pendentes %></p>
-                <div class="stock-indicator pendentes"></div>
-                <small>Pendente</small>
-            </div>
-            <div class="stat-item">
-                <p><%= concluidos %></p>
-                <div class="stock-indicator concluido"></div>
-                <small>Concluído</small>
-            </div>
-            <div class="stat-item">
-                <p><%= lucroPrevisto %></p>
-                <small>Lucro previsto (Contratos)</small>
-            </div>
-            <div class="stat-item">
-                <p><%= totalContrato %></p>
-                <small>Total</small>
-            </div>
+    <div class="stat-item">
+        <i class="fas fa-clock status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= em_andamento %></p>
+            <div class="stock-indicator em-andamento"></div>
+            <small class="stat-label">Em Andamento</small>
         </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-hourglass-start status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= pendentes %></p>
+            <div class="stock-indicator pendentes"></div>
+            <small class="stat-label">Pendente</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-check-circle status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= concluidos %></p>
+            <div class="stock-indicator concluido"></div>
+            <small class="stat-label">Concluído</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-dollar-sign status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value">R$ <%= Number(lucroPrevisto).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></p>
+            <small class="stat-label">Lucro Previsto</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-file-contract status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= totalContrato %></p>
+            <small class="stat-label">Total Contratos</small>
+        </div>
+    </div>
+</div>
         
         <table class="products-table">
             <thead>

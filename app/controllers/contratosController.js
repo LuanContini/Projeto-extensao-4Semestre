@@ -1,183 +1,140 @@
-const contratosModel = require('../models/contratosModel');
-const dbConnection = require('../../config/dbConnection');
+const dbConnection = require("../../config/dbConnection");
+const ContratoModel = require("../models/contratosModel");
 
-module.exports = {
-    getContratos: async (req, res) => {
-        let conn;
-        try {
-            conn = await dbConnection();
-            const [contratos] = await contratosModel.getContratosModel(conn);
-            
-            // Calculate status counts and totals
-            const statusCount = contratos.reduce((acc, contrato) => {
-                const status = calcularStatus(contrato.dataHoraIni, contrato.dataHoraTerm);
-                
-                // Count by status
-                if (status === 'Pendente') acc.pendentes++;
-                if (status === 'Concluído') acc.concluidos++;
-                if (status === 'Em Andamento') acc.em_andamento++;
-                
-                // Calculate totals
-                acc.totalContrato++;
-                acc.lucroPrevisto += Number(contrato.valorTotal) || 0;
-                
-                return acc;
-            }, {
-                pendentes: 0,
-                concluidos: 0,
-                em_andamento: 0,
-                totalContrato: 0,
-                lucroPrevisto: 0
-            });
+const handleError = (res, err, message) => {
+    console.error(`${message}:`, err);
+    res.status(500).json({
+        success: false,
+        message: message,
+        error: err.message
+    });
+};
 
-            // Format contract data
-            const contratosFormatados = contratos.map(contrato => ({
-                idContrato: contrato.idContrato,
-                tipo: contrato.tipo,
-                localEvento: contrato.localEvento,
-                dataHoraIni: contrato.dataHoraIni,
-                dataHoraTerm: contrato.dataHoraTerm,
-                status: calcularStatus(contrato.dataHoraIni, contrato.dataHoraTerm),
-                valorTotal: contrato.valorTotal || 0
-            }));
+module.exports.getContratos = async (req, res) => {
+    let dbConn;
+    try {
+        dbConn = await dbConnection().promise();
+        
+        const contratos = await ContratoModel.getAllContratos(dbConn);
+        const statusCount = await ContratoModel.getStatusCount(dbConn);
 
-            res.render('telas_contrato/tela_contrato_inicial', {
-                title: 'Lista de Contratos',
-                contratos: contratosFormatados,
-                pendentes: statusCount.pendentes,
-                concluidos: statusCount.concluidos,
-                em_andamento: statusCount.em_andamento,
-                totalContrato: statusCount.totalContrato,
-                lucroPrevisto: statusCount.lucroPrevisto,
-                usuario: req.user,
-                message: ''
-            });
-        } catch (error) {
-            console.error('Erro ao buscar contratos:', error);
-            res.render('telas_contrato/tela_contrato_inicial', {
-                title: 'Lista de Contratos',
-                contratos: [],
-                pendentes: 0,
-                concluidos: 0,
-                em_andamento: 0,
-                totalContrato: 0,
-                lucroPrevisto: 0,
-                usuario: req.user,
-                message: 'Erro ao carregar contratos'
-            });
-        } finally {
-            if (conn) await conn.end();
-        }
-    },
+        const viewData = {
+            contratos,
+            em_andamento: statusCount.em_andamento || 0,
+            pendentes: statusCount.pendentes || 0,
+            concluidos: statusCount.concluidos || 0,
+            totalContrato: statusCount.totalContrato || 0,
+            lucroPrevisto: statusCount.lucroPrevisto || 0,
+            usuario: req.user
+        };
 
-    getContratoById: async (req, res) => {
-        let conn;
-        try {
-            const { id } = req.params;
-            conn = await dbConnection();
-            const [contrato] = await contratosModel.findById(conn, id);
-            
-            if (!contrato || contrato.length === 0) {
-                return res.status(404).json({ error: 'Contrato não encontrado' });
-            }
-            
-            res.status(200).json(contrato[0]);
-        } catch (error) {
-            console.error('Erro ao buscar contrato:', error);
-            res.status(500).json({ error: 'Erro ao buscar contrato' });
-        } finally {
-            if (conn) await conn.end();
-        }
-    },
+        res.render("./telas_contrato/tela_contrato_inicial.ejs", viewData);
 
-    postContrato: async (req, res) => {
-        let conn;
-        try {
-            const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
-            conn = await dbConnection();
-            
-            const [result] = await contratosModel.adicionarContrato(
-                conn,
-                tipo,
-                localEven,
-                cep,
-                apelido,
-                idUsuario,
-                idContratante
-            );
-
-            res.redirect('/contratos');
-        } catch (error) {
-            console.error('Erro ao adicionar contrato:', error);
-            res.render('telas_contrato/tela_contrato_adicionar', {
-                title: 'Adicionar Contrato',
-                message: 'Erro ao adicionar contrato'
-            });
-        } finally {
-            if (conn) await conn.end();
-        }
-    },
-
-    putContrato: async (req, res) => {
-        try {
-            const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
-            const { idContrato } = req.params;
-
-            if (!idContrato) {
-                return res.status(400).json({ error: 'ID do contrato não fornecido' });
-            }
-
-            const conn = await dbConnection();
-            const result = await contratosModel.putContrato(conn, idContrato, {
-                tipo,
-                localEven,
-                cep,
-                apelido,
-                idUsuario,
-                idContratante
-            });
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Contrato não encontrado' });
-            }
-
-            res.status(200).json({ message: 'Contrato atualizado com sucesso' });
-        } catch (error) {
-            console.error('Erro ao atualizar contrato:', error);
-            res.status(500).json({ error: 'Erro ao atualizar contrato' });
-        }
-    },
-
-    deleteContrato: async (req, res) => {
-        const { idContrato } = req.params;
-
-        try {
-            const dbConn = dbConnection();
-
-            const result = await deleteContrato(dbConn, idContrato);
-            if (!result) {
-                return res.status(404).send({ err: 'Contrato não encontrado' });
-            }
-
-            res.status(200).send({ result });
-        } catch (err) {
-            console.error("Erro ao deletar contrato:", err);
-            res.status(400).send({ err: 'Erro ao deletar contrato' });
-        }
+    } catch (err) {
+        handleError(res, err, "Erro ao buscar dados dos contratos");
+    } finally {
+        if (dbConn) await dbConn.end();
     }
 };
 
-// Helper function to calculate contract status
-function calcularStatus(dataInicio, dataTermino) {
-    const hoje = new Date();
-    const inicio = new Date(dataInicio);
-    const termino = new Date(dataTermino);
+module.exports.getContratoById = async (req, res) => {
+    let dbConn;
+    try {
+        const { id } = req.params;
+        if (!id) throw new Error("ID do contrato não fornecido");
 
-    if (hoje < inicio) {
-        return 'Pendente';
-    } else if (hoje > termino) {
-        return 'Concluído';
-    } else {
-        return 'Em Andamento';
+        // Get promise-based connection
+        dbConn = await dbConnection().promise();
+        const contrato = await ContratoModel.getContratoById(dbConn, id);
+        
+        if (!contrato) {
+            return res.status(404).json({
+                success: false,
+                message: "Contrato não encontrado"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: contrato
+        });
+    } catch (err) {
+        handleError(res, err, "Erro ao buscar contrato");
+    } finally {
+        if (dbConn) await dbConn.end();
     }
-}
+};
+
+module.exports.postContrato = async (req, res) => {
+    let dbConn;
+    try {
+        const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+        
+        // Input validation
+        if (!tipo || !localEven || !cep || !idUsuario || !idContratante) {
+            return res.status(400).json({
+                success: false,
+                message: "Dados incompletos para criar contrato"
+            });
+        }
+
+        dbConn = dbConnection();
+        const result = await ContratoModel.adicionarContrato(
+            dbConn,
+            tipo,
+            localEven, 
+            cep,
+            apelido,
+            idUsuario,
+            idContratante
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Contrato criado com sucesso",
+            data: result
+        });
+    } catch (err) {
+        handleError(res, err, "Erro ao criar contrato");
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
+};
+
+module.exports.putContrato = async (req, res) => {
+    const idContrato = req.params.id;
+    const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+    const dbConn = dbConnection();
+
+    try {
+        const result = await ContratoModel.putContrato(
+            dbConn,
+            idContrato,
+            tipo,
+            localEven,
+            cep,
+            apelido,
+            idUsuario,
+            idContratante
+        );
+        res.status(200).send({ message: "Contrato atualizado com sucesso", result });
+    } catch (err) {
+        res.status(400).send({ error: err.message });
+    } finally {
+        if (dbConn) dbConn.end();
+    }
+};
+
+module.exports.deleteContrato = async (req, res) => {
+    const idContrato = req.params.id;
+    const dbConn = dbConnection();
+
+    try {
+        const result = await ContratoModel.deleteContrato(dbConn, idContrato);
+        res.status(200).send({ message: "Contrato deletado com sucesso", result });
+    } catch (err) {
+        res.status(400).send({ error: err.message });
+    } finally {
+        if (dbConn) dbConn.end();
+    }
+};
