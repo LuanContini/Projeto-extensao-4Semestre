@@ -31,7 +31,7 @@ VALUES
 ('Auto Peças', 'auto.pecas@email.com', '0119100112233', NULL, 'Comércio de peças automotivas');
 
 
-INSERT INTO contrato (tipo, valor_total, cep, localEvento, localRetirada, dataHora_Ini, dataHora_Term, desc_empregados, idUsuario, idContratante)
+INSERT INTO contrato (tipo, valortotal, cep, localEvento, localRetirada, dataHoraIni, dataHoraTerm, descEmpregados, idUsuario, idContratante)
 VALUES
 ('Locacao', 1500.00, '12345678', 'Local A', 'Retirada A', '2024-12-01 08:00:00', '2024-12-01 18:00:00', 'Evento para empresa A', 1, 1),
 ('Evento', 3000.00, '23456789', 'Local B', 'Retirada B', '2024-12-02 09:00:00', '2024-12-02 19:00:00', 'Casamento B', 2, 2),
@@ -83,7 +83,7 @@ VALUES
 ('9012345678901', '2024-12-09 16:00:00', 9),
 ('0123456789012', '2024-12-10 17:00:00', 10);
 
-INSERT INTO manutencao (motivo, data_Inic, data_Retorno, responsavel)
+INSERT INTO manutencao (motivo, dataInic, dataRetorno, responsavel)
 VALUES
 ('Troca de peça', '2024-12-01 08:00:00', '2024-12-01 10:00:00', 'Carlos Souza'),
 ('Reparo no motor', '2024-12-02 09:00:00', '2024-12-02 11:00:00', 'Maria Oliveira'),
@@ -96,7 +96,7 @@ VALUES
 ('Limpeza de sistema', '2024-12-09 16:00:00', '2024-12-09 18:00:00', 'Juliana Pereira'),
 ('Revisão geral', '2024-12-10 17:00:00', '2024-12-10 19:00:00', 'Ricardo Alves');
 
-INSERT INTO historicoManutencao (data_Inic, data_Term, idManutencao, idItens)
+INSERT INTO historicoManutencao (dataInic, dataTerm, idManutencao, idItens)
 VALUES
 ('2024-12-01 08:00:00', '2024-12-01 10:00:00', 1, 1),
 ('2024-12-02 09:00:00', '2024-12-02 11:00:00', 2, 2),

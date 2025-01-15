@@ -6,11 +6,13 @@ const router = express.Router();
 const itemRoute = require("./item.routes");
 const clienteRoute = require("./cliente.routes");
 const manutencaoRoute = require("./manutencao.routes");
+const contratoRoute = require("./contrato.routes");
 const usuarioRoute = require("./usuario.routes");
 
 router.use("/itens", auth.checarAuthComum, itemRoute);
 router.use("/clientes", auth.checarAuthComum, clienteRoute);
 router.use("/manutencao", auth.checarAuthComum, manutencaoRoute);
+router.use("/contratos", auth.checarAuthComum, contratoRoute);
 router.use("/usuario", usuarioRoute);
 
 module.exports = router;

@@ -34,7 +34,7 @@ async function getSecret() {
   }
 }
 
-// Função para criar a conexão com o banco de dados
+
 async function createDbConnection() {
   const secret = await getSecret(); 
 

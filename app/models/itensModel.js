@@ -126,16 +126,16 @@ module.exports = {
           if ( groupResults.length === 0) {
             connection.query(criarGrupoSql, [nome, categoria, precoGrupo], (err, createGroupResult) => {
               if (err) {
-                connection.release(); // Libera a conexão de volta ao pool
                 return reject(new Error("Erro ao criar grupo: " + err.message));
               }
 
               idGrupo = createGroupResult.insertId;
 
+              console.log('idgrupo',idGrupo);
               connection.query(adicionarItemSql, [idGrupo], (err, result) => {
                 if (err) {
                   connection.release(); // Libera a conexão de volta ao pool
-                  return reject(new Error("Erro ao adicionar item: " + err.message));
+                  return reject(new Error("Erro ao adicionar item: " + err));
                 }
                 const idItem = result.insertId;
 
@@ -151,6 +151,9 @@ module.exports = {
             });
           } else {
             idGrupo = groupResults[0].idGrupo;
+
+            console.log('idgrupo', groupResults);
+
 
             connection.query(adicionarItemSql, [idGrupo], (err, result) => {
               if (err) {
@@ -173,10 +176,11 @@ module.exports = {
       });
     });
   },
-  adicionarItem: (dbConnection, idGrupo) => {
+  adicionarItemById: (dbConnection, idGrupo) => {
     const adicionarItemSql = `INSERT INTO itens (dataLocacao, idGrupo) VALUES (CURRENT_TIMESTAMP(), ?)`;
     const adicionarCodigoBarras = 'UPDATE itens SET codBarras = ? WHERE idItens = ?';
 
+    console.log('IDGRUPO', idGrupo);
     return new Promise((resolve, reject) => {
       dbConnection.getConnection((err, connection) => {
         if (err) {

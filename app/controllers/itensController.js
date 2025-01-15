@@ -4,6 +4,7 @@ const {
   getItens,
   getItensById,
   adicionarItem,
+  adicionarItemById,
   updateItem,
   deleteItem,
   deleteGrupo,
@@ -101,6 +102,7 @@ module.exports.criarGrupo = async (req, res) => {
 module.exports.postItem = async (req, res) => {
   const { nome, categoria, precoGrupo, quantidadeItens } = req.body; 
 
+console.log( nome, categoria, precoGrupo, quantidadeItens);
   const dbConn = await dbConnection();
 
   try {
@@ -115,6 +117,7 @@ module.exports.postItem = async (req, res) => {
 
     res.redirect('/itens');
   } catch (err) {
+    console.log(err);
     res.status(400).send({ 'erro': err.message });
   }
 };
@@ -125,11 +128,12 @@ module.exports.postItemById = async (req, res) => {
   const dbConn = await dbConnection();
 
   try {
-      await adicionarItem(dbConn, idGrupo);
+      await adicionarItemById(dbConn, idGrupo);
     
 
     res.reload();
   } catch (err) {
+    console.log(err);
     res.status(400).send({ 'erro': err.message });
   }
 };

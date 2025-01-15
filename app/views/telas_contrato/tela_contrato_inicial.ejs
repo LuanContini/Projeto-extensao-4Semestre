@@ -146,10 +146,10 @@
             margin-right: 5px;
         }
 
-        .stock-high { background-color: #4CAF50; }
-        .stock-medium { background-color: #FFC107; }
+        .em_andamento { background-color: #4CAF50; }
+        .pendentes { background-color: #FFC107; }
         .stock-low { background-color: #F44336; }
-        .stock-concluido { background-color: #001aff; }
+        .concluido { background-color: #001aff; }
 
         .icon {
             width: 30px; 
@@ -207,15 +207,21 @@
             background-color: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 8px;
-            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: background-color 0.3s;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%; /* Preenchendo o espaço disponível */
+            height: 100%; /* Garantindo que o botão seja clicável */
         }
 
         .operation-item:hover {
             background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05); /* Adiciona um efeito visual */
         }
 
         .operation-item img {
@@ -223,36 +229,173 @@
             height: 40px;
             margin-bottom: 10px;
         }
+
+        .operation-item span {
+            font-size: 0.9em;
+            color: white;
+            font-weight: bold;
+        }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: transform 0.2s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #6c757d;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            color: #212529;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .stock-indicator {
+            height: 4px;
+            width: 50px;
+            border-radius: 2px;
+            margin: 0.5rem 0;
+        }
+
+        .em-andamento { background: #ffd700; }
+        .pendentes { background: #dc3545; }
+        .concluido { background: #28a745; }
+
+        .delete-btn {
+        background-color: transparent;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 10px;
+        color: #dc3545;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .delete-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .delete-btn i {
+        font-size: 16px;
+    }
+
+    /* Confirmation Modal */
+    .confirmation-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .confirmation-content {
+        background: white;
+        width: 300px;
+        padding: 20px;
+        border-radius: 8px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    /* Actions Cell Styling */
+    .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    /* Delete Button Styling */
+    .delete-btn {
+        background: transparent;
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .delete-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .delete-btn i {
+        font-size: 14px;
+    }
+
+    /* Modal Styling */
+    .confirmation-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .confirmation-content {
+        background: white;
+        width: 300px;
+        padding: 20px;
+        border-radius: 8px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="../public/assets/icons/Logo_TV_2015.png" alt="Logo da Empresa" class="logo">
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/itens.png" alt="Itens" class="icon">
-            ITENS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/contracts.png" alt="Contratos" class="icon">
-            CONTRATOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/maintenance.png" alt="Manutenção" class="icon">
-            MANUTENÇÃO
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/users.png" alt="Usuários" class="icon">
-            USUÁRIOS
-        </a>
-        <a href="#" class="sidebar-item">
-            <img src="../public/assets/icons/clients.png" alt="Clientes" class="icon">
-            CLIENTES
-        </a>
-        <a href="#" class="sidebar-item profile">
-            <img src="../public/assets/icons/profile.png" alt="Perfil" class="icon">
-            PERFIL
-        </a>
-    </div>    
+    <%- include('../assets/menu.ejs')%>
 
     <div class="main-content">
         <div class="header">
@@ -265,31 +408,46 @@
         </div>
 
         <div class="stats-bar">
-            <div class="stat-item">
-                <p>R$<%= totalValue %></p>
-                <div class="stock-indicator stock-high"></div>
-                <small>Em Andamento</small>
-            </div>
-            <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
-                <div class="stock-indicator stock-medium"></div>
-                <small>Pendente</small>
-            </div>
-            <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
-                <div class="stock-indicator stock-concluido"></div>
-                <small>Concluído</small>
-            </div>
-            <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
-                <small>Lucro previsto (Contratos)</small>
-            </div>
-            <div class="stat-item">
-                <p>R$<%= forecastedProfit %></p>
-                <small>Total</small>
-            </div>
+    <div class="stat-item">
+        <i class="fas fa-clock status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= em_andamento %></p>
+            <div class="stock-indicator em-andamento"></div>
+            <small class="stat-label">Em Andamento</small>
         </div>
-
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-hourglass-start status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= pendentes %></p>
+            <div class="stock-indicator pendentes"></div>
+            <small class="stat-label">Pendente</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-check-circle status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= concluidos %></p>
+            <div class="stock-indicator concluido"></div>
+            <small class="stat-label">Concluído</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-dollar-sign status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value">R$ <%= Number(lucroPrevisto).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></p>
+            <small class="stat-label">Lucro Previsto</small>
+        </div>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-file-contract status-icon"></i>
+        <div class="stat-content">
+            <p class="stat-value"><%= totalContrato %></p>
+            <small class="stat-label">Total Contratos</small>
+        </div>
+    </div>
+</div>
+        
         <table class="products-table">
             <thead>
                 <tr>
@@ -316,40 +474,36 @@
                 </tr>
             </thead>
             <tbody>
-                <% products.forEach(function(product) { %>
-                    <tr>
-                        <td style="position: relative;"> <!-- TROCAR AS DATAS PARA OS DADOS DO BANCO DE DADOS-->
-                            <div class="stock-indicator 
-                                <%= (function() {
-                                    const currentDate = new Date();
-                                    const exitDate = new Date(product.exitDate);
-                                    const entryDate = new Date(product.entryDate);
-                                    
-                                    if (currentDate >= exitDate && currentDate <= entryDate) {
-                                        return 'stock-high'; // Em andamento
-                                    } else if (currentDate < exitDate) {
-                                        return 'stock-medium'; // Pendente
-                                    } else {
-                                        return 'stock-concluido'; // Concluído
-                                    }
-                                })() %>" 
-                                style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%);">
-                            </div>
-                            <img src="../public/assets/icons/testeImagemContrato.jpg" alt="<%= product.name %>" width="70">
-                        </td>
-                        <td><%= product.name %></td>
-                        <td><%= product.category %></td>
-                        <td><%= product.available %></td>
-                        <td><%= product.reserved %></td>
-                        <td><%= product.maintenance %></td>
-                        <td><%= product.total %></td>
-                        <td>
-                            <button class="action-btn view-btn">📦</button>
-                            <button class="action-btn delete-btn">🗑️</button>
-                        </td>
-                    </tr>
-                <% }); %>
-            </tbody>            
+                <% if (contratos && contratos.length > 0) { %>
+                    <% contratos.forEach(contrato => { %>
+                        <tr>
+                            <td>#<%= contrato.idContrato %></td>
+                            <td><%= contrato.tipo %></td>
+                            <td><%= contrato.localEvento %></td>
+                            <td><%= new Date(contrato.dataHoraIni).toLocaleString('pt-BR') %></td>
+                            <td><%= new Date(contrato.dataHoraTerm).toLocaleString('pt-BR') %></td>
+                            <td>
+                                <span class="status-badge <%= contrato.status.toLowerCase().replace(' ', '-') %>">
+                                    <%= contrato.status %>
+                                </span>
+                            </td>
+                            <td>R$ <%= Number(contrato.valorTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></td>
+                            <td class="actions">
+                                <button class="edit-btn" onclick="editarContrato('<%= contrato.idContrato %>')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <!-- Formulário de Deleção -->
+                                <form action="/contratos/<%= contrato.idContrato %>" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="submit" class="fas fa-edit">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td colspan="7">Nenhum contrato encontrado</td></tr>
+                <% } %>
+            </tbody>                        
         </table>
     </div>
 
@@ -362,23 +516,35 @@
             </div>
             <p class="modal-subtitle">Escolha como será o contrato</p>
             <div class="operation-grid">
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/locacao.png" alt="Locação">
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="locacao" class="operation-item">
+                    <img src="/icons/img_tela_contratos/locacao.png" alt="Locação">
                     <span>Locação</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/entrega.png" alt="Entrega">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="entrega" class="operation-item">
+                    <img src="/icons/img_tela_contratos/entrega.png" alt="Entrega">
                     <span>Entrega</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/montar.png" alt="Apenas Montar">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="montar" class="operation-item">
+                    <img src="/icons/img_tela_contratos/montar.png" alt="Apenas Montar">
                     <span>Apenas Montar</span>
-                </div>
-                <div class="operation-item">
-                    <img src="../public/assets/img_tela_contratos/operar.png" alt="Montar e Operar">
+                  </button>
+                </form>
+              
+                <form action="/contratos/adicionar" method="GET">
+                  <button type="submit" name="tipo" value="operar" class="operation-item">
+                    <img src="/icons/img_tela_contratos/operar.png" alt="Montar e Operar">
                     <span>Montar e Operar</span>
-                </div>
-            </div>
+                  </button>
+                </form>
+              </div>
+              
         </div>
     </div>
 
@@ -515,4 +681,3 @@
     </script>
 </body>
 </html>
-            
