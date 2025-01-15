@@ -2,7 +2,6 @@ const dbConnection = require("../../config/dbConnection");
 const ContratoModel = require("../models/contratosModel");
 
 const handleError = (res, err, message) => {
-    console.error(`${message}:`, err);
     res.status(500).json({
         success: false,
         message: message,
@@ -10,15 +9,14 @@ const handleError = (res, err, message) => {
     });
 };
 
-module.exports.getContratos = (req, res) => {
+module.exports.getContratos = async (req, res) => {
     let dbConn;
-    dbConnection().then(connection => {
-        dbConn = connection;
-        return Promise.all([
-            ContratoModel.getAllContratos(dbConn),
-            ContratoModel.getStatusCount(dbConn)
-        ]);
-    }).then(([contratos, statusCount]) => {
+    try {
+        dbConn = await dbConnection();
+        
+        const contratos = await ContratoModel.getAllContratos(dbConn);
+        const statusCount = await ContratoModel.getStatusCount(dbConn);
+
         const viewData = {
             contratos,
             em_andamento: statusCount.em_andamento || 0,
@@ -28,100 +26,117 @@ module.exports.getContratos = (req, res) => {
             lucroPrevisto: statusCount.lucroPrevisto || 0,
             usuario: req.user
         };
+
         res.render("./telas_contrato/tela_contrato_inicial.ejs", viewData);
-    }).catch(err => {
+
+    } catch (err) {
         handleError(res, err, "Erro ao buscar dados dos contratos");
-    }).finally(() => {
-        if (dbConn) dbConn.end();
-    });
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
 };
 
-module.exports.getContratoById = (req, res) => {
+module.exports.getContratoById = async (req, res) => {
     const id = req.params.id;
-    dbConnection().then(dbConn => {
+    let dbConn;
+    try {
+        dbConn = await dbConnection();
+        
         console.log('Fetching contract with ID:', id); // Debug log
         
         if (!id) {
             throw new Error('ID não fornecido');
         }
 
-        return ContratoModel.getContratoById(dbConn, id);
-    }).then(contrato => {
+        const contrato = await ContratoModel.getContratoById(dbConn, id);
+        
         if (!contrato) {
             return res.status(404).json({ message: 'Contrato não encontrado' });
         }
 
         console.log('Contract found:', contrato); // Debug log
         res.status(200).json(contrato);
-    }).catch(err => {
+
+    } catch (err) {
         console.error('Error fetching contract:', err); // Error log
         res.status(400).json({ error: err.message });
-    });
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
 };
 
-module.exports.postContrato = (req, res) => {
+module.exports.postContrato = async (req, res) => {
     let dbConn;
-    const { tipo, localEvento, cep, apelido, idUsuario, idContratante } = req.body;
-    
-    // Input validation
-    if (!tipo || !localEvento || !cep || !idUsuario || !idContratante) {
-        return res.status(400).json({
-            success: false,
-            message: "Dados incompletos para criar contrato"
-        });
-    }
+    try {
+        const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+        
+        // Input validation
+        if (!tipo || !localEven || !cep || !idUsuario || !idContratante) {
+            return res.status(400).json({
+                success: false,
+                message: "Dados incompletos para criar contrato"
+            });
+        }
 
-    dbConnection().then(connection => {
-        dbConn = connection;
-        return ContratoModel.adicionarContrato(dbConn, {
+        dbConn = await dbConnection();
+        const result = await ContratoModel.adicionarContrato(
+            dbConn,
             tipo,
-            localEvento,
+            localEven, 
             cep,
             apelido,
             idUsuario,
             idContratante
-        });
-    }).then(result => {
+        );
+
         res.status(201).json({
             success: true,
             message: "Contrato criado com sucesso",
             data: result
         });
-    }).catch(err => {
+    } catch (err) {
         handleError(res, err, "Erro ao criar contrato");
-    }).finally(() => {
-        if (dbConn) dbConn.end();
-    });
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
 };
 
-module.exports.putContrato = (req, res) => {
+module.exports.putContrato = async (req, res) => {
     const idContrato = req.params.id;
-    const { tipo, localEvento, cep, apelido, idUsuario, idContratante } = req.body;
-
-    dbConnection().then(dbConn => {
-        return ContratoModel.putContrato(dbConn, idContrato, {
+    const { tipo, localEven, cep, apelido, idUsuario, idContratante } = req.body;
+    let dbConn;
+    try {
+        dbConn = await dbConnection();
+        
+        const result = await ContratoModel.putContrato(
+            dbConn,
+            idContrato,
             tipo,
-            localEvento,
+            localEven,
             cep,
             apelido,
             idUsuario,
             idContratante
-        });
-    }).then(result => {
+        );
         res.status(200).send({ message: "Contrato atualizado com sucesso", result });
-    }).catch(err => {
+    } catch (err) {
         res.status(400).send({ error: err.message });
-    });
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
 };
 
-module.exports.deleteContrato = (req, res) => {
+module.exports.deleteContrato = async (req, res) => {
     const idContrato = req.params.id; // Usar 'params' para capturar o id da URL
-    
-    dbConnection().then(dbConn => {
-        return ContratoModel.deleteContrato(dbConn, idContrato);
-    }).then(result => {
+    let dbConn;
+    try {
+        dbConn = await dbConnection();
+        
+        const result = await ContratoModel.deleteContrato(dbConn, idContrato);
         res.redirect('/contratos');
-    }).catch(err => {
+    } catch (err) {
         res.status(400).send({ error: err.message });
-    });
+    } finally {
+        if (dbConn) await dbConn.end();
+    }
 };
