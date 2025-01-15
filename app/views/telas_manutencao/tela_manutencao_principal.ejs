@@ -14,47 +14,6 @@
             font-family: Arial, sans-serif;
         }
 
-        .sidebar {
-            width: 100px;
-            height: 100vh;
-            background-color: #e8e3d9;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar .logo {
-            width: 80px;
-            height: auto;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .sidebar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;    
-            padding: 15px 0;
-            color: #333;
-            text-decoration: none;              
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .sidebar-item.profile {
-            margin-top: auto; 
-        }
-
-        .icon {
-            width: 30px; 
-            height: 30px;
-            margin-bottom: 5px;
-        }
-
         .main-content {
             margin-left: 100px; /* Espaço para a sidebar */
             padding: 20px;
@@ -168,6 +127,8 @@
             background-color: #f0f0f0;
         }
     </style>
+        <link rel="stylesheet" href="/style/menu.css">
+
 </head>
 <body>
     <%- include('../assets/menu.ejs') %>
@@ -194,22 +155,21 @@
                 </tr>
             </thead>
             <tbody>
-                <% Object.keys(itensEmManutencao).forEach(function(grupoId) { %>
-                    <% const grupo = itensEmManutencao[grupoId]; %>
-                    <% grupo.itens.forEach(function(item) { %>
+                <% Object.keys(itensEmManutencao).forEach(function(idManutencao) { %>
+                    <% const grupo = itensEmManutencao[idManutencao]; %>
+                    <% console.log(grupo);%>
                         <tr>
-                            <td><%= item.idManutencao %></td>
+                            <td><%= grupo.idManutencao %></td>
                             <td><%= grupo.nomeGrupo %></td>
-                            <td><%= item.responsavel %></td>
-                            <td><%= item.motivo %></td>
-                            <td><%= new Date(item.dataInic).toLocaleString() %></td>
-                            <td><%= new Date(item.dataRetorno).toLocaleString() %></td>
+                            <td><%= grupo.responsavel %></td>
+                            <td><%= grupo.motivo %></td>
+                            <td><%= new Date(grupo.dataInic).toLocaleString() %></td>
+                            <td><%= new Date(grupo.dataRetorno).toLocaleString() %></td>
                             <td>
-                                <button class="action-btn view-btn" onclick="openModal('<%= item.idManutencao %>', '<%= grupo.nomeGrupo %>')">Ver Itens</button>
-                                <button class="action-btn delete-btn" onclick="confirmDeletion(<%= item.idManutencao %>)">🗑️</button>
+                                <button class="action-btn view-btn" onclick="openModal('<%= grupo.idManutencao %>', '<%= grupo.nomeGrupo %>')">Ver Itens</button>
+                                <button class="action-btn delete-btn" onclick="confirmDeletion(<%= grupo.idManutencao %>)">🗑️</button>
                             </td>
                         </tr>
-                    <% }); %>
                 <% }); %>
             </tbody>
         </table>

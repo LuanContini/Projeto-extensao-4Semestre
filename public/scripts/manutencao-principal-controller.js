@@ -5,10 +5,15 @@ function openModal(idManutencao, nomeGrupo) {
     const modalBody = document.getElementById('modalBody');
     modal.style.display = 'flex';
 
-    // Verifica se a manutenção existe nos itens
-    if (itens[idManutencao]) {
+    // Busca a manutenção correspondente pelo idManutencao
+    const manutencao = itens[idManutencao];
+
+
+    console.log(manutencao, itens, idManutencao); // Para depuração
+
+    if (manutencao) {
         modalBody.innerHTML = `
-            <h4>Itens da Manutenção ID: ${idManutencao} - Grupo: ${nomeGrupo}</h4>
+            <h4>ID do Grupo: ${manutencao.idGrupo} - Grupo: ${nomeGrupo}</h4>
             <table class="item-table">
                 <thead>
                     <tr>
@@ -18,7 +23,7 @@ function openModal(idManutencao, nomeGrupo) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${itens[idManutencao].itens.map(item => `
+                    ${manutencao.itens.map(item => `
                         <tr>
                             <td>${item.idItens}</td>
                             <td>${item.codBarras}</td>

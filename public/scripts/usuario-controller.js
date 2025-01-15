@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function cleanInput(input) {
-        return input.replace(/\D/g, ''); // Remove todos os caracteres que não são dígitos
+        return input.replace(/\D/g, '');
     }
 
     function resetInputs(){

@@ -6,50 +6,28 @@ const https = require('https');
 const fs = require('fs');
 require("dotenv").config({ path: ".env" });
 
-const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
-
-const secret_name = "Projeto-extensao-4Semestre/.env";
-
-const client = new SecretsManagerClient({
-  region: "us-east-2",
-});
-
-// Função assíncrona para obter o segredo
 async function getSecret() {
-  let response;
-  try {
-    response = await client.send(
-      new GetSecretValueCommand({
-        SecretId: secret_name,
-        VersionStage: "AWSCURRENT",
-      })
-    );
-    return JSON.parse(response.SecretString); // Retorna o segredo como um objeto
-  } catch (error) {
-    console.error("Erro ao obter o segredo:", error);
-    throw error;
-  }
+  return { 
+      JWT_SECRET: process.env.JWT_SECRET 
+  };
 }
 
-// Função principal para iniciar o servidor
 async function startServer() {
-  const secret = await getSecret(); // Chama a função assíncrona para obter o segredo
-  let routes = require("./routes/index");
-  let app = express();
-  const jwtSecret = secret.JWT_SECRET;
+  const secret = await getSecret();
+  const routes = require("./routes/index"); 
+  const app = express();
+  const jwtSecret = secret.JWT_SECRET; 
 
-  // Carregar o certificado e a chave privada
   const options = {
     key: fs.readFileSync(path.join(__dirname, '../certs/privatekey.pem')),
     cert: fs.readFileSync(path.join(__dirname, '../certs/certificate.pem'))
   };
 
-  // Configuração da sessão
   app.use(session({
     secret: jwtSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Para desenvolvimento, defina como false
+    cookie: { secure: true } 
   }));
 
   app.set("view engine", "ejs");
@@ -65,26 +43,33 @@ async function startServer() {
     }
   }));
 
-
-  // Definir as rotas
   app.use("/", routes);
 
-  // Criar o servidor HTTPS
-  https.createServer(options, app).listen(443, () => {
+  const httpsServer = https.createServer(options, app);
+
+  httpsServer.listen(443, () => {
     console.log("Servidor HTTPS rodando na porta 443");
   });
 
-  // (Opcional) Criar um servidor HTTP que redireciona para HTTPS
+  httpsServer.on('error', (err) => {
+    console.error('Erro no servidor HTTPS:', err);
+  });
+
   const http = require('http');
-  http.createServer((req, res) => {
+  const httpServer = http.createServer((req, res) => {
     res.writeHead(301, { "Location": `https://${req.headers.host}${req.url}` });
     res.end();
-  }).listen(80, () => {
+  });
+
+  httpServer.listen(80, () => {
     console.log("Servidor HTTP rodando na porta 80 e redirecionando para HTTPS");
+  });
+
+  httpServer.on('error', (err) => {
+    console.error('Erro no servidor HTTP:', err);
   });
 }
 
-// Iniciar o servidor
 startServer().catch(error => {
   console.error("Erro ao iniciar o servidor:", error);
 });

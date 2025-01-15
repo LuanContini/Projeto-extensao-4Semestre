@@ -12,40 +12,7 @@
             font-family: Arial, sans-serif;
         }
 
-        .sidebar {
-            width: 100px;
-            height: 100vh;
-            background-color: #e8e3d9;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar .logo {
-            width: 80px;
-            height: auto;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .sidebar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;    
-            padding: 15px 0;
-            color: #333;
-            text-decoration: none;              
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .sidebar-item.profile {
-            margin-top: auto; /* Move o item PERFIL para o final */
-        }
+        
 
         .main-content {
             margin-left: 100px;
@@ -157,6 +124,9 @@
         }
 
     </style>
+
+<link rel="stylesheet" href="/style/menu.css">
+
 </head>
 <body>
     <%- include('../assets/menu.ejs')%>

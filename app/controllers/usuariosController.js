@@ -9,31 +9,41 @@ const {
   findUsuario,
 } = require("../models/usuariosModel");
 
-const {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} = require("@aws-sdk/client-secrets-manager");
+require("dotenv").config({ path: ".env" });
 
-const secret_name = "Projeto-extensao-4Semestre/.env";
 
-const client = new SecretsManagerClient({
-  region: "us-east-2",
-});
+// const {
+//   SecretsManagerClient,
+//   GetSecretValueCommand,
+// } = require("@aws-sdk/client-secrets-manager");
 
-// Função assíncrona para obter o segredo
+// const secret_name = "Projeto-extensao-4Semestre/.env";
+
+// const client = new SecretsManagerClient({
+//   region: "us-east-2",
+// });
+
+// // Função assíncrona para obter o segredo
+// async function getSecret() {
+//   let response;
+//   try {
+//     response = await client.send(
+//       new GetSecretValueCommand({
+//         SecretId: secret_name,
+//         VersionStage: "AWSCURRENT",
+//       })
+//     );
+//     return JSON.parse(response.SecretString); // Retorna o segredo como um objeto
+//   } catch (error) {
+//     console.error("Erro ao obter o segredo:", error);
+//     throw error;
+//   }
+// }
+
 async function getSecret() {
-  let response;
-  try {
-    response = await client.send(
-      new GetSecretValueCommand({
-        SecretId: secret_name,
-        VersionStage: "AWSCURRENT",
-      })
-    );
-    return JSON.parse(response.SecretString); // Retorna o segredo como um objeto
-  } catch (error) {
-    console.error("Erro ao obter o segredo:", error);
-    throw error;
+  return { 
+      SALT_ROUNDS: process.env.SALT_ROUNDS,
+      JWT_SECRET: process.env.JWT_SECRET,
   }
 }
 
@@ -175,7 +185,6 @@ module.exports.login = async (req, res) => {
     delete req.session.returnTo;
     res.redirect(returnTo);
   } catch (err) {
-    console.log(err);
     return res.render("telas_logins/tela_login", {
       error: "Usuario ou senha não encontrado",
     });

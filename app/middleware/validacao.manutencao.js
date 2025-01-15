@@ -5,7 +5,8 @@ module.exports.validarManutencao = (req, res, next) => {
     motivo: Joi.string().min(5).required().messages({
       "string.base": "O motivo deve ser uma string.",
       "string.min": "O motivo deve ter pelo menos 5 caracteres.",
-      "any.required": "O motivo é obrigatório."
+      "any.required": "O motivo é obrigatório.",
+      "string.empty": "O motivo não pode ser vazio"
     }),
     dataInic: Joi.date().min('1900-01-01').iso().required().messages({
       "date.base": "A data de início deve ser uma data válida.",
@@ -20,7 +21,8 @@ module.exports.validarManutencao = (req, res, next) => {
     responsavel: Joi.string().min(1).required().messages({
       "string.base": "O responsável deve ser uma string.",
       "string.min": "O responsável deve ter pelo menos 1 caractere.",
-      "any.required": "O responsável é obrigatório."
+      "any.required": "O responsável é obrigatório.",
+      "string.empty": "O responsável não pode ser vazio"
     }),
     selectedItems: Joi.array().min(1).required().messages({
       "array.base": "Os itens selecionados devem ser um array.",

@@ -173,6 +173,34 @@ module.exports = {
       });
     });
   },
+  adicionarItem: (dbConnection, idGrupo) => {
+    const adicionarItemSql = `INSERT INTO itens (dataLocacao, idGrupo) VALUES (CURRENT_TIMESTAMP(), ?)`;
+    const adicionarCodigoBarras = 'UPDATE itens SET codBarras = ? WHERE idItens = ?';
+
+    return new Promise((resolve, reject) => {
+      dbConnection.getConnection((err, connection) => {
+        if (err) {
+          return reject(err); 
+        }
+        connection.query(adicionarItemSql, [idGrupo], (err, result) => {
+          if (err) {
+            connection.release(); 
+            return reject(new Error("Erro ao adicionar item: " + err.message));
+          }
+          const idItem = result.insertId;
+
+          connection.query(adicionarCodigoBarras, [GerarCodigoDeBarras(idItem), idItem], (err, result) => {
+            connection.release(); // Libera a conexão de volta ao pool
+            if (err) {
+              return reject(err);
+            }
+
+            resolve(result);
+          });
+        });
+      });
+    });
+  },
 
   // Função para atualizar um item
   updateItem: (dbConnection, nome, categoria, precoGrupo, idGrupo) => {
@@ -180,7 +208,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       dbConnection.getConnection((err, connection) => {
         if (err) {
-          return reject(err); // Retorna erro se não conseguir obter a conexão
+          return reject(err); 
         }
         connection.query(sql, [nome, categoria, precoGrupo, idGrupo], (err, results) => {
           connection.release(); // Libera a conexão de volta ao pool

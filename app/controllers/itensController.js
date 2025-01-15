@@ -119,6 +119,21 @@ module.exports.postItem = async (req, res) => {
   }
 };
 
+module.exports.postItemById = async (req, res) => {
+  const idGrupo = req.params.idGrupo;
+
+  const dbConn = await dbConnection();
+
+  try {
+      await adicionarItem(dbConn, idGrupo);
+    
+
+    res.reload();
+  } catch (err) {
+    res.status(400).send({ 'erro': err.message });
+  }
+};
+
 // UPDATE item
 module.exports.putItem = async (req, res) => {
   const { nome, categoria, precoGrupo} = req.body;

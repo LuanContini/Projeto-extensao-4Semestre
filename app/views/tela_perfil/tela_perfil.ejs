@@ -200,6 +200,26 @@
             width: 80px;
             text-align: center;
         }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input {
+            margin-right: 5px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .password-section {
+            display: none; /* Inicialmente oculto */
+        }
     </style>
 </head>
 <body>
@@ -213,28 +233,7 @@
             </div>
 
             <div class="profile-container">
-                <div class="photo-section">
-                    <h2 class="section-title">Foto de perfil</h2>
-                    <div class="photo-container">
-                        <form id="photoForm" action="/perfil/foto" method="POST" enctype="multipart/form-data">
-                            <div class="photo-placeholder">
-                                <% if (usuario.foto_url) { %>
-                                    <img src="<%= usuario.foto_url %>" alt="Foto de Perfil" id="profileImage" width="150" height="150" style="border-radius: 50%; object-fit: cover;">
-                                <% } else { %>
-                                    <img src="/assets/icons/profile.png" alt="Profile" id="profileImage" width="50">
-                                <% } %>
-                            </div>
-                            <span class="photo-info">PNG, JPEG abaixo de 15MB</span>
-                            <div class="photo-buttons">
-                                <input type="file" id="photoInput" name="foto" accept="image/png,image/jpeg" style="display: none">
-                                <button type="button" class="photo-button" id="uploadButton">Colocar nova Foto</button>
-                                <button type="button" class="photo-button" id="removeButton" <%= !usuario.foto_url ? 'disabled' : '' %>>Remover</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <form id="profileForm" action="/perfil/atualizar" method="POST">
+                <form id="profileForm">
                     <div class="profile-info">
                         <div class="info-section">
                             <h2 class="section-title">Nome completo</h2>
@@ -246,11 +245,11 @@
                                 <label>Data de Nascimento</label>
                                 <div class="date-inputs">
                                     <% const dataNasc = new Date(usuario.dataNasc); %>
-                                    <input type="text" name="dia" placeholder="DD" maxlength="2" class="date-mask" 
+                                    <input type="number" name="dia" placeholder="DD" maxlength="2" class="date-mask" 
                                            value="<%= dataNasc.getDate().toString().padStart(2, '0') %>" disabled>
-                                    <input type="text" name="mes" placeholder="MM" maxlength="2" class="date-mask" 
+                                    <input type="number" name="mes" placeholder="MM" maxlength="2" class="date-mask" 
                                            value="<%= (dataNasc.getMonth() + 1).toString().padStart(2, '0') %>" disabled>
-                                    <input type="text" name="ano" placeholder="AAAA" maxlength="4" class="date-mask" 
+                                    <input type="number" name="ano" placeholder="AAAA" maxlength="4" class="date-mask" 
                                            value="<%= dataNasc.getFullYear() %>" disabled>
                                 </div>
                             </div>
@@ -272,6 +271,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Seção de Senha -->
+                    <div class="password-section">
+                        <h2 class="section-title">Trocar Senha</h2>
+                        <div class="form-group">
+                            <label>Nova Senha</label>
+                            <input type="password" name="senha" id="senha">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Nova Senha</label>
+                            <input type="password" name="confirmarSenha" id="confirmarSenha">
+                            <div class="error-message" id="error-message" style="display: none;">As senhas não coincidem.</div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showPassword">
+                            <label for="showPassword">Mostrar Senha</label>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -282,74 +299,100 @@
         document.addEventListener('DOMContentLoaded', function() {
             const editButton = document.getElementById('editButton');
             const profileForm = document.getElementById('profileForm');
-            const uploadButton = document.getElementById('uploadButton');
-            const removeButton = document.getElementById('removeButton');
-            const photoInput = document.getElementById('photoInput');
-            const photoForm = document.getElementById('photoForm');
+            const senha = document.getElementById('senha');
+            const confirmarSenha = document.getElementById('confirmarSenha');
+            const errorMessage = document.getElementById('error-message');
+            const showPasswordCheckbox = document.getElementById('showPassword');
+            const passwordSection = document.querySelector('.password-section');
             let isEditing = false;
 
-            uploadButton.addEventListener('click', () => {
-                photoInput.click();
-            });
+            editButton.addEventListener('click', function() {
+                isEditing = !isEditing;
+                const inputs = profileForm.querySelectorAll('input, checkbox');
 
-            photoInput.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const formData = new FormData(photoForm);
-                    
-                    fetch('/perfil/foto', {
-                        method: 'POST',
-                        body: formData
+                if (isEditing) {
+                    editButton.textContent = 'SALVAR';
+                    inputs.forEach(input => input.disabled = false);
+                    passwordSection.style.display = 'block'; 
+                } else {
+                    if (senha.value !== confirmarSenha.value) {
+                        errorMessage.style.display = 'block';
+                        return;
+                    } else {
+                        errorMessage.style.display = 'none';
+                    }
+
+                    const dia = profileForm.querySelector('input[name="dia"]').value;
+                    const mes = profileForm.querySelector('input[name="mes"]').value;
+                    const ano = profileForm.querySelector('input[name="ano"]').value;
+                    const dataNascFormatada = `${ano}-${mes}-${dia}`; // Formato YYYY-MM-DD
+
+                    const formData = new FormData(profileForm);
+                    const data = {};
+                    formData.forEach((value, key) => {
+                        if (key === 'dia' || key === 'mes' || key === 'ano') {
+                            data['dataNasc'] = dataNascFormatada; 
+                        } else if (key === 'senha' && value === '') {
+                        } else if (key === 'telefone' || key === 'cpf') {
+                            data[key] = cleanInput(value);
+                        } else if(key === 'confirmarSenha') {
+
+                        } 
+                        else {
+                            data[key] = value;
+                        }
+                    });
+
+                    data['tipo'] = '<%= usuario.tipo %>';
+
+                    const idUsuario = '<%= usuario.idUsuario %>'; 
+                    fetch(`/usuario/${idUsuario}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            document.getElementById('profileImage').src = data.foto_url;
-                            removeButton.disabled = false;
+                        if (data.affectedRows === 1) {
+                            alert('Perfil atualizado com sucesso!');
                         } else {
-                            alert('Erro ao fazer upload da foto');
+                            alert('Erro ao atualizar o perfil');
                         }
                     })
                     .catch(error => {
                         console.error('Erro:', error);
-                        alert('Erro ao fazer upload da foto');
+                        alert('Erro ao atualizar o perfil');
                     });
-                }
-            });
 
-            removeButton.addEventListener('click', () => {
-                fetch('/perfil/foto', {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('profileImage').src = '/assets/icons/profile.png';
-                        removeButton.disabled = true;
-                    } else {
-                        alert('Erro ao remover a foto');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Erro ao remover a foto');
-                });
-            });
-
-            // Manipulação do formulário de perfil
-            editButton.addEventListener('click', function() {
-                isEditing = !isEditing;
-                const inputs = profileForm.querySelectorAll('input');
-                
-                if (isEditing) {
-                    editButton.textContent = 'SALVAR';
-                    inputs.forEach(input => input.disabled = false);
-                } else {
-                    profileForm.submit();
                     editButton.textContent = 'EDITAR';
                     inputs.forEach(input => input.disabled = true);
+                    passwordSection.style.display = 'none'; 
                 }
             });
+
+            showPasswordCheckbox.addEventListener('change', function() {
+                const type = this.checked ? 'text' : 'password';
+                senha.type = type;
+                confirmarSenha.type = type;
+            });
+
+            const cpfInput = document.querySelector('.cpf-mask');
+            const telefoneInput = document.querySelector('.phone-mask');
+
+            IMask(cpfInput, {
+                mask: '000.000.000-00'
+            });
+
+            IMask(telefoneInput, {
+                mask: '(00) 00000-0000'
+            });
         });
+
+        function cleanInput(input) {
+        return input.replace(/\D/g, ''); 
+    }
     </script>
 </body>
 </html>

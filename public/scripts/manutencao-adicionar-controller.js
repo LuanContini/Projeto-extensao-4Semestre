@@ -15,10 +15,10 @@ function openModal() {
             grupoSelecionado.itens.forEach(item => {
                 itemBody.innerHTML += `
                     <tr>
-                        <td><input type="checkbox" class="item-checkbox" data-id="${item.idItens}" data-cod="${item.codBarras}" data-nome="${item.nome}" onchange="updateSelectedItems(this)"></td>
+                        <td><input type="checkbox" class="item-checkbox" data-id="${item.idItens}" data-cod="${item.codBarras}" data-nome="${grupoSelecionado.nome}" onchange="updateSelectedItems(this)"></td>
                         <td>${item.idItens}</td>
                         <td>${item.codBarras}</td>
-                        <td>${item.nome}</td>
+                        <td>${grupoSelecionado.nome}</td>
                     </tr>
                 `;
             });
@@ -75,6 +75,7 @@ function updateSelectedItemsTable() {
     selectedItemsBody.innerHTML = '';
 
     selectedItems.forEach(item => {
+        console.log(item);
         selectedItemsBody.innerHTML += `
             <tr>
                 <td>${item.id}</td>
@@ -128,8 +129,16 @@ function finalizeMaintenance() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
-        window.location.href = '/manutencao'; 
+
+        if(data.err) {
+            console.log(data.err);
+            alert(data.err)
+        }
+        else{
+            alert("Manutenção criada!")
+            window.location.href = '/manutencao'; 
+
+        }
 
     })
     .catch((error) => {
